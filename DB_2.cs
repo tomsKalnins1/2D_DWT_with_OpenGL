@@ -44,8 +44,13 @@ void transform()
         res_high += pix_wt_high.x * pix.x;
     }
     synchronize();
-    imageStore(image_T, ivec2(w_id.x, 255 - texC_g.y), vec4(res_low, res_low, res_low, 1.0));
-    imageStore(image_T, ivec2(w_id.x + 128, 255 - texC_g.y), vec4(res_high, res_high, res_high, 1.0));
+    vec4 t_0 = vec4(1.0, 0.0, 0.0, 1.0);
+    vec4 t_1 = vec4(0.0, 1.0, 0.0, 1.0);
+ //   imageStore(image_T, ivec2(w_id.x, 255 - texC_g.y), t_1);
+  //  imageStore(image_T, ivec2(w_id.x + 128, 255 - texC_g.y), t_0);
+        imageStore(image_T, ivec2(w_id.x, 255 - texC_g.y), vec4(res_low, res_low, res_low, 1.0));
+        imageStore(image_T, ivec2(w_id.x + 128, 255 - texC_g.y), vec4(res_high, res_high, res_high, 1.0));
+      
     synchronize();
 
     //  imageStore(image_T, ivec2(texC_g.x, texC_g.y), vec4(res, res, res, 1.0));

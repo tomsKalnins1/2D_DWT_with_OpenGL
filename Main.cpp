@@ -169,7 +169,7 @@ int main() {
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-	/*
+	
 	Texture::activate_tex_unit(7);
 	t_1.bind_texture();
 	t_1.bind_image_2D(0);
@@ -182,9 +182,9 @@ int main() {
 	rot.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-	*/
+	
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-	/*
+	
 	Texture dwt_mat_inv = Texture{};
 	Texture dwt_mat_inv_flip = Texture{};
 	Texture::activate_tex_unit(7);
@@ -199,9 +199,9 @@ int main() {
 	rot.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
+	
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-
+	
 	Texture::activate_tex_unit(0);
 	t_1.bind_texture();
 	t_1.bind_image_2D(0);
@@ -215,11 +215,11 @@ int main() {
 	input_img.bind_texture();
 	input_img.bind_image_2D(2);
 
-	compute_prog.use_shader_prog();
+	test_comp.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	
-
+	
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 	
 	Texture::activate_tex_unit(7);
@@ -253,7 +253,7 @@ int main() {
 	*/
 	//------------------------------------------------------------------------------------------TRANSPOSE
 	// 	string path_trans_v = "transpose.cs";
-	/*
+	
 	Texture::activate_tex_unit(0);
 	t_1.bind_texture();
 	t_1.bind_image_2D(0);
@@ -267,15 +267,15 @@ int main() {
 	input_img.bind_texture();
 	input_img.bind_image_2D(2);
 
-	compute_prog.use_shader_prog();
+	test_comp.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256 / 1), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
-	/*
+	
+	
 
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-
+	/*
 	Texture::activate_tex_unit(7);
 	output_1.bind_texture();
 	output_1.bind_image_2D(0);
@@ -288,9 +288,9 @@ int main() {
 	rot.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
-	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 	*/
+	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
+	
 
 
 
@@ -326,7 +326,7 @@ int main() {
 
 		sh.use_shader_prog();
 		glActiveTexture(GL_TEXTURE7);
-		t_1.bind_texture();
+		input_img.bind_texture();
 
 		ShaderProgram::set_uniform(sh.ID, "filterTexture", (unsigned int)7);
 
@@ -335,7 +335,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 
-			//saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\DB_2_transform_matrix_1.png");
+			saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\DB_2_First_bad_synthesis_output_1.png");
 
 		}
 
