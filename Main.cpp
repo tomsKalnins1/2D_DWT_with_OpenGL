@@ -336,7 +336,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 
-			//saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\DB_2_idwt_first_pass_only_1.png");
+			saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\DB_2_idwt_successful_1.png");
 
 		}
 
