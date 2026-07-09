@@ -54,11 +54,11 @@ void main()
         pix_high_1 = vec4(h1[ind_right], h1[ind_right], h1[ind_right], 1.0);
     }
 
-     imageStore(dwt_mat, ivec2(w_id.x, 255 - th_id.y), pix_low_0);
-     imageStore(dwt_mat, ivec2(w_id.x + 128, 255 - th_id.y), pix_low_1);
+     imageStore(dwt_mat, ivec2(w_id.x, th_id.y), pix_low_0);
+     imageStore(dwt_mat, ivec2(w_id.x + 128, th_id.y), pix_low_1);
      
-     imageStore(dwt_mat, ivec2(w_id.x, 127 - th_id.y), pix_high_0);
-     imageStore(dwt_mat, ivec2(w_id.x + 128, 127 - th_id.y),pix_high_1);
+     imageStore(dwt_mat, ivec2(w_id.x, 128 + th_id.y), pix_high_0);
+     imageStore(dwt_mat, ivec2(w_id.x + 128, 128 + th_id.y),pix_high_1);
     
 
 

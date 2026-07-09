@@ -35,17 +35,17 @@ void main()
     int ind_left = ((a_0 % 256) + 256) % 256;
 
 
-         vec4 img = imageLoad(image_O, ivec2(i, 255 - th_id.y));
-         vec4 low = imageLoad(dwt, ivec2(i, 255 - w_id.x));
+         vec4 img = imageLoad(image_O, ivec2(i,th_id.y));
+         vec4 low = imageLoad(dwt, ivec2(i, w_id.x));
          low_c += img.x * low.x;
-         vec4 high = imageLoad(dwt, ivec2(i, 127 - w_id.x));
+         vec4 high = imageLoad(dwt, ivec2(i, 128 + w_id.x));
          high_c += img.x * high.x;
     }
     vec4 output_apprx = vec4(low_c, low_c, low_c, 1.0);
     vec4 output_det = vec4(high_c, high_c, high_c, 1.0);
     vec4 test_vec = vec4(1.0, 0.0, 0.0, 1.0);
-    imageStore(image_T, ivec2(w_id.x, 255 - th_id.y), output_apprx);
-    imageStore(image_T, ivec2(w_id.x + 128, 255 - th_id.y), output_det);
+    imageStore(image_T, ivec2(w_id.x, th_id.y), output_apprx);
+    imageStore(image_T, ivec2(w_id.x + 128, th_id.y), output_det);
 
    
 
