@@ -91,6 +91,7 @@ int main() {
 	Texture output_2 = Texture{};
 	//-------------------------------------gen DWT matrix 
 	ShaderProgram comp_dwt_matrix("generate_transform.glsl", 256, 1);
+	ShaderProgram comp_idwt_matrix("generate_inverse_transform.glsl", 256, 1);
 
 	Texture dwt_mat = Texture{};
 	Texture::activate_tex_unit(0);
@@ -237,7 +238,7 @@ int main() {
 	
 	//------------------------------------------------------------------------------------------TRANSPOSE
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-/*
+
 	Texture::activate_tex_unit(7);
 	input_img.bind_texture();
 	input_img.bind_image_2D(0);
@@ -250,7 +251,7 @@ int main() {
 	rot.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-	*/
+	
 	//------------------------------------------------------------------------------------------TRANSPOSE
 	// 	string path_trans_v = "transpose.cs";
 	
@@ -326,7 +327,7 @@ int main() {
 
 		sh.use_shader_prog();
 		glActiveTexture(GL_TEXTURE7);
-		input_img.bind_texture();
+		dwt_mat_inv.bind_texture();
 
 		ShaderProgram::set_uniform(sh.ID, "filterTexture", (unsigned int)7);
 
@@ -335,7 +336,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 
-			saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\DB_2_First_bad_synthesis_output_1.png");
+			saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\DB_2_IDWT_CIRCULAR_CONV_MATRIX.png");
 
 		}
 

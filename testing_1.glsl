@@ -29,6 +29,12 @@ void main()
     float high_c = 0.0;
 
     for(int i = 0; i < 256; i++){
+
+    int a_0 = (w_id.x * 2 + 1 - i);
+
+    int ind_left = ((a_0 % 256) + 256) % 256;
+
+
          vec4 img = imageLoad(image_O, ivec2(i, 255 - th_id.y));
          vec4 low = imageLoad(dwt, ivec2(i, 255 - w_id.x));
          low_c += img.x * low.x;
