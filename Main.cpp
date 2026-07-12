@@ -176,7 +176,6 @@ int main() {
 	t_1.bind_image_2D(0);
 
 	Texture::reset_to_base(input_img);
-	Texture::activate_tex_unit(8);
 	input_img.bind_texture();
 	input_img.bind_image_2D(1);
 
@@ -215,7 +214,7 @@ int main() {
 	Texture::activate_tex_unit(1);
 	input_img.bind_texture();
 	input_img.bind_image_2D(2);
-
+	
 	test_comp.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
@@ -292,8 +291,20 @@ int main() {
 	*/
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 	
+	//----------------------------------------GENERATE NOISE
+	ShaderProgram noise_comp("noise_0_comp_sh.glsl", 256, 1);
+	//ShaderProgram compute_prog_inv("haar_inv.cs", 256, 2);
+	Texture noise = Texture{};
+	
 
+	Texture::activate_tex_unit(0);
+	noise.bind_texture();
+	noise.bind_image_2D(0);
 
+	noise_comp.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(256), (unsigned int)ceil(256), 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	//----------------------------------------GENERATE NOISE
 
 
 	if (window == NULL) {
@@ -327,7 +338,7 @@ int main() {
 
 		sh.use_shader_prog();
 		glActiveTexture(GL_TEXTURE7);
-		input_img.bind_texture();
+		noise.bind_texture();
 
 		ShaderProgram::set_uniform(sh.ID, "filterTexture", (unsigned int)7);
 
@@ -336,7 +347,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 
-			saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\DB_2_idwt_successful_1.png");
+			//saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\DB_2_idwt_successful_1.png");
 
 		}
 
