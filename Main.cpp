@@ -347,7 +347,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 
-			//saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\DB_2_idwt_successful_1.png");
+			//saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\NRNG_glitch_1.png");
 
 		}
 
