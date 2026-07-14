@@ -103,6 +103,9 @@
     <None Include="noise_0_comp_sh.glsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="noise_1_comp_sh.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="CAMERAMAN_ORIGINAL.png">

@@ -4,6 +4,9 @@
 #include <string>
 #include <map>
 
+#include <thread>
+#include <mutex>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "stb/stb_image.h"
@@ -22,7 +25,13 @@
 
 #define M_PI 3.14159265358979323846
 
-using std::vector, std::string, std::cout, std::endl;
+using std::vector, std::string, std::cout, std::endl, std::mutex, std::thread;
+
+mutex m;
+
+
+
+
 namespace A {
 	int a = 100;
 }
@@ -42,6 +51,59 @@ void saveImg(string path) {
 	stbi_flip_vertically_on_write(true);
 	stbi_write_png(path.c_str(), 1024, 1024, 3, buffer.data(), stride);
 
+}
+mutex mut;
+
+float img_noise[256 * 256 * 4];
+float img_noise_1[256 * 256 * 4];
+
+
+void xor_shift(float& seed, int th_id) {
+	uint32_t int_ptr = reinterpret_cast<uintptr_t>(&seed);
+	int_ptr *= (th_id + 1);
+	int_ptr ^= int_ptr << 13;
+	int_ptr ^= int_ptr >> 17;
+	int_ptr ^= int_ptr << 5;
+
+	
+	img_noise[th_id ] = ((float)int_ptr) / 4294967295.0f;
+	img_noise[th_id + 1] = ((float)int_ptr) / 4294967295.0f;
+	img_noise[th_id + 2] = ((float)int_ptr) / 4294967295.0f;
+	img_noise[th_id + 3] = 1.0f;
+
+}
+
+void xor_shift_1(float& seed, int th_id) {
+	uint32_t int_ptr = reinterpret_cast<uintptr_t>(&seed);
+	int_ptr *= (th_id + 1);
+	int_ptr ^= int_ptr << 13;
+	int_ptr ^= int_ptr >> 17;
+	int_ptr ^= int_ptr << 5;
+
+
+	img_noise_1[th_id] = ((float)int_ptr) / 4294967295.0f;
+	img_noise_1[th_id + 1] = ((float)int_ptr) / 4294967295.0f;
+	img_noise_1[th_id + 2] = ((float)int_ptr) / 4294967295.0f;
+	img_noise_1[th_id + 3] = 1.0f;
+
+}
+
+void create_noise_0() {
+	for (int i = 0; i < 256 * 256; i++) {
+		xor_shift(img_noise[i * 4], i * 4);
+	//	thread t(xor_shift, std::ref(img_noise[i * 4]), i * 4);
+	//	t.join();
+	
+	}
+}
+void create_noise_1() {
+	for (int i = 0; i < 256 * 256; i++) {
+		xor_shift_1(img_noise_1[i * 4], i * 4);
+
+		//	thread t(xor_shift, std::ref(img_noise[i * 4]), i * 4);
+		//	t.join();
+
+	}
 }
 
 int main() {
@@ -93,6 +155,37 @@ int main() {
 	ShaderProgram comp_dwt_matrix("generate_transform.glsl", 256, 1);
 	ShaderProgram comp_idwt_matrix("generate_inverse_transform.glsl", 256, 1);
 
+
+	//------------------------------------NOISE TEXTURE
+
+	create_noise_0();
+	create_noise_1();
+
+	unsigned int ID;
+ 	glGenTextures(1, &ID);
+	cout << "NOISE TEXTURE id = " << ID << '\n';
+
+	glBindTexture(GL_TEXTURE_2D, ID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 256, 256, 0, GL_RGBA, GL_FLOAT, img_noise);
+
+	unsigned int ID_1;
+	glGenTextures(1, &ID_1);
+	cout << "NOISE TEXTURE id = " << ID_1 << '\n';
+
+	glBindTexture(GL_TEXTURE_2D, ID_1);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 256, 256, 0, GL_RGBA, GL_FLOAT, img_noise_1);
+
+
+
+	//------------------------------------NOISE TEXTURE
 	Texture dwt_mat = Texture{};
 	Texture::activate_tex_unit(0);
 	dwt_mat.bind_texture();
@@ -292,18 +385,31 @@ int main() {
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 	
 	//----------------------------------------GENERATE NOISE
+	
 	ShaderProgram noise_comp("noise_0_comp_sh.glsl", 256, 1);
 	//ShaderProgram compute_prog_inv("haar_inv.cs", 256, 2);
 	Texture noise = Texture{};
-	
+	Texture n_0 = Texture{};
+	Texture n_1 = Texture{};
+	n_0.ID = ID;
+	n_1.ID = ID_1;
 
 	Texture::activate_tex_unit(0);
+	n_0.bind_texture();
+	n_0.bind_image_2D(0);
+
+	Texture::activate_tex_unit(1);
+	n_0.bind_texture();
+	n_1.bind_image_2D(1);
+
+	Texture::activate_tex_unit(2);
 	noise.bind_texture();
-	noise.bind_image_2D(0);
+	noise.bind_image_2D(2);
 
 	noise_comp.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(256), (unsigned int)ceil(256), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	
 	//----------------------------------------GENERATE NOISE
 
 
@@ -339,7 +445,7 @@ int main() {
 		sh.use_shader_prog();
 		glActiveTexture(GL_TEXTURE7);
 		noise.bind_texture();
-
+		//glBindTexture(GL_TEXTURE_2D, ID_1);
 		ShaderProgram::set_uniform(sh.ID, "filterTexture", (unsigned int)7);
 
 		vao.bind_VAO();
@@ -347,7 +453,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 
-			//saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\NRNG_glitch_2.png");
+		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\NRNG_0_test.png");
 
 		}
 

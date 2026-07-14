@@ -168,6 +168,7 @@
     <None Include="haar_inv.cs" />
     <None Include="DB_2.cs" />
     <None Include="noise_0_comp_sh.glsl" />
+    <None Include="noise_1_comp_sh.glsl" />
     <None Include="shift_sides.glsl" />
     <None Include="source_img_frag.fs" />
     <None Include="testing_1.glsl" />
