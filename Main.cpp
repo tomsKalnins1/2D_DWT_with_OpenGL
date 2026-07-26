@@ -518,9 +518,10 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 
-		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\image_with_noise_GRNG.png");
+			saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\image_with_sorted_pixels.png");
 
 		}
+
 
 		glfwSwapBuffers(window);
 
