@@ -147,6 +147,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="bitonic_sort.txt">
+      <FileType>CppCode</FileType>
+    </None>
     <ClCompile Include="Wavelet_class.cpp" />
     <None Include="..\FourierTransform\Main.cpp" />
     <ClCompile Include="glad.c" />
@@ -163,6 +166,8 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
+    <None Include="add_noise_to_img.glsl" />
+    <None Include="bitonic_sort.glsl" />
     <None Include="generate_inverse_transform.glsl" />
     <None Include="generate_transform.glsl" />
     <None Include="haar_inv.cs" />

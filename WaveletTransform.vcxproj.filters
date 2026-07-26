@@ -106,6 +106,15 @@
     <None Include="noise_1_comp_sh.glsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="add_noise_to_img.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="bitonic_sort.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="bitonic_sort.txt">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="CAMERAMAN_ORIGINAL.png">

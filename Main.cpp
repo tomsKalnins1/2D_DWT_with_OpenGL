@@ -14,6 +14,7 @@
 #include <glm/glm/glm.hpp>
 #include <glm/glm/gtc/matrix_transform.hpp>
 #include <glm/glm/gtc/type_ptr.hpp>
+#include <algorithm>
 
 #include "ShaderProgram.h"
 
@@ -155,14 +156,13 @@ int main() {
 	ShaderProgram comp_dwt_matrix("generate_transform.glsl", 256, 1);
 	ShaderProgram comp_idwt_matrix("generate_inverse_transform.glsl", 256, 1);
 
-
 	//------------------------------------NOISE TEXTURE
 
 	create_noise_0();
 	create_noise_1();
 
 	unsigned int ID;
- 	glGenTextures(1, &ID);
+	glGenTextures(1, &ID);
 	cout << "NOISE TEXTURE id = " << ID << '\n';
 
 	glBindTexture(GL_TEXTURE_2D, ID);
@@ -186,6 +186,78 @@ int main() {
 
 
 	//------------------------------------NOISE TEXTURE
+	// 
+	//---------------------------------------------------BITONIC SORT
+
+	ShaderProgram bitonic_sort_comp("bitonic_sort.glsl", 256, 1);
+	//ShaderProgram compute_prog_inv("haar_inv.cs", 256, 2);
+
+	
+	Texture sorted = Texture{};
+	
+
+	Texture::activate_tex_unit(0);
+	input_img.bind_texture();
+	input_img.bind_image_2D(0);
+
+	Texture::activate_tex_unit(1);
+	sorted.bind_texture();
+	sorted.bind_image_2D(1);
+
+	bitonic_sort_comp.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+	//---------------------------------------------------BITONIC SORT
+
+	//----------------------------------------GENERATE NOISE
+
+	ShaderProgram noise_comp("noise_0_comp_sh.glsl", 256, 1);
+	//ShaderProgram compute_prog_inv("haar_inv.cs", 256, 2);
+	Texture noise = Texture{};
+	Texture n_0 = Texture{};
+	Texture n_1 = Texture{};
+	n_0.ID = ID;
+	n_1.ID = ID_1;
+
+	Texture::activate_tex_unit(0);
+	n_0.bind_texture();
+	n_0.bind_image_2D(0);
+
+	Texture::activate_tex_unit(1);
+	n_0.bind_texture();
+	n_1.bind_image_2D(1);
+
+	Texture::activate_tex_unit(2);
+	noise.bind_texture();
+	noise.bind_image_2D(2);
+
+	noise_comp.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(256), (unsigned int)ceil(256), 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+	//----------------------------------------GENERATE NOISE
+
+	//------------------------------------ADD NOISE
+	ShaderProgram add_noise("add_noise_to_img.glsl", 256, 1);
+	Texture image_0(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
+	Texture noised = Texture{};
+	Texture::activate_tex_unit(0);
+	image_0.bind_texture();
+	image_0.bind_image_2D(0);
+
+	Texture::activate_tex_unit(1);
+	noise.bind_texture();
+	noise.bind_image_2D(1);
+
+	Texture::activate_tex_unit(2);
+	noised.bind_texture();
+	noised.bind_image_2D(2);
+
+	add_noise.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(256), (unsigned int)ceil(256), 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
 	Texture dwt_mat = Texture{};
 	Texture::activate_tex_unit(0);
 	dwt_mat.bind_texture();
@@ -277,7 +349,7 @@ int main() {
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-	
+	/*
 	Texture dwt_mat_inv = Texture{};
 	Texture dwt_mat_inv_flip = Texture{};
 	Texture::activate_tex_unit(7);
@@ -384,33 +456,10 @@ int main() {
 	*/
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 	
-	//----------------------------------------GENERATE NOISE
-	
-	ShaderProgram noise_comp("noise_0_comp_sh.glsl", 256, 1);
-	//ShaderProgram compute_prog_inv("haar_inv.cs", 256, 2);
-	Texture noise = Texture{};
-	Texture n_0 = Texture{};
-	Texture n_1 = Texture{};
-	n_0.ID = ID;
-	n_1.ID = ID_1;
 
-	Texture::activate_tex_unit(0);
-	n_0.bind_texture();
-	n_0.bind_image_2D(0);
 
-	Texture::activate_tex_unit(1);
-	n_0.bind_texture();
-	n_1.bind_image_2D(1);
 
-	Texture::activate_tex_unit(2);
-	noise.bind_texture();
-	noise.bind_image_2D(2);
 
-	noise_comp.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(256), (unsigned int)ceil(256), 1);
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-	
-	//----------------------------------------GENERATE NOISE
 
 
 	if (window == NULL) {
@@ -433,6 +482,22 @@ int main() {
 	cout << "map : " << result["str"];
 	cout << "namespace A::a = " << A::a << '\n';
 	cout << ha << "This is haar";
+	unsigned int num_cores = std::thread::hardware_concurrency();
+	cout << "NUM AVAILABLE CORES ON MY CPU = " << num_cores << '\n';
+	uint32_t rands[12];
+
+	auto random_v = [&rands](uint32_t seed, int index) {seed ^= seed << 17; seed ^= seed >> 13; seed ^= seed << 5; rands[index] = seed; cout << "Rand_val : " << seed << '\n'; return seed; };
+	vector<thread> thrds(num_cores);
+	for (int i = 0; i < 12; i++) {
+		thrds[i] = thread(random_v, i + 1, i);
+		
+	}
+	for_each(thrds.begin(), thrds.end(), [](std::thread& t) {
+		t.join();
+	});
+
+
+	//cout << "RANDOM VALUE FORM LAMBDA : " << random_v(128) << '\n';
 
 
 
@@ -444,7 +509,7 @@ int main() {
 
 		sh.use_shader_prog();
 		glActiveTexture(GL_TEXTURE7);
-		noise.bind_texture();
+		sorted.bind_texture();
 		//glBindTexture(GL_TEXTURE_2D, ID_1);
 		ShaderProgram::set_uniform(sh.ID, "filterTexture", (unsigned int)7);
 
@@ -453,7 +518,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 
-		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\NRNG_0_test.png");
+		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\image_with_noise_GRNG.png");
 
 		}
 
