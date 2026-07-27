@@ -115,6 +115,12 @@
     <None Include="bitonic_sort.txt">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Sort_subband_HH_lvl_1.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Soft_thresholding_remove_noise.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="CAMERAMAN_ORIGINAL.png">

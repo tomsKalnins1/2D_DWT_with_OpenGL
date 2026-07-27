@@ -1,12 +1,14 @@
 #version 460 core
 
-layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
 
 
 layout(rgba32f, binding = 0) uniform image2D image_O;
 layout(rgba32f, binding = 1) uniform image2D image_T;
 
-shared float input_b[256];
+shared float input_b[128];
+shared float medians_of_rows[128];
+
 
 void synchronize(){
 
@@ -17,10 +19,10 @@ void synchronize(){
 void store_all_from_img_to_arr(){
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
     int th_ind_l = th_id.x;
-    int th_ind_r = th_id.x + 128;
+    int th_ind_r = th_id.x + 64;
 
-    vec4 pix_l = imageLoad(image_O, ivec2(th_id));
-    vec4 pix_r = imageLoad(image_O, ivec2(th_id.x + 128, th_id.y));
+    vec4 pix_l = imageLoad(image_O, ivec2(th_id.x + 128, th_id.y + 128));
+    vec4 pix_r = imageLoad(image_O, ivec2(th_id.x + 128 + 64, th_id.y + 128));
 
     input_b[th_ind_l] = pix_l.x;
     input_b[th_ind_r] = pix_r.x;
@@ -29,7 +31,7 @@ void store_all_from_img_to_arr(){
 void store_all_from_arr_to_img(){
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
     int th_ind_l = th_id.x;
-    int th_ind_r = th_id.x + 128;
+    int th_ind_r = th_id.x + 64;
 
     float pix_l_val = input_b[th_ind_l];
     float pix_r_val = input_b[th_ind_r];
@@ -37,8 +39,8 @@ void store_all_from_arr_to_img(){
     vec4 pix_l = vec4(pix_l_val, pix_l_val, pix_l_val, 1.0);
     vec4 pix_r = vec4(pix_r_val, pix_r_val, pix_r_val, 1.0);
     
-    imageStore(image_T, ivec2(th_id), pix_l);
-    imageStore(image_T, ivec2(th_id.x + 128, th_id.y), pix_r);
+    imageStore(image_T, ivec2(th_id.x + 128, th_id.y + 128), pix_l);
+    imageStore(image_T, ivec2(th_id.x + 128 + 64, th_id.y + 128), pix_r);
 
 }
 
@@ -95,7 +97,7 @@ void swap_val(int left, int right){
 void main()
 {
 store_all_from_img_to_arr();
-bitonic_sort_1(0, 256);
+bitonic_sort_1(0, 128);
 //bitonic_seq(0, 255, 1);
 synchronize();
 store_all_from_arr_to_img();

@@ -175,6 +175,8 @@
     <None Include="noise_0_comp_sh.glsl" />
     <None Include="noise_1_comp_sh.glsl" />
     <None Include="shift_sides.glsl" />
+    <None Include="Soft_thresholding_remove_noise.glsl" />
+    <None Include="Sort_subband_HH_lvl_1.glsl" />
     <None Include="source_img_frag.fs" />
     <None Include="testing_1.glsl" />
     <None Include="transpose.cs" />
