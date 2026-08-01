@@ -151,7 +151,7 @@
       <FileType>CppCode</FileType>
     </None>
     <ClCompile Include="Wavelet_class.cpp" />
-    <None Include="..\FourierTransform\Main.cpp" />
+    <None Include="..\FourierTransform\FFT_main.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp">
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpplatest</LanguageStandard>
@@ -166,21 +166,18 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
-    <None Include="add_noise_to_img.glsl" />
+    <None Include="add_noise_to_image.glsl" />
     <None Include="bitonic_sort.glsl" />
     <None Include="generate_inverse_transform.glsl" />
     <None Include="generate_transform.glsl" />
-    <None Include="haar_inv.cs" />
-    <None Include="DB_2.cs" />
-    <None Include="noise_0_comp_sh.glsl" />
-    <None Include="noise_1_comp_sh.glsl" />
-    <None Include="shift_sides.glsl" />
+    <None Include="Box_Muller_noise_NRNG.glsl" />
     <None Include="Soft_thresholding_remove_noise.glsl" />
-    <None Include="Sort_subband_HH_lvl_1.glsl" />
-    <None Include="source_img_frag.fs" />
-    <None Include="testing_1.glsl" />
-    <None Include="transpose.cs" />
-    <None Include="vert.vs" />
+    <None Include="Soft_thresholding_remove_noise_LOCAL.glsl" />
+    <None Include="Sort_subband_LOCAL_lvl_1.glsl" />
+    <None Include="display_DWT.fs" />
+    <None Include="apply_DWT_IDT_matrix.glsl" />
+    <None Include="transpose.glsl" />
+    <None Include="vertex_shader.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderProgram.h" />

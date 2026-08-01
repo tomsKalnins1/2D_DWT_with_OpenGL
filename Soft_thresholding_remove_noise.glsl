@@ -5,6 +5,7 @@ layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 
 layout(rgba32f, binding = 0) uniform image2D DWT_coeffs;
 layout(rgba32f, binding = 1) uniform image2D sorted_HH;
+layout(rgba32f, binding = 2) uniform image2D Tn_value;
 
 shared float medians_of_rows[128];
 shared float median_of_HH = 0.0;
@@ -96,8 +97,8 @@ void set_subband_median(){
 
     if(th_id.x == 0){
         
-        float mid_left = medians_of_rows[128 / 2 - 1];
-        float mid_right = medians_of_rows[128 / 2];
+        float mid_left = medians_of_rows[128/2  - 5];
+        float mid_right = medians_of_rows[128/2 + 5];
 
         median_of_HH = (mid_left + mid_right) / 2.0;
 
@@ -180,8 +181,8 @@ void set_standard_dev_HH(){
         
         }
 
-        //standard_dev_HH = sqrt(sum);
-        standard_dev_HH = 1.0;
+        standard_dev_HH = sqrt(sum / 128.0);
+
     }
 }
 
@@ -191,8 +192,8 @@ void set_Tn_threshold(){
     
     if(th_id.x == 0){
         
-        Tn_threshold = scale_parameter * variance_of_noise / (standard_dev_HH);
-       // Tn_threshold = scale_parameter * 500.0 / (standard_dev_HH);
+        Tn_threshold = scale_parameter * variance_of_noise/ (standard_dev_HH);
+       //Tn_threshold = 0.0;
     
     }
 
@@ -204,7 +205,7 @@ void apply_threshold(){
 
    for(int i = 0; i < 128; i++){
     
-        vec4 pix = imageLoad(DWT_coeffs, ivec2(th_id.x + 128 + i, th_id.x + 128));
+        vec4 pix = imageLoad(DWT_coeffs, ivec2(128 + i, th_id.x + 128));
         float pix_x = pix.x;
         float new_pix = 0.0;
         float sign = 0.0;
@@ -216,16 +217,103 @@ void apply_threshold(){
         }
         
         new_pix = sign * max(0.0, abs(pix_x) - Tn_threshold);
+       // new_pix = sign * max(0.0, abs(pix_x) - 10.0);
         vec4 soft_th = vec4(new_pix, new_pix, new_pix, 1.0);
+      //  vec4 soft_th = vec4(0.5, 0.5, 0.5, 1.0);
         vec4 test = vec4(pix_x, pix_x, pix_x, 1.0);
-        if(abs(pix_x) < 0.5){
-            test = vec4(0.0, 0.0, 0.0, 1.0);
+        if(abs(pix_x) < 0.1){
+          //  soft_th = vec4(0.0, 0.0, 0.0, 1.0);
         } 
-        imageStore(DWT_coeffs, ivec2(th_id.x + 128 + i, th_id.x + 128), soft_th);
+        imageStore(DWT_coeffs, ivec2(128 + i, th_id.x + 128), soft_th);
 
    }
     
 }
+
+void apply_threshold_LH(){
+
+   ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
+
+   for(int i = 0; i < 128; i++){
+    
+        vec4 pix = imageLoad(DWT_coeffs, ivec2( i, th_id.x + 128));
+        float pix_x = pix.x;
+        float new_pix = 0.0;
+        float sign = 0.0;
+
+        if(pix_x < 0){
+            sign = -1.0;
+        }else{
+            sign = 1.0;
+        }
+        
+        new_pix = sign * max(0.0, abs(pix_x) - Tn_threshold);
+       // new_pix = sign * max(0.0, abs(pix_x) - 10.0);
+        vec4 soft_th = vec4(new_pix, new_pix, new_pix, 1.0);
+
+        vec4 test = vec4(pix_x, pix_x, pix_x, 1.0);
+        if(abs(pix_x) < 0.1){
+          //  soft_th = vec4(0.0, 0.0, 0.0, 1.0);
+        } 
+        imageStore(DWT_coeffs, ivec2( i, th_id.x + 128), soft_th);
+
+   }
+    
+}
+
+void apply_threshold_HL(){
+
+   ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
+
+   for(int i = 0; i < 128; i++){
+    
+        vec4 pix = imageLoad(DWT_coeffs, ivec2(128 + i, th_id.x));
+        float pix_x = pix.x;
+        float new_pix = 0.0;
+        float sign = 0.0;
+
+        if(pix_x < 0){
+            sign = -1.0;
+        }else{
+            sign = 1.0;
+        }
+        
+        new_pix = sign * max(0.0, abs(pix_x) - Tn_threshold);
+        //new_pix = sign * max(0.0, abs(pix_x) - 10.0);
+        vec4 soft_th = vec4(new_pix, new_pix, new_pix, 1.0);
+      //  vec4 soft_th = vec4(0.5, 0.5, 0.5, 1.0);
+        vec4 test = vec4(pix_x, pix_x, pix_x, 1.0);
+        if(abs(pix_x) < 0.1){
+          //  soft_th = vec4(0.0, 0.0, 0.0, 1.0);
+        } 
+        imageStore(DWT_coeffs, ivec2(128 + i, th_id.x), soft_th);
+
+   }
+    
+}
+
+void draw_Tn(){
+
+     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
+     if(th_id.x == 1){
+         uint Tn_bits =  floatBitsToInt(Tn_threshold);
+         uint pix_val = 0; 
+        for(int i = 0; i < 32; i++){
+            pix_val = ( Tn_bits >> i ) & 1;
+            float pix_val_fl = float(pix_val);
+            imageStore(Tn_value, ivec2(th_id.x + i, 255), vec4(pix_val_fl, pix_val_fl, pix_val_fl, 1.0));
+
+                    if(Tn_threshold == 0){
+         //   imageStore(Tn_value, ivec2(i, 255), vec4(1.0, 1.0, 1.0, 1.0));
+          //  imageStore(Tn_value, ivec2(i  + 1, 255), vec4(1.0, 1.0, 1.0, 1.0));
+          //  imageStore(Tn_value, ivec2(i + 2, 255), vec4(1.0, 1.0, 1.0, 1.0));
+        }
+        }
+
+
+     }
+}
+
 
 void main(){
 
@@ -249,5 +337,11 @@ void main(){
     set_Tn_threshold();
     synchronize();
     apply_threshold();
+    synchronize();
+    apply_threshold_HL();
+    synchronize();
+    apply_threshold_LH();
+    synchronize();
+    draw_Tn();
     synchronize();
 }

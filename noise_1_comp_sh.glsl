@@ -67,7 +67,7 @@ void main()
 
     vec4 p = vec4(vec3(rnd),1.0);
 
-   // float pix_NRNG = sqrt((-2.0) * log(p)) * cos(2.0 * pi * p); 
+   // float pix_NRNG = sqrt((-2.0) * log(p)) * cos(2.0 * pi * p * 10.0); 
     imageStore(image_O, ivec2(st.x, st.y), p);
    
    /*

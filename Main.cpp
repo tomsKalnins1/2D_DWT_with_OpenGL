@@ -133,8 +133,8 @@ int main() {
 
 	};
 
-	string v = "vert.vs";
-	string f = "source_img_frag.fs";
+	string v = "vertex_shader.vs";
+	string f = "display_DWT.fs";
 
 	ShaderProgram sh(v.c_str(), f.c_str());
 
@@ -153,7 +153,7 @@ int main() {
 	Texture output_1 = Texture{};
 	Texture output_2 = Texture{};
 	//-------------------------------------gen DWT matrix 
-	ShaderProgram comp_dwt_matrix("generate_transform.glsl", 256, 1);
+	
 	ShaderProgram comp_idwt_matrix("generate_inverse_transform.glsl", 256, 1);
 
 	//------------------------------------NOISE TEXTURE
@@ -191,7 +191,7 @@ int main() {
 
 	//----------------------------------------GENERATE NOISE
 
-	ShaderProgram noise_comp("noise_0_comp_sh.glsl", 256, 1);
+	ShaderProgram noise_comp("Box_Muller_noise_NRNG.glsl", 256, 1);
 	//ShaderProgram compute_prog_inv("haar_inv.cs", 256, 2);
 	Texture noise = Texture{};
 	Texture n_0 = Texture{};
@@ -218,7 +218,7 @@ int main() {
 	//----------------------------------------GENERATE NOISE
 
 	//------------------------------------ADD NOISE
-	ShaderProgram add_noise("add_noise_to_img.glsl", 256, 1);
+	ShaderProgram add_noise("add_noise_to_image.glsl", 256, 1);
 	Texture image_0(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
 	Texture noised = Texture{};
 	Texture::activate_tex_unit(0);
@@ -236,6 +236,10 @@ int main() {
 	add_noise.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(256), (unsigned int)ceil(256), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	//--------------------------------------------------GENERATE DWT MATRIX
+	bool do_DWT = false;
+	if(do_DWT){
+	ShaderProgram comp_dwt_matrix("generate_transform.glsl", 256, 1);
 
 	Texture dwt_mat = Texture{};
 	Texture::activate_tex_unit(0);
@@ -245,14 +249,11 @@ int main() {
 	comp_dwt_matrix.use_shader_prog();
 	glDispatchCompute((unsigned int)1, (unsigned int)128, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-	//-------------------------------------gen DWT matrix 
-	
-	ShaderProgram compute_prog("DB_2.cs", 256, 1);
-	//ShaderProgram compute_prog_inv("haar_inv.cs", 256, 2);
+	//--------------------------------------------------GENERATE DWT MATRIX
 
 
 	//--TEST
-	ShaderProgram test_comp("testing_1.glsl", 256, 1);
+	ShaderProgram test_comp("apply_DWT_IDT_matrix.glsl", 256, 1);
 	//ShaderProgram compute_prog_inv("haar_inv.cs", 256, 2);
 	Texture t_1 = Texture{};
 	Texture t_2 = Texture{};
@@ -277,7 +278,7 @@ int main() {
 
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 
-	string path_trans_v = "transpose.cs";
+	string path_trans_v = "transpose.glsl";
 	ShaderProgram rot(path_trans_v.c_str(), 256, 4);
 
 	Texture::activate_tex_unit(7);
@@ -329,8 +330,8 @@ int main() {
 	
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 		//---------------------------------------------------BITONIC SORT
-
-	ShaderProgram bitonic_sort_comp("Sort_subband_HH_lvl_1.glsl", 256, 1);
+	
+	ShaderProgram bitonic_sort_comp("Sort_subband_LOCAL_lvl_1.glsl", 256, 1);
 	//ShaderProgram compute_prog_inv("haar_inv.cs", 256, 2);
 
 
@@ -351,7 +352,11 @@ int main() {
 
 	//---------------------------------------------------BITONIC SORT
 	//---------------------------------------------------COMPUTE AND APPLY THRESHOLD
-	ShaderProgram soft_thr_comp("Soft_thresholding_remove_noise.glsl", 256, 1);
+	
+	
+	ShaderProgram soft_thr_comp("Soft_thresholding_remove_noise_LOCAL.glsl", 256, 1);
+
+	Texture test_Tn = Texture{};
 
 	Texture::activate_tex_unit(0);
 	noised.bind_texture();
@@ -361,10 +366,15 @@ int main() {
 	sorted_HH.bind_texture();
 	sorted_HH.bind_image_2D(1);
 
-	soft_thr_comp.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	Texture::activate_tex_unit(2);
+	test_Tn.bind_texture();
+	test_Tn.bind_image_2D(2);
 
+	soft_thr_comp.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(128), 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	
+	
 	//---------------------------------------------------COMPUTE AND APPLY THRESHOLD
 	
 	
@@ -474,8 +484,8 @@ int main() {
 	
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 	
-
-
+	}
+	
 
 	
 
@@ -536,7 +546,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 
-		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\image_remove_noise_soft_40.png");
+			saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\!_IMAGE_NOISED_0.png");
 
 		}
 

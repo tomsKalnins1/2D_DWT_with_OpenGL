@@ -16,19 +16,37 @@ void synchronize(){
     barrier();
 
 }
-void store_all_from_img_to_arr(){
+void store_all_from_img_to_arr(int L_H_0, int L_H_1){
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
     int th_ind_l = th_id.x;
     int th_ind_r = th_id.x + 64;
 
-    vec4 pix_l = imageLoad(image_O, ivec2(th_id.x + 128, th_id.y + 128));
-    vec4 pix_r = imageLoad(image_O, ivec2(th_id.x + 128 + 64, th_id.y + 128));
+    vec4 pix_l = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 pix_r = vec4(0.0, 0.0, 0.0, 1.0);
+
+        //HH subband
+        if(L_H_0 == 1 && L_H_1 == 1){
+           pix_l = imageLoad(image_O, ivec2(th_id.x + 128, th_id.y + 128));
+           pix_r = imageLoad(image_O, ivec2(th_id.x + 128 + 64, th_id.y + 128));
+        }
+
+        //LH subband
+        if(L_H_0 == 0 && L_H_1 == 1){
+            pix_l = imageLoad(image_O, ivec2(th_id.x, th_id.y + 128));
+            pix_r = imageLoad(image_O, ivec2(th_id.x + 64, th_id.y + 128));
+        }
+
+        //HL subband
+        if(L_H_0 == 1 && L_H_1 == 0){
+            pix_l = imageLoad(image_O, ivec2(th_id.x + 128, th_id.y));
+            pix_r = imageLoad(image_O, ivec2(th_id.x + 128 + 64, th_id.y));
+        }
 
     input_b[th_ind_l] = pix_l.x;
     input_b[th_ind_r] = pix_r.x;
 }
 
-void store_all_from_arr_to_img(){
+void store_all_from_arr_to_img(int L_H_0, int L_H_1){
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
     int th_ind_l = th_id.x;
     int th_ind_r = th_id.x + 64;
@@ -36,11 +54,28 @@ void store_all_from_arr_to_img(){
     float pix_l_val = input_b[th_ind_l];
     float pix_r_val = input_b[th_ind_r];
 
+
+
     vec4 pix_l = vec4(pix_l_val, pix_l_val, pix_l_val, 1.0);
     vec4 pix_r = vec4(pix_r_val, pix_r_val, pix_r_val, 1.0);
     
-    imageStore(image_T, ivec2(th_id.x + 128, th_id.y + 128), pix_l);
-    imageStore(image_T, ivec2(th_id.x + 128 + 64, th_id.y + 128), pix_r);
+        //HH subband
+        if(L_H_0 == 1 && L_H_1 == 1){
+            imageStore(image_T, ivec2(th_id.x + 128, th_id.y + 128), pix_l);
+            imageStore(image_T, ivec2(th_id.x + 128 + 64, th_id.y + 128), pix_r);
+        }
+
+        //LH subband
+        if(L_H_0 == 0 && L_H_1 == 1){
+            imageStore(image_T, ivec2(th_id.x, th_id.y + 128), pix_l);
+            imageStore(image_T, ivec2(th_id.x + 64, th_id.y + 128), pix_r);
+        }
+
+        //HL subband
+        if(L_H_0 == 1 && L_H_1 == 0){
+            imageStore(image_T, ivec2(th_id.x + 128, th_id.y), pix_l);
+            imageStore(image_T, ivec2(th_id.x + 128 + 64, th_id.y), pix_r);
+        }
 
 }
 
@@ -56,7 +91,7 @@ void swap_val(int left, int right){
         int th_ind = th_id.x;
         int s = end - start;
 
-        for(int k = 2; k <= s; k *= 2){
+        for(int k = 2; k <= s/16; k *= 2){
             
             for(int j = k/2; j > 0; j /= 2){
                 
@@ -96,12 +131,22 @@ void swap_val(int left, int right){
 
 void main()
 {
-store_all_from_img_to_arr();
+store_all_from_img_to_arr(0, 1);
 bitonic_sort_1(0, 128);
-//bitonic_seq(0, 255, 1);
 synchronize();
-store_all_from_arr_to_img();
+store_all_from_arr_to_img(0, 1);
+synchronize();
 
+store_all_from_img_to_arr(1, 0);
+bitonic_sort_1(0, 128);
+synchronize();
+store_all_from_arr_to_img(1, 0);
+synchronize();
+
+store_all_from_img_to_arr(1, 1);
+bitonic_sort_1(0, 128);
+synchronize();
+store_all_from_arr_to_img(1, 1);
 
 
         

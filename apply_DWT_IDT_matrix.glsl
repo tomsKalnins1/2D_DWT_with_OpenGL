@@ -47,7 +47,4 @@ void main()
     imageStore(image_T, ivec2(w_id.x, th_id.y), output_apprx);
     imageStore(image_T, ivec2(w_id.x + 128, th_id.y), output_det);
 
-   
-
-
 }

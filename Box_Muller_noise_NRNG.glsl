@@ -59,7 +59,7 @@ void main()
 
     
 
-   float pix_NRNG = sqrt((-2.0) * log(n_0.x)) * cos(2.0 * pi * n_1.x);
+   float pix_NRNG = sqrt((-2.0) * log(n_0.x)) * cos(2.0 * pi * n_1.x * 30.0);
    
    imageStore(NRNG, ivec2(st.x, st.y), vec4(pix_NRNG, pix_NRNG, pix_NRNG, 1.0));
    

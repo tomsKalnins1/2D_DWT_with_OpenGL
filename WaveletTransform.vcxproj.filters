@@ -70,43 +70,31 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\FourierTransform\Main.cpp">
+    <None Include="..\FourierTransform\FFT_main.cpp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="source_img_frag.fs">
+    <None Include="display_DWT.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="transpose.cs">
+    <None Include="transpose.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="vert.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="DB_2.cs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="haar_inv.cs">
+    <None Include="vertex_shader.vs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="generate_transform.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="testing_1.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="shift_sides.glsl">
+    <None Include="apply_DWT_IDT_matrix.glsl">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="generate_inverse_transform.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="noise_0_comp_sh.glsl">
+    <None Include="Box_Muller_noise_NRNG.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="noise_1_comp_sh.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="add_noise_to_img.glsl">
+    <None Include="add_noise_to_image.glsl">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="bitonic_sort.glsl">
@@ -115,10 +103,13 @@
     <None Include="bitonic_sort.txt">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Sort_subband_HH_lvl_1.glsl">
+    <None Include="Sort_subband_LOCAL_lvl_1.glsl">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Soft_thresholding_remove_noise.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Soft_thresholding_remove_noise_LOCAL.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
