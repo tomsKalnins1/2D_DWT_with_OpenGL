@@ -92,7 +92,7 @@ void set_local_means(int L_H_0, int L_H_1){
         float avg = 0.0;
 
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(sorted_HH, ivec2(128 + th_id.x * 8 + i, th_id.y + 128));
+            pix = imageLoad(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y + 128));
             avg += pix.x;
         }
         avg /= 8.0;
@@ -107,7 +107,7 @@ void set_local_means(int L_H_0, int L_H_1){
         float avg = 0.0;
 
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(sorted_HH, ivec2(th_id.x * 8 + i, th_id.y + 128));
+            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * 8 + i, th_id.y + 128));
             avg += pix.x;
         }
         avg /= 8.0;
@@ -122,7 +122,7 @@ void set_local_means(int L_H_0, int L_H_1){
         float avg = 0.0;
 
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(sorted_HH, ivec2(128 + th_id.x * 8 + i, th_id.y));
+            pix = imageLoad(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y));
             avg += pix.x;
         }
         avg /= 8.0;
@@ -144,7 +144,7 @@ void set_local_diviation_signal(int L_H_0, int L_H_1){
         float sum = 0.0;
 
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(sorted_HH, ivec2(128 + th_id.x * 8 + i, th_id.y + 128));
+            pix = imageLoad(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y + 128));
             sum += pow((pix.x - local_means[th_id.x]), 2.0);
         }
 
@@ -161,7 +161,7 @@ void set_local_diviation_signal(int L_H_0, int L_H_1){
         float sum = 0.0;
 
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(sorted_HH, ivec2(th_id.x * 8 + i, th_id.y + 128));
+            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * 8 + i, th_id.y + 128));
             sum += pow((pix.x - local_means[th_id.x]), 2.0);
         }
 
@@ -178,7 +178,7 @@ void set_local_diviation_signal(int L_H_0, int L_H_1){
         float sum = 0.0;
 
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(sorted_HH, ivec2(128 + th_id.x * 8 + i, th_id.y));
+            pix = imageLoad(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y));
             sum += pow((pix.x - local_means[th_id.x]), 2.0);
         }
 
@@ -340,7 +340,7 @@ void main(){
     synchronize();
 
 
-
+    /*
     get_local_medians(0, 1);
     synchronize();
     store_local_deviation_noise();
@@ -351,10 +351,13 @@ void main(){
     synchronize();
     set_local_Tn();
     synchronize();
+    */
     apply_Tn(0, 1);
     synchronize();
 
+  
 
+  /*
     get_local_medians(1, 0);
     synchronize();
     store_local_deviation_noise();
@@ -365,6 +368,7 @@ void main(){
     synchronize();
     set_local_Tn();
     synchronize();
+    */
     apply_Tn(1, 0);
     synchronize();
 
