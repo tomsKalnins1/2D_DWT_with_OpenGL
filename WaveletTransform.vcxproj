@@ -147,9 +147,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="apply_DWT_matrix_DYNAMIC.glsl" />
     <None Include="bitonic_sort.txt">
       <FileType>CppCode</FileType>
     </None>
+    <ClCompile Include="ApplyTransform.cpp" />
+    <ClCompile Include="GenerateTransform.cpp" />
     <ClCompile Include="Wavelet_class.cpp" />
     <None Include="..\FourierTransform\FFT_main.cpp" />
     <ClCompile Include="glad.c" />
@@ -171,6 +174,7 @@
     <None Include="generate_inverse_transform.glsl" />
     <None Include="generate_transform.glsl" />
     <None Include="Box_Muller_noise_NRNG.glsl" />
+    <None Include="generate_transform_DYNAMIC.glsl" />
     <None Include="Soft_thresholding_remove_noise.glsl" />
     <None Include="Soft_thresholding_remove_noise_LOCAL.glsl" />
     <None Include="Sort_subband_LOCAL_lvl_1.glsl" />

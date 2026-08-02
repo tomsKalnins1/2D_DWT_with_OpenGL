@@ -64,7 +64,7 @@ string ShaderSource::get_file_content(const char* file_path) {
 
 }
 
-
+/*
 string ShaderSource::set_compute_shader_values(string shader_source_file, int num_samples, int samples_per_processor) {
 
 	string shader_file = "";
@@ -85,3 +85,4 @@ string ShaderSource::set_compute_shader_values(string shader_source_file, int nu
 	return shader_source_file;
 
 }
+*/

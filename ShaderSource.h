@@ -18,7 +18,7 @@ class ShaderSource {
 
 	public:
 		unsigned int ID;
-		ShaderSource() = delete;
+		ShaderSource() {}
 		ShaderSource(const ShaderSource&) = delete;
 		ShaderSource& operator=(const ShaderSource&) = delete;
 		
@@ -28,8 +28,43 @@ class ShaderSource {
 
 		static string get_file_content(const char* path);
 
-		static string set_compute_shader_values(string source, int num_samples, int samples_per_processor);
+		virtual string set_compute_shader_values(string source) { return "";}
 		
+
+};
+
+class GenerateTransform : public ShaderSource {
+
+public:
+
+	int decomp_lvl;
+	int img_dimension_x;
+	int size_of_filter;
+
+	GenerateTransform() = delete;
+	GenerateTransform(const GenerateTransform&) = delete;
+	GenerateTransform& operator=(const GenerateTransform&) = delete;
+
+	GenerateTransform(string file_path, int decomposition_level, int img_dimension_x, int size_filter);
+
+	string set_compute_shader_values(string source) override;
+
+};
+
+class ApplyTransform : public ShaderSource {
+
+public:
+
+	int decomp_lvl;
+	int img_dimension_x;
+
+	ApplyTransform() = delete;
+	ApplyTransform(const GenerateTransform&) = delete;
+	ApplyTransform& operator=(const GenerateTransform&) = delete;
+
+	ApplyTransform(string file_path, int decomposition_level, int img_dimension_x);
+
+	string set_compute_shader_values(string source) override;
 
 };
 

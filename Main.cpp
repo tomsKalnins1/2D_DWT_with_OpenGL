@@ -237,10 +237,29 @@ int main() {
 	glDispatchCompute((unsigned int)ceil(256), (unsigned int)ceil(256), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	//--------------------------------------------------GENERATE DWT MATRIX
+	// 
+	//------------------------------------------------------------------------------GEN LEVEL 2 MATRIX
+	ShaderProgram lvl_2_dwt_comp("generate_transform_DYNAMIC.glsl", 2, 256, 4);
+	Texture lvl_2_dwt = Texture(GL_RGBA32F, GL_RGBA, "", 128, 128);
+
+	Texture::activate_tex_unit(0);
+	lvl_2_dwt.bind_texture();
+	lvl_2_dwt.bind_image_2D(0);
+
+	lvl_2_dwt_comp.use_shader_prog();
+	glDispatchCompute((unsigned int)1, (unsigned int)64, 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	//------------------------------------------------------------------------------GEN LEVEL 2 MATRIX
+	// 
+	// 
 	//--------------------------------------------------------------------------------------------DO DWT
+
+
 	
-	ShaderProgram comp_dwt_matrix("generate_transform.glsl", 256, 1);
+	ShaderProgram comp_dwt_matrix("generate_transform_DYNAMIC.glsl", 1, 256, 4);
 	ShaderProgram test_comp("apply_DWT_IDT_matrix.glsl", 256, 1);
+	ShaderProgram apply_mat("apply_DWT_matrix_DYNAMIC.glsl", 1, 256);
+
 	string path_trans_v = "transpose.glsl";
 	ShaderProgram rot(path_trans_v.c_str(), 256, 4);
 	ShaderProgram bitonic_sort_comp("Sort_subband_LOCAL_lvl_1.glsl", 256, 1);
@@ -251,6 +270,8 @@ int main() {
 	Texture dwt_mat_inv = Texture{};
 	Texture dwt_mat_inv_flip = Texture{};
 	Texture test_Tn = Texture{};
+	Texture t_1 = Texture{};
+	Texture t_2 = Texture{};
 
 	bool do_DWT = true;
 	if (do_DWT) {
@@ -261,7 +282,7 @@ int main() {
 		dwt_mat.bind_texture();
 		dwt_mat.bind_image_2D(0);
 
-		comp_dwt_matrix.use_shader_prog();
+		apply_mat.use_shader_prog();
 		glDispatchCompute((unsigned int)1, (unsigned int)128, 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		//--------------------------------------------------GENERATE DWT MATRIX
@@ -270,8 +291,7 @@ int main() {
 		//--TEST
 
 		//ShaderProgram compute_prog_inv("haar_inv.cs", 256, 2);
-		Texture t_1 = Texture{};
-		Texture t_2 = Texture{};
+
 
 		Texture::activate_tex_unit(0);
 		noised.bind_texture();
@@ -285,7 +305,7 @@ int main() {
 		t_1.bind_texture();
 		t_1.bind_image_2D(2);
 
-		test_comp.use_shader_prog();
+		apply_mat.use_shader_prog();
 		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -345,6 +365,8 @@ int main() {
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 			//---------------------------------------------------BITONIC SORT
 	}
+	//------------------------------------------LVL 2 DWT FORWARD
+		//------------------------------------------LVL 2 DWT FORWARD
 
 
 	//ShaderProgram compute_prog_inv("haar_inv.cs", 256, 2);
@@ -558,7 +580,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 
-			saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\!!_Tn_FROM_HH_ONLY_APPLIED_TO_ALL_SUBBANDS_0.png");
+			//saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\!!_COMMA_IN_POW_INSTEAD_OF_PERIOD_FOR_FLOAT_BUG.png");
 
 		}
 

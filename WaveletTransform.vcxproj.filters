@@ -45,6 +45,12 @@
     <ClCompile Include="Wavelet_class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GenerateTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplyTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderProgram.h">
@@ -110,6 +116,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Soft_thresholding_remove_noise_LOCAL.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="generate_transform_DYNAMIC.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="apply_DWT_matrix_DYNAMIC.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -29,6 +29,91 @@ ShaderProgram::ShaderProgram(const char* path_to_vert, const char* path_to_frag)
 
 
 }
+ShaderProgram::ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, int size_filter) {
+
+	GenerateTransform comp(file_path, decomposition_level, img_dimension_width, size_filter);
+	string source_code = comp.set_compute_shader_values(file_path);
+
+//	std::cout << "SHADER SOURCE : \n" << source_code << '\n';
+
+	const char* shader_source_char = source_code.c_str();
+
+
+	comp.ID = glCreateShader(GL_COMPUTE_SHADER);
+	glShaderSource(comp.ID, 1, &shader_source_char, NULL);
+	glCompileShader(comp.ID);
+
+	GLint compiled;
+	glGetShaderiv(comp.ID, GL_COMPILE_STATUS, &compiled);
+	if (!compiled) {
+		char errorLog[1024];
+		glGetShaderInfoLog(comp.ID, 1024, NULL, errorLog);
+		std::cout << ("COMPUTE SHADER " + file_path + " \n COMPILATION FAILED : \n") << errorLog << '\n';
+	}
+
+	ID = glCreateProgram();
+
+	glAttachShader(ID, comp.ID);
+	glLinkProgram(ID);
+	GLint linkSuccess = 0;
+	glGetProgramiv(ID, GL_LINK_STATUS, &linkSuccess);
+
+	if (linkSuccess == GL_FALSE) {
+
+		char infoLog[1024];
+		glGetProgramInfoLog(ID, 1024, NULL, infoLog);
+		std::cout << "PROGRAM LINK FAILED, PROBLEM WITH " << file_path << " :\n" << infoLog << std::endl;
+
+	}
+
+	glDeleteShader(comp.ID);
+
+
+}
+
+ShaderProgram::ShaderProgram(string file_path, int decomposition_level, int img_dimension_width) {
+
+	ApplyTransform comp(file_path, decomposition_level, img_dimension_width);
+	string source_code = comp.set_compute_shader_values(file_path);
+
+	std::cout << "SHADER SOURCE APPLY TRANSFORM : \n" << source_code << '\n';
+
+	const char* shader_source_char = source_code.c_str();
+
+
+	comp.ID = glCreateShader(GL_COMPUTE_SHADER);
+	glShaderSource(comp.ID, 1, &shader_source_char, NULL);
+	glCompileShader(comp.ID);
+
+	GLint compiled;
+	glGetShaderiv(comp.ID, GL_COMPILE_STATUS, &compiled);
+	if (!compiled) {
+		char errorLog[1024];
+		glGetShaderInfoLog(comp.ID, 1024, NULL, errorLog);
+		std::cout << (" APPLY TRANSFORM COMPUTE SHADER " + file_path + " \n COMPILATION FAILED : \n") << errorLog << '\n';
+	}
+
+	ID = glCreateProgram();
+
+	glAttachShader(ID, comp.ID);
+	glLinkProgram(ID);
+	GLint linkSuccess = 0;
+	glGetProgramiv(ID, GL_LINK_STATUS, &linkSuccess);
+
+	if (linkSuccess == GL_FALSE) {
+
+		char infoLog[1024];
+		glGetProgramInfoLog(ID, 1024, NULL, infoLog);
+		std::cout << "APPLY PROGRAM LINK FAILED, PROBLEM WITH " << file_path << " :\n" << infoLog << std::endl;
+
+	}
+
+	glDeleteShader(comp.ID);
+
+
+}
+
+
 
 ShaderProgram::ShaderProgram(const char* path_to_comp, int num_samples, int samples_per_processor) {
 
@@ -53,6 +138,7 @@ ShaderProgram::ShaderProgram(const char* path_to_comp, int num_samples, int samp
 
 
 }
+
 
 
 void ShaderProgram::use_shader_prog() {
