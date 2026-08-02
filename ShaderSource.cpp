@@ -22,6 +22,10 @@ ShaderSource::ShaderSource(string file_path, GLenum shader_type) {
 
 }
 
+ShaderSource::ShaderSource(string file_path) {
+	
+}
+
 ShaderSource::ShaderSource(string file_path, GLenum shader_type, int num_samples, int samples_per_processor) {
 	
 	string shader_source = get_file_content(file_path.c_str());

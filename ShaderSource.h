@@ -22,7 +22,7 @@ class ShaderSource {
 		ShaderSource(const ShaderSource&) = delete;
 		ShaderSource& operator=(const ShaderSource&) = delete;
 		
-
+		ShaderSource(string file_path);
 		ShaderSource(string file_path, GLenum shader_type);
 		ShaderSource(string file_path, GLenum shader_type, int num_samples, int samples_per_processor);
 

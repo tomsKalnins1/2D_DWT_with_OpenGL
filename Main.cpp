@@ -257,8 +257,8 @@ int main() {
 
 	
 	ShaderProgram comp_dwt_matrix("generate_transform_DYNAMIC.glsl", 1, 256, 4);
-	ShaderProgram test_comp("apply_DWT_IDT_matrix.glsl", 256, 1);
-	ShaderProgram apply_mat("apply_DWT_matrix_DYNAMIC.glsl", 1, 256);
+	ShaderProgram test_comp("apply_DWT_IDT_matrix.glsl");
+	//ShaderProgram apply_mat("apply_DWT_matrix_DYNAMIC.glsl", 1, 256);
 
 	string path_trans_v = "transpose.glsl";
 	ShaderProgram rot(path_trans_v.c_str(), 256, 4);
@@ -282,7 +282,7 @@ int main() {
 		dwt_mat.bind_texture();
 		dwt_mat.bind_image_2D(0);
 
-		apply_mat.use_shader_prog();
+		comp_dwt_matrix.use_shader_prog();
 		glDispatchCompute((unsigned int)1, (unsigned int)128, 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		//--------------------------------------------------GENERATE DWT MATRIX
@@ -305,7 +305,7 @@ int main() {
 		t_1.bind_texture();
 		t_1.bind_image_2D(2);
 
-		apply_mat.use_shader_prog();
+		test_comp.use_shader_prog();
 		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 

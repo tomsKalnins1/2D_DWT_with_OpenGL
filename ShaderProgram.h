@@ -28,6 +28,8 @@ public:
 	ShaderProgram(const char* compute_shader, int num_samples, int samples_per_processor);
 	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, int size_filter);
 	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width);
+	ShaderProgram(string file_path);
+
 	ShaderProgram() = delete;
 
 	void use_shader_prog();
