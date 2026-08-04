@@ -1,5 +1,7 @@
 #include "Texture.h"
 
+
+
 Texture::Texture(GLenum internal_format, GLenum format, string file_name, int w, int h) :internal_color_format{ internal_format },
 color_format{ format }, filename{ file_name }, width{ w }, height{ h } {
 
@@ -10,7 +12,7 @@ color_format{ format }, filename{ file_name }, width{ w }, height{ h } {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	
-	if (filename != "no_file") {
+	if (filename != "") {
 
 		stbi_set_flip_vertically_on_load(true);
 
@@ -22,6 +24,7 @@ color_format{ format }, filename{ file_name }, width{ w }, height{ h } {
 	else {
 
 		glTexImage2D(GL_TEXTURE_2D, 0, internal_color_format, width, height, 0, color_format, GL_FLOAT, NULL);
+		std::cout << "EMPTY TEXTURE CREATED \n";
 
 	}
 
@@ -29,27 +32,19 @@ color_format{ format }, filename{ file_name }, width{ w }, height{ h } {
 
 void Texture::reset_to_base(Texture& tex) {
 
-	glDeleteTextures(1, &tex.ID);
-	/*
-	*	SET ALL THE VALUES TO 0 OF PREVIOUS TEXTURE ONLY THEN MOVE A NEW INSTANCE IN ITS PLACE !!!
-	tex.ID = ;
-	height = ;
-	width = to_move.width;
-	numColorChannels = to_move.numColorChannels;
-	color_format = to_move.color_format;
-	internal_color_format = to_move.internal_color_format;
-	image = to_move.image;
-	to_move.image = nullptr;
-	filename = to_move.filename;
-	filename = to_move.filename;
-	*/
+	std::cout << "OLD TEX ID = " << tex.ID << '\n';
+	//glDeleteTextures(1, &tex.ID);
+	tex.ID = 0;
+	std::cout << "AFTER DELETE, BEFORE MOVE TEX ID = " << tex.ID << '\n';
+	
 	tex = Texture{};
-	std::cout << "where the tex is moved  = " << &tex << '\n';
+	std::cout << "NEW TEX ID = " << tex.ID << '\n';
+	//std::cout << "where the tex is moved  = " << &tex << '\n';
 }
 
 Texture& Texture::operator=(Texture&& to_move) {
 	std::cout << "move operator \n reference is = " <<  &to_move << '\n';
-
+	glDeleteTextures(1, &ID);
 	ID = to_move.ID;
 	height = to_move.height;
 	width = to_move.width;
@@ -57,16 +52,19 @@ Texture& Texture::operator=(Texture&& to_move) {
 	color_format = to_move.color_format;
 	internal_color_format = to_move.internal_color_format;
 	image = to_move.image;
+	
 	to_move.image = nullptr;
 	filename = to_move.filename;
 	filename = to_move.filename;
-
+	to_move.ID = 0;
+//	to_move.delete_texture();
+	
 	return *this;
 
 }
 
 Texture::Texture(Texture&& to_move) {
-
+	std::cout << "move OVERRIDE \n reference is = " << &to_move << '\n';
 	ID = to_move.ID;
 	height = to_move.height;
 	width = to_move.width;
@@ -76,7 +74,9 @@ Texture::Texture(Texture&& to_move) {
 	image = to_move.image;
 	filename = to_move.filename;
 	filename = to_move.filename;
-	to_move.delete_texture();
+	to_move.ID = 0;
+	to_move.image = nullptr;
+//	to_move.delete_texture();
 
 
 }

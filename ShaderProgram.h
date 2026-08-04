@@ -23,9 +23,9 @@ public:
 
 	unsigned int ID;
 
-	ShaderProgram(const char* vertex_shader, const char* fragment_shader);
+	ShaderProgram(string vertex_shader, string fragment_shader);
 	//ShaderProgram(const char* compute_shader, int num_samples, int samples_per_processor);
-	ShaderProgram(const char* compute_shader, int num_samples, int samples_per_processor);
+//	ShaderProgram(string file_path, int num_samples, int samples_per_processor);
 	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, int size_filter);
 	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width);
 	ShaderProgram(string file_path);

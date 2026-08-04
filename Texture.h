@@ -11,7 +11,7 @@ using std::string;
 class Texture{
 
 public:
-	unsigned int ID;
+	unsigned int ID = 0;
 	int height;
 	int width;
 	int numColorChannels;
@@ -26,9 +26,15 @@ public:
 	Texture operator=(const Texture&) = delete;
 	Texture(const Texture&) = delete;
 
-	
+	~Texture(){
+		std::cout << "DELETE CALLED ! \n";
+		if (ID != 0)
+			glDeleteTextures(1, &ID);
 
-	Texture(GLenum internal_format = GL_RGBA32F, GLenum format = GL_RGBA, string file_name = "no_file", int width = 256, int height = 256);
+
+	}
+
+	Texture(GLenum internal_format = GL_RGBA32F, GLenum format = GL_RGBA, string file_name = "", int width = 256, int height = 256);
 	
 	void bind_texture();
 

@@ -1,6 +1,6 @@
 #version 460 core
 
-layout(local_size_x = 16, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 8, local_size_y = 1, local_size_z = 1) in;
 
 
 layout(rgba32f, binding = 0) uniform image2D DWT_coeffs;
@@ -8,18 +8,18 @@ layout(rgba32f, binding = 1) uniform image2D sorted_HH;
 layout(rgba32f, binding = 2) uniform image2D Tn_value;
 
 
-shared float scale_parameter = 1.7320; // this is at level 1 decomposition
+shared float scale_parameter = 1.0; // this is at level 2 decomposition
 
 
-shared float local_medians[16];
-shared float local_deviation_noise[16];
+shared float local_medians[8];
+shared float local_deviation_noise[8];
 
-shared float local_diviation_signal[16];
-shared float local_Tn[16];
+shared float local_diviation_signal[8];
+shared float local_Tn[8];
 
-shared float local_means[16];
+shared float local_means[8];
 
-const float scale_parameter_beta = 3.3166247; // this is at level 1 decomposition
+const float scale_parameter_beta = 3.0; // this is at level 2 decomposition
 
 shared float radicands_for_full_std[128];
 shared float Tn_threshold = 0.0;
@@ -42,10 +42,10 @@ void get_local_medians(int L_H_0, int L_H_1){
     vec4 pix_r = vec4(0.0, 0.0, 0.0, 1.0);
 
     //HH subband
-    if(L_H_0 == 1 && L_H_1 == 1 && th_id.x < 16){
+    if(L_H_0 == 1 && L_H_1 == 1 ){
 
-       pix_l = imageLoad(sorted_HH, ivec2(128 + th_id.x * 8 + 4 - 1, th_id.y + 128));
-       pix_r = imageLoad(sorted_HH, ivec2(128 + th_id.x * 8 + 4, th_id.y + 128));
+       pix_l = imageLoad(sorted_HH, ivec2(64 + th_id.x * 8 + 4 - 1, th_id.y + 64));
+       pix_r = imageLoad(sorted_HH, ivec2(64 + th_id.x * 8 + 4, th_id.y + 64));
        float median = (pix_l.x + pix_r.x) / 2.0;
        local_medians[th_id.x] = median;
 
@@ -53,27 +53,29 @@ void get_local_medians(int L_H_0, int L_H_1){
 
     
     //LH subband
-    if(L_H_0 == 0 && L_H_1 == 1 && th_id.x < 16){
+    if(L_H_0 == 0 && L_H_1 == 1 ){
 
-       pix_l = imageLoad(sorted_HH, ivec2(th_id.x * 8 + 4 - 1, th_id.y + 128));
-       pix_r = imageLoad(sorted_HH, ivec2(th_id.x * 8 + 4, th_id.y + 128));
+       pix_l = imageLoad(sorted_HH, ivec2(th_id.x * 8 + 4 - 1, th_id.y + 64));
+       pix_r = imageLoad(sorted_HH, ivec2(th_id.x * 8 + 4, th_id.y + 64));
        float median = (pix_l.x + pix_r.x) / 2.0;
        local_medians[th_id.x] = median;
 
     }
 
     //HL subband
-    if(L_H_0 == 1 && L_H_1 == 0 && th_id.x < 16){
+    if(L_H_0 == 1 && L_H_1 == 0 ){
+    
+  
 
-       pix_l = imageLoad(sorted_HH, ivec2(128 + th_id.x * 8 + 4 - 1, th_id.y));
-       pix_r = imageLoad(sorted_HH, ivec2(128 + th_id.x * 8 + 4, th_id.y));
+       pix_l = imageLoad(sorted_HH, ivec2(64 + th_id.x * 8 + 4 - 1, th_id.y));
+       pix_r = imageLoad(sorted_HH, ivec2(64 + th_id.x * 8 + 4, th_id.y));
        float median = (pix_l.x + pix_r.x) / 2.0;
        local_medians[th_id.x] = median;
 
     }
 
 }
-//VARIATIANCE NOT DEVIATION!!!!
+//VARIANCE NOT DEVIATION!!!!
 void store_local_deviation_noise(){
 
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
@@ -87,12 +89,14 @@ void set_local_means(int L_H_0, int L_H_1){
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
 
     //HH subband
-    if(L_H_0 == 1 && L_H_1 == 1 && th_id.x < 16){
+    if(L_H_0 == 1 && L_H_1 == 1){
         vec4 pix = vec4(0.0, 0.0, 0.0, 1.0);
         float avg = 0.0;
 
+        //!!!!!!!! reduce 8 to 4 for lvl 2 ??
+        
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y + 128));
+            pix = imageLoad(DWT_coeffs, ivec2(64 + th_id.x * 8 + i, th_id.y + 64));
             avg += pix.x;
         }
         avg /= 8.0;
@@ -102,12 +106,12 @@ void set_local_means(int L_H_0, int L_H_1){
     }
 
     //LH subband
-    if(L_H_0 == 0 && L_H_1 == 1 && th_id.x < 16){
+    if(L_H_0 == 0 && L_H_1 == 1 ){
         vec4 pix = vec4(0.0, 0.0, 0.0, 1.0);
         float avg = 0.0;
 
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * 8 + i, th_id.y + 128));
+            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * 8 + i, th_id.y + 64));
             avg += pix.x;
         }
         avg /= 8.0;
@@ -117,12 +121,12 @@ void set_local_means(int L_H_0, int L_H_1){
     }
 
     //HL subband
-    if(L_H_0 == 1 && L_H_1 == 0 && th_id.x < 16){
+    if(L_H_0 == 1 && L_H_1 == 0 ){
         vec4 pix = vec4(0.0, 0.0, 0.0, 1.0);
         float avg = 0.0;
 
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y));
+            pix = imageLoad(DWT_coeffs, ivec2(64 + th_id.x * 8 + i, th_id.y));
             avg += pix.x;
         }
         avg /= 8.0;
@@ -138,13 +142,13 @@ void set_local_diviation_signal(int L_H_0, int L_H_1){
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
 
     //HH subband
-    if(L_H_0 == 1 && L_H_1 == 1 && th_id.x < 16){
+    if(L_H_0 == 1 && L_H_1 == 1 ){
 
         vec4 pix = vec4(0.0, 0.0, 0.0, 1.0);
         float sum = 0.0;
 
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y + 128));
+            pix = imageLoad(DWT_coeffs, ivec2(64 + th_id.x * 8 + i, th_id.y + 64));
             sum += pow((pix.x - local_means[th_id.x]), 2.0);
         }
 
@@ -155,13 +159,13 @@ void set_local_diviation_signal(int L_H_0, int L_H_1){
     }
 
     //LH subband
-    if(L_H_0 == 0 && L_H_1 == 1 && th_id.x < 16){
+    if(L_H_0 == 0 && L_H_1 == 1 ){
 
         vec4 pix = vec4(0.0, 0.0, 0.0, 1.0);
         float sum = 0.0;
 
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * 8 + i, th_id.y + 128));
+            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * 8 + i, th_id.y + 64));
             sum += pow((pix.x - local_means[th_id.x]), 2.0);
         }
 
@@ -172,13 +176,13 @@ void set_local_diviation_signal(int L_H_0, int L_H_1){
     }
 
     //HL subband
-    if(L_H_0 == 1 && L_H_1 == 0 && th_id.x < 16){
+    if(L_H_0 == 1 && L_H_1 == 0 ){
 
         vec4 pix = vec4(0.0, 0.0, 0.0, 1.0);
         float sum = 0.0;
 
         for(int i = 0; i < 8; i++){
-            pix = imageLoad(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y));
+            pix = imageLoad(DWT_coeffs, ivec2(64 + th_id.x * 8 + i, th_id.y));
             sum += pow((pix.x - local_means[th_id.x]), 2.0);
         }
 
@@ -208,7 +212,7 @@ void apply_Tn(int L_H_0, int L_H_1){
 
         for(int i = 0; i < 8; i++){
             
-            pix = imageLoad(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y + 128));
+            pix = imageLoad(DWT_coeffs, ivec2(64 + th_id.x * 8 + i, th_id.y + 64));
             float sign = 1.0;
             if(pix.x < 0){
                 sign = -1.0;
@@ -225,7 +229,7 @@ void apply_Tn(int L_H_0, int L_H_1){
                 pix_Tn = vec4(1.0, 0.0, 0.0, 1.0);
             }
 
-            imageStore(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y + 128), pix_Tn);
+            imageStore(DWT_coeffs, ivec2(64 + th_id.x * 8 + i, th_id.y + 64), pix_Tn);
  
         }
         
@@ -237,7 +241,7 @@ void apply_Tn(int L_H_0, int L_H_1){
 
         for(int i = 0; i < 8; i++){
             
-            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * 8 + i, th_id.y + 128));
+            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * 8 + i, th_id.y + 64));
             float sign = 1.0;
             if(pix.x < 0){
                 sign = -1.0;
@@ -254,7 +258,7 @@ void apply_Tn(int L_H_0, int L_H_1){
                 pix_Tn = vec4(1.0, 0.0, 0.0, 1.0);
             }
 
-            imageStore(DWT_coeffs, ivec2(th_id.x * 8 + i, th_id.y + 128), pix_Tn);
+            imageStore(DWT_coeffs, ivec2(th_id.x * 8 + i, th_id.y + 64), pix_Tn);
  
         }
         
@@ -266,7 +270,7 @@ void apply_Tn(int L_H_0, int L_H_1){
 
         for(int i = 0; i < 8; i++){
             
-            pix = imageLoad(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y));
+            pix = imageLoad(DWT_coeffs, ivec2(64 + th_id.x * 8 + i, th_id.y));
             float sign = 1.0;
             if(pix.x < 0){
                 sign = -1.0;
@@ -279,11 +283,9 @@ void apply_Tn(int L_H_0, int L_H_1){
 
 
             vec4 pix_Tn = vec4(new_val, new_val, new_val, 1.0);
-            if(local_deviation_noise[th_id.x] > 1.0){
-                pix_Tn = vec4(1.0, 0.0, 0.0, 1.0);
-            }
+     
 
-            imageStore(DWT_coeffs, ivec2(128 + th_id.x * 8 + i, th_id.y), pix_Tn);
+            imageStore(DWT_coeffs, ivec2(64 + th_id.x * 8 + i, th_id.y), pix_Tn);
  
         }
         

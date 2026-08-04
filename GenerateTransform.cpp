@@ -65,6 +65,8 @@ string GenerateTransform::set_compute_shader_values(string source_file_path) {
 	index = comp_shader_source.find(hp_filter_val);
 	comp_shader_source = comp_shader_source.replace(index, hp_filter_val.size(), high_pass);
 
+	std::cout << "GENERATE TRANSFORM DYNAMIC : \n" << comp_shader_source << '\n';
+
 	return comp_shader_source;
 
 }

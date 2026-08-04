@@ -31,7 +31,7 @@ void main()
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
     ivec2 w_id = ivec2(gl_LocalInvocationID.xy);
 
-
+    
     int a_0 = (th_id.y * 2 + 1 - w_id.x);
     int a_1 = (th_id.y * 2 + 1 - (w_id.x + 128));
     int ind_left = ((a_0 % 256) + 256) % 256;

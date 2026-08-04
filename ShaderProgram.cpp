@@ -1,16 +1,49 @@
 #include "ShaderProgram.h"
 
 
-ShaderProgram::ShaderProgram(const char* path_to_vert, const char* path_to_frag) {
+ShaderProgram::ShaderProgram(string path_to_vert, string path_to_frag) {
 
-	ShaderSource vert(path_to_vert, GL_VERTEX_SHADER);
-	ShaderSource frag(path_to_frag, GL_FRAGMENT_SHADER);
+	unsigned int vert_ID, frag_ID;
+
+	string shader_source_vertex = ShaderSource::get_file_content(path_to_vert.c_str());
+	const char* shader_source_vertex_char = shader_source_vertex.c_str();
+	vert_ID = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vert_ID, 1, &shader_source_vertex_char, NULL);
+	glCompileShader(vert_ID);
+
+	GLint compiled;
+	
+	glGetShaderiv(vert_ID, GL_COMPILE_STATUS, &compiled);
+	if (!compiled) {
+		char errorLog[1024];
+		glGetShaderInfoLog(vert_ID, 1024, NULL, errorLog);
+		std::cout << ("RENDER PIPELINE SHADER " + path_to_vert + " \n COMPILATION FAILED : \n") << errorLog << '\n';
+	}
+
+
+	string shader_source_fragment = ShaderSource::get_file_content(path_to_frag.c_str());
+
+	const char* shader_source_fragment_char = shader_source_fragment.c_str();
+
+	frag_ID = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(frag_ID, 1, &shader_source_fragment_char, NULL);
+	glCompileShader(frag_ID);
+
+	compiled = 0;
+
+	glGetShaderiv(frag_ID, GL_COMPILE_STATUS, &compiled);
+	if (!compiled) {
+		char errorLog[1024];
+		glGetShaderInfoLog(frag_ID, 1024, NULL, errorLog);
+		std::cout << ("RENDER PIPELINE SHADER " + path_to_frag + " \n COMPILATION FAILED : \n") << errorLog << '\n';
+	}
+	
 
 
 	ID = glCreateProgram();
 
-	glAttachShader(ID, vert.ID);
-	glAttachShader(ID, frag.ID);
+	glAttachShader(ID, vert_ID);
+	glAttachShader(ID, frag_ID);
 
 	glLinkProgram(ID);
 	GLint linkSuccess = 0;
@@ -24,11 +57,12 @@ ShaderProgram::ShaderProgram(const char* path_to_vert, const char* path_to_frag)
 
 	}
 
-	glDeleteShader(vert.ID);
-	glDeleteShader(frag.ID);
-
+	glDeleteShader(vert_ID);
+	glDeleteShader(frag_ID);
 
 }
+
+
 ShaderProgram::ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, int size_filter) {
 
 	GenerateTransform comp(file_path, decomposition_level, img_dimension_width, size_filter);
@@ -76,7 +110,7 @@ ShaderProgram::ShaderProgram(string file_path, int decomposition_level, int img_
 	ApplyTransform comp(file_path, decomposition_level, img_dimension_width);
 	string source_code = comp.set_compute_shader_values(file_path);
 
-	std::cout << "SHADER SOURCE APPLY TRANSFORM : \n" << source_code << '\n';
+	//std::cout << "SHADER SOURCE APPLY TRANSFORM : \n" << source_code << '\n';
 
 	const char* shader_source_char = source_code.c_str();
 
@@ -115,29 +149,29 @@ ShaderProgram::ShaderProgram(string file_path, int decomposition_level, int img_
 
 ShaderProgram::ShaderProgram(string path_to_comp) {
 
-	ShaderSource comp(path_to_comp);
+	unsigned int comp_ID;
 
 	string shader_source = ShaderSource::get_file_content(path_to_comp.c_str());
-	std::cout << "REGULAR SHADER PROGRAM CONSTRUCTOR CALL : \n" << shader_source << '\n';
+	//std::cout << "REGULAR SHADER PROGRAM CONSTRUCTOR CALL : \n" << shader_source << '\n';
 	const char* shader_source_char = shader_source.c_str();
 
 
 
-	comp.ID = glCreateShader(GL_COMPUTE_SHADER);
-	glShaderSource(comp.ID, 1, &shader_source_char, NULL);
-	glCompileShader(comp.ID);
+	comp_ID = glCreateShader(GL_COMPUTE_SHADER);
+	glShaderSource(comp_ID, 1, &shader_source_char, NULL);
+	glCompileShader(comp_ID);
 
 	GLint compiled;
-	glGetShaderiv(comp.ID, GL_COMPILE_STATUS, &compiled);
+	glGetShaderiv(comp_ID, GL_COMPILE_STATUS, &compiled);
 	if (!compiled) {
 		char errorLog[1024];
-		glGetShaderInfoLog(comp.ID, 1024, NULL, errorLog);
+		glGetShaderInfoLog(comp_ID, 1024, NULL, errorLog);
 		std::cout << ("COMPUTE SHADER " + path_to_comp + " \n COMPILATION FAILED : \n") << errorLog << '\n';
 	}
 
 	ID = glCreateProgram();
 
-	glAttachShader(ID, comp.ID);
+	glAttachShader(ID, comp_ID);
 	glLinkProgram(ID);
 	GLint linkSuccess = 0;
 	glGetProgramiv(ID, GL_LINK_STATUS, &linkSuccess);
@@ -150,15 +184,29 @@ ShaderProgram::ShaderProgram(string path_to_comp) {
 
 	}
 
-	glDeleteShader(comp.ID);
+	glDeleteShader(comp_ID);
 
 
 }
 
+/*
+ShaderProgram::ShaderProgram(string file_path, int num_samples, int samples_per_processor) {
 
-ShaderProgram::ShaderProgram(const char* path_to_comp, int num_samples, int samples_per_processor) {
+	string shader_source = ShaderSource::get_file_content(file_path.c_str());
 
-	ShaderSource comp(path_to_comp, GL_COMPUTE_SHADER, num_samples, samples_per_processor);
+	const char* shader_source_char = shader_source.c_str();
+
+	ID = glCreateShader(GL_COMPUTE_SHADER);
+	glShaderSource(ID, 1, &shader_source_char, NULL);
+	glCompileShader(ID);
+
+	GLint compiled;
+	glGetShaderiv(ID, GL_COMPILE_STATUS, &compiled);
+	if (!compiled) {
+		char errorLog[1024];
+		glGetShaderInfoLog(ID, 1024, NULL, errorLog);
+		std::cout << ("COMPUTE SHADER " + file_path + " \n COMPILATION FAILED : \n") << errorLog << '\n';
+	}
 
 	ID = glCreateProgram();
 
@@ -180,7 +228,7 @@ ShaderProgram::ShaderProgram(const char* path_to_comp, int num_samples, int samp
 
 }
 
-
+*/
 
 void ShaderProgram::use_shader_prog() {
 

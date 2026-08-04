@@ -22,11 +22,11 @@ class ShaderSource {
 		ShaderSource(const ShaderSource&) = delete;
 		ShaderSource& operator=(const ShaderSource&) = delete;
 		
-		ShaderSource(string file_path);
-		ShaderSource(string file_path, GLenum shader_type);
-		ShaderSource(string file_path, GLenum shader_type, int num_samples, int samples_per_processor);
+	//	ShaderSource(string file_path);
+	//	ShaderSource(string file_path, GLenum shader_type);
+	//	ShaderSource(string file_path, GLenum shader_type, int num_samples, int samples_per_processor);
 
-		static string get_file_content(const char* path);
+		static string get_file_content(string path);
 
 		virtual string set_compute_shader_values(string source) { return "";}
 		

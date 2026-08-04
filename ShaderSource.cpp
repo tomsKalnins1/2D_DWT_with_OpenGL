@@ -1,5 +1,6 @@
 #include "ShaderSource.h"
 
+/*
 ShaderSource::ShaderSource(string file_path, GLenum shader_type) {
 
 	string shader_source = get_file_content(file_path.c_str());
@@ -21,11 +22,9 @@ ShaderSource::ShaderSource(string file_path, GLenum shader_type) {
 
 
 }
+*/
 
-ShaderSource::ShaderSource(string file_path) {
-	
-}
-
+/*
 ShaderSource::ShaderSource(string file_path, GLenum shader_type, int num_samples, int samples_per_processor) {
 	
 	string shader_source = get_file_content(file_path.c_str());
@@ -45,11 +44,11 @@ ShaderSource::ShaderSource(string file_path, GLenum shader_type, int num_samples
 	}
 
 }
+*/
 
-
-string ShaderSource::get_file_content(const char* file_path) {
-
-	std::ifstream in(file_path, std::ios::binary);
+string ShaderSource::get_file_content(string file_path) {
+	
+	std::ifstream in(file_path.c_str(), std::ios::binary);
 
 	if (in) {
 		
