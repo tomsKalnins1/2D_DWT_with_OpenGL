@@ -764,7 +764,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 
-			saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\!!_LVL_1_2_FULL_DENOISE_LEAST_ARTEFACTS_0.png");
+		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\!!_LVL_1_2_FULL_DENOISE_LEAST_ARTEFACTS_1.png");
 
 		}
 

@@ -19,7 +19,7 @@ void synchronize(){
 void store_all_from_img_to_arr(int L_H_0, int L_H_1){
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
     int th_ind_l = th_id.x;
-    int th_ind_r = th_id.x + 64;
+    int th_ind_r = th_id.x + 32;
 
     vec4 pix_l = vec4(0.0, 0.0, 0.0, 1.0);
     vec4 pix_r = vec4(0.0, 0.0, 0.0, 1.0);
@@ -49,7 +49,7 @@ void store_all_from_img_to_arr(int L_H_0, int L_H_1){
 void store_all_from_arr_to_img(int L_H_0, int L_H_1){
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
     int th_ind_l = th_id.x;
-    int th_ind_r = th_id.x + 64;
+    int th_ind_r = th_id.x + 32;
 
     float pix_l_val = input_b[th_ind_l];
     float pix_r_val = input_b[th_ind_r];
