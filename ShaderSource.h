@@ -16,11 +16,16 @@ using std::string;
 
 class ShaderSource {
 
+
+
 	public:
 		unsigned int ID;
+		string path_to_shader = "";
+
 		ShaderSource() {}
-		ShaderSource(const ShaderSource&) = delete;
-		ShaderSource& operator=(const ShaderSource&) = delete;
+		ShaderSource(string path) : path_to_shader{ path } {}
+//		ShaderSource(const ShaderSource&) = delete;
+//		ShaderSource& operator=(const ShaderSource&) = delete;
 		
 	//	ShaderSource(string file_path);
 	//	ShaderSource(string file_path, GLenum shader_type);
@@ -42,8 +47,8 @@ public:
 	int size_of_filter;
 
 	GenerateTransform() = delete;
-	GenerateTransform(const GenerateTransform&) = delete;
-	GenerateTransform& operator=(const GenerateTransform&) = delete;
+//	GenerateTransform(const GenerateTransform&) = delete;
+//	GenerateTransform& operator=(const GenerateTransform&) = delete;
 
 	GenerateTransform(string file_path, int decomposition_level, int img_dimension_x, int size_filter);
 
@@ -59,12 +64,44 @@ public:
 	int img_dimension_x;
 
 	ApplyTransform() = delete;
-	ApplyTransform(const GenerateTransform&) = delete;
-	ApplyTransform& operator=(const GenerateTransform&) = delete;
+//	ApplyTransform(const GenerateTransform&) = delete;
+//	ApplyTransform& operator=(const GenerateTransform&) = delete;
 
 	ApplyTransform(string file_path, int decomposition_level, int img_dimension_x);
 
 	string set_compute_shader_values(string source) override;
+
+};
+
+class TransposeRegion : public ShaderSource {
+
+public:
+
+	int decomp_lvl;
+	int img_dimension_x;
+
+	TransposeRegion() = delete;
+
+	TransposeRegion(string path, int decomposition_lvl, int img_dimension_x);
+
+	string set_compute_shader_values(string source) override;
+
+
+};
+
+class SortSubbandLocal : public ShaderSource {
+
+public:
+	int decomp_lvl;
+	int img_dimension_x;
+	int num_partitions;
+
+	SortSubbandLocal() = delete;
+
+	SortSubbandLocal(string path, int decomposition_level, int img_dimension_x, int num_partiions);
+
+	string set_compute_shader_values(string source) override;
+
 
 };
 

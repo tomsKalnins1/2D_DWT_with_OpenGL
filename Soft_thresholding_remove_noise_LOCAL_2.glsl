@@ -21,10 +21,6 @@ shared float local_means[8];
 
 const float scale_parameter_beta = 3.0; // this is at level 2 decomposition
 
-shared float radicands_for_full_std[128];
-shared float Tn_threshold = 0.0;
-
-shared float standard_dev_HH = 0.0;
 
 
 void synchronize(){

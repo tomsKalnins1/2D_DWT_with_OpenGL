@@ -157,6 +157,8 @@
     <Text Include="transpose_region.glsl">
       <FileType>CppCode</FileType>
     </Text>
+    <ClCompile Include="SortSubbendLocal.cpp" />
+    <ClCompile Include="TransposeRegion.cpp" />
     <ClCompile Include="Wavelet_class.cpp" />
     <None Include="..\FourierTransform\FFT_main.cpp" />
     <ClCompile Include="glad.c" />
@@ -182,11 +184,13 @@
     <None Include="Soft_thresholding_remove_noise.glsl" />
     <None Include="Soft_thresholding_remove_noise_LOCAL.glsl" />
     <None Include="Soft_thresholding_remove_noise_LOCAL_2.glsl" />
+    <None Include="Sort_subband_LOCAL_DYNAMIC.glsl" />
     <None Include="Sort_subband_LOCAL_lvl_1.glsl" />
     <None Include="display_DWT.fs" />
     <None Include="apply_DWT_IDT_matrix.glsl" />
     <None Include="Sort_subband_LOCAL_lvl_2.glsl" />
     <None Include="transpose.glsl" />
+    <None Include="transpose_region_DYNAMIC.glsl" />
     <None Include="vertex_shader.vs" />
   </ItemGroup>
   <ItemGroup>

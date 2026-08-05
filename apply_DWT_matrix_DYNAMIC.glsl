@@ -25,6 +25,19 @@ void put_back_to_image_O(){
 
 }
 
+void store_back_to_input(){
+
+     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
+        
+     vec4 pix_l = imageLoad(image_T, ivec2(th_id.x, th_id.y));
+     vec4 pix_r = imageLoad(image_T, ivec2(th_id.x + NUM_INV, th_id.y));
+
+     imageStore(image_O, ivec2(th_id.x, th_id.y), pix_l);
+     imageStore(image_O, ivec2(th_id.x + NUM_INV, th_id.y), pix_r);
+     
+       
+}
+
 
 
 void main()
@@ -39,18 +52,22 @@ void main()
     for(int i = 0; i < WIDTH_IMG; i++){
 
          vec4 img = imageLoad(image_O, ivec2(i,th_id.y));
-         vec4 low = imageLoad(dwt, ivec2(i, w_id.x));
+         vec4 low = imageLoad(dwt, ivec2(i, th_id.x));
          low_c += img.x * low.x;
-         vec4 high = imageLoad(dwt, ivec2(i, NUM_INV + w_id.x));
+         vec4 high = imageLoad(dwt, ivec2(i, NUM_INV + th_id.x));
          high_c += img.x * high.x;
    
     }
+    synchronize();
     vec4 output_apprx = vec4(low_c, low_c, low_c, 1.0);
     vec4 output_det = vec4(high_c, high_c, high_c, 1.0);
     vec4 test_vec = vec4(1.0, 0.0, 0.0, 1.0);
-    imageStore(image_T, ivec2(w_id.x, th_id.y), output_apprx);
+    imageStore(image_T, ivec2(th_id.x, th_id.y), output_apprx);
 
-    imageStore(image_T, ivec2(w_id.x + NUM_INV, th_id.y), output_det);
+    imageStore(image_T, ivec2(th_id.x + NUM_INV, th_id.y), output_det);
+
+    store_back_to_input();
+    synchronize();
 
 
 }

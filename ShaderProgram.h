@@ -20,14 +20,25 @@ using std::string;
 class ShaderProgram {
 
 public:
+	enum type_of_shader {
+
+		TRANSPOSE_REGION = 0,
+		APPLY_TRANSFORM = 1,
+		APPLY_SOFT_THRESHOLD = 2,
+		GENERATE_TRANSFORM = 3,
+		SORT_SUBBAND = 4
+
+		
+
+	};
 
 	unsigned int ID;
 
 	ShaderProgram(string vertex_shader, string fragment_shader);
 	//ShaderProgram(const char* compute_shader, int num_samples, int samples_per_processor);
 //	ShaderProgram(string file_path, int num_samples, int samples_per_processor);
-	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, int size_filter);
-	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width);
+	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, int size_filter, type_of_shader type);
+	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, type_of_shader type);
 	ShaderProgram(string file_path);
 
 	ShaderProgram() = delete;

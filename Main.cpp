@@ -250,12 +250,12 @@ int main() {
 
 
 	//--------------------------------------------------------------------------------LVL 1 TRANSFORM AND APPLY TRANSFORM COMP_SH
-	ShaderProgram comp_dwt_matrix("generate_transform_DYNAMIC.glsl", 1, 256, 4);
+	ShaderProgram comp_dwt_matrix("generate_transform_DYNAMIC.glsl", 1, 256, 4, ShaderProgram::type_of_shader::GENERATE_TRANSFORM);
 
-	ShaderProgram apply_mat("apply_DWT_matrix_DYNAMIC.glsl", 1, 256);
+	ShaderProgram apply_mat("apply_DWT_matrix_DYNAMIC.glsl", 1, 256, ShaderProgram::type_of_shader::APPLY_TRANSFORM);
 	//--------------------------------------------------------------------------------LVL 1 TRANSFORM AND APPLY TRANSFORM COMP_SH
 	//--------------------------------------------------------------------------------LVL 2 TRANSFORM AND APPLY TRANSFORM COMP_SH
-	ShaderProgram comp_dwt_matrix_2("generate_transform_DYNAMIC.glsl", 2, 256, 4);
+	ShaderProgram comp_dwt_matrix_2("generate_transform_DYNAMIC.glsl", 2, 256, 4, ShaderProgram::type_of_shader::GENERATE_TRANSFORM);
 
 	Texture lvl_2_dwt = Texture(GL_RGBA32F, GL_RGBA, "", 128* 2, 128 * 2);
 	Texture lvl_2_dwt_inv = Texture(GL_RGBA32F, GL_RGBA, "", 128 * 2, 128 * 2);
@@ -270,12 +270,12 @@ int main() {
 
 
 	//ShaderProgram apply_mat_2("apply_DWT_matrix_DYNAMIC.glsl", 2, 256);
-	ShaderProgram apply_mat_2("apply_DWT_LVL_2.glsl");
+	ShaderProgram apply_mat_2("apply_DWT_matrix_DYNAMIC.glsl", 2, 256, ShaderProgram::type_of_shader::APPLY_TRANSFORM);
 	//--------------------------------------------------------------------------------LVL 2 TRANSFORM AND APPLY TRANSFORM COMP_SH
 	
 	ShaderProgram rot("transpose.glsl");
-	ShaderProgram bitonic_sort_comp("Sort_subband_LOCAL_lvl_1.glsl");
-	ShaderProgram bitonic_sort_comp_2("Sort_subband_LOCAL_lvl_2.glsl");
+	ShaderProgram bitonic_sort_comp("Sort_subband_LOCAL_DYNAMIC.glsl", 1, 256, 16, ShaderProgram::SORT_SUBBAND);
+	ShaderProgram bitonic_sort_comp_2("Sort_subband_LOCAL_DYNAMIC.glsl", 2, 256, 8, ShaderProgram::SORT_SUBBAND);
 	ShaderProgram soft_thr_comp("Soft_thresholding_remove_noise_LOCAL.glsl");
 	ShaderProgram soft_thr_comp_2("Soft_thresholding_remove_noise_LOCAL_2.glsl");
 
@@ -292,6 +292,8 @@ int main() {
 //------------------------------ TEST TRANSPOSE --------- TEST TRANSPOSE---- TEST TRANSPOSE 
 	
 	ShaderProgram transp_region("transpose_region.glsl");
+	ShaderProgram transp_region_dynamic_lvl_1("transpose_region_DYNAMIC.glsl", 1, 256, ShaderProgram::type_of_shader::TRANSPOSE_REGION);
+	ShaderProgram transp_region_dynamic_lvl_2("transpose_region_DYNAMIC.glsl", 2, 256, ShaderProgram::type_of_shader::TRANSPOSE_REGION);
 	/*
 	Texture::activate_tex_unit(7);
 	input_img.bind_texture();
@@ -302,11 +304,11 @@ int main() {
 	t_2.bind_texture();
 	t_2.bind_image_2D(1);
 
-	transp_region.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(128), 1);
+	transp_region_dynamic_lvl_1.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
 	*/
+	
 //------------------------------ TEST TRANSPOSE --------- TEST TRANSPOSE---- TEST TRANSPOSE
 
 
@@ -332,7 +334,8 @@ int main() {
 		dwt_mat.bind_texture();
 		dwt_mat.bind_image_2D(1);
 
-		Texture::activate_tex_unit(2);
+		Texture::reset_to_base(t_1);
+	//	Texture::activate_tex_unit(2);
 		t_1.bind_texture();
 		t_1.bind_image_2D(2);
 
@@ -344,23 +347,23 @@ int main() {
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 
 
-
 		Texture::activate_tex_unit(7);
-		t_1.bind_texture();
-		t_1.bind_image_2D(0);
-
-		Texture::reset_to_base(noised);
-		Texture::activate_tex_unit(8);
 		noised.bind_texture();
-		noised.bind_image_2D(1);
+		noised.bind_image_2D(0);
 
-		rot.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
+		Texture::reset_to_base(t_1);
+		Texture::activate_tex_unit(8);
+		t_1.bind_texture();
+		t_1.bind_image_2D(1);
+
+		transp_region_dynamic_lvl_1.use_shader_prog();
+		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
+		
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 
 
+		
 		Texture::activate_tex_unit(0);
 		noised.bind_texture();
 		noised.bind_image_2D(0);
@@ -377,26 +380,29 @@ int main() {
 		apply_mat.use_shader_prog();
 		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256 / 1), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
+		
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 		
 		Texture::activate_tex_unit(7);
-		t_1.bind_texture();
-		t_1.bind_image_2D(0);
-
-		Texture::reset_to_base(noised);
 		noised.bind_texture();
-		noised.bind_image_2D(1);
+		noised.bind_image_2D(0);
 
-		rot.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
+		Texture::reset_to_base(t_1);
+		Texture::activate_tex_unit(3);
+		t_1.bind_texture();
+		t_1.bind_image_2D(1);
+
+		transp_region_dynamic_lvl_1.use_shader_prog();
+		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 			//---------------------------------------------------BITONIC SORT
+
 	}
 	//------------------------------------------LVL 2 DWT FORWARD
-	bool do_lvl_2_dwt = true;
+	bool do_lvl_2_dwt = false;
+
 	if (do_lvl_2_dwt) {
 		Texture::activate_tex_unit(0);
 		noised.bind_texture();
@@ -406,7 +412,7 @@ int main() {
 		lvl_2_dwt.bind_texture();
 		lvl_2_dwt.bind_image_2D(1);
 
-	//	Texture::reset_to_base(t_1);
+		Texture::reset_to_base(t_1);
 		Texture::activate_tex_unit(2);
 		t_1.bind_texture();
 		t_1.bind_image_2D(2);
@@ -422,11 +428,12 @@ int main() {
 		noised.bind_image_2D(0);
 
 		Texture::reset_to_base(t_2);
+		Texture::activate_tex_unit(2);
 		t_2.bind_texture();
 		t_2.bind_image_2D(1);
 
-		transp_region.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(128), 1);
+		transp_region_dynamic_lvl_2.use_shader_prog();
+		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		
 		
@@ -441,7 +448,7 @@ int main() {
 		lvl_2_dwt.bind_texture();
 		lvl_2_dwt.bind_image_2D(1);
 
-	//	Texture::reset_to_base(t_1);
+		Texture::reset_to_base(t_2);
 		Texture::activate_tex_unit(2);
 		t_2.bind_texture();
 		t_2.bind_image_2D(2);
@@ -457,21 +464,23 @@ int main() {
 		noised.bind_image_2D(0);
 
 		Texture::reset_to_base(t_2);
+		Texture::activate_tex_unit(2);
 		t_2.bind_texture();
 		t_2.bind_image_2D(1);
 
-		transp_region.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(128), 1);
+		transp_region_dynamic_lvl_2.use_shader_prog();
+		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		
 	}
+
 	//-LVL 2 ---------TRANSPOSE
 
 	//-LVL 2 ---------SORT HH, LH, HL
 	
 	Texture::activate_tex_unit(0);
-	noised.bind_texture();
-	noised.bind_image_2D(0);
+	t_2.bind_texture();
+	t_2.bind_image_2D(0);
 
 	Texture::activate_tex_unit(1);
 	sorted_HH_2.bind_texture();
@@ -485,8 +494,8 @@ int main() {
 
 	
 	Texture::activate_tex_unit(0);
-	noised.bind_texture();
-	noised.bind_image_2D(0);
+	t_2.bind_texture();
+	t_2.bind_image_2D(0);
 
 	Texture::activate_tex_unit(1);
 	sorted_HH.bind_texture();
@@ -501,12 +510,12 @@ int main() {
 	
 	
 
-	bool do_threshold = true;
+	bool do_threshold = false ;
 
 	if (do_threshold) {
 		Texture::activate_tex_unit(0);
-		noised.bind_texture();
-		noised.bind_image_2D(0);
+		t_2.bind_texture();
+		t_2.bind_image_2D(0);
 
 		Texture::activate_tex_unit(1);
 		sorted_HH.bind_texture();
@@ -522,12 +531,12 @@ int main() {
 		
 	}
 
-	bool do_threshold_2 = true;
+	bool do_threshold_2 = false;
 
 	if (do_threshold_2) {
 		Texture::activate_tex_unit(0);
-		noised.bind_texture();
-		noised.bind_image_2D(0);
+		t_2.bind_texture();
+		t_2.bind_image_2D(0);
 
 		Texture::activate_tex_unit(1);
 		sorted_HH_2.bind_texture();
@@ -547,7 +556,7 @@ int main() {
 	//---------------------------------------------------COMPUTE AND APPLY THRESHOLD
 
 	//----------------------------------LVL 2 INVERSE DWT
-	bool do_IDWT_2 = true;
+	bool do_IDWT_2 = false;
 
 	if (do_IDWT_2) {
 
@@ -560,15 +569,15 @@ int main() {
 		lvl_2_dwt_inv.bind_texture();
 		lvl_2_dwt_inv.bind_image_2D(1);
 
-		transp_region.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(128), 1);
+		transp_region_dynamic_lvl_1.use_shader_prog();
+		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 
 		Texture::activate_tex_unit(0);
-		noised.bind_texture();
-		noised.bind_image_2D(0);
+		t_2.bind_texture();
+		t_2.bind_image_2D(0);
 
 		Texture::activate_tex_unit(8);
 		lvl_2_dwt_inv.bind_texture();
@@ -583,22 +592,21 @@ int main() {
 		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(128), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
-
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 		
 		Texture::activate_tex_unit(7);
-		noised.bind_texture();
-		noised.bind_image_2D(0);
-
-		Texture::reset_to_base(t_2);
-		Texture::activate_tex_unit(8);
 		t_2.bind_texture();
-		t_2.bind_image_2D(1);
+		t_2.bind_image_2D(0);
 
-		rot.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
+		Texture::reset_to_base(t_1);
+		Texture::activate_tex_unit(8);
+		t_1.bind_texture();
+		t_1.bind_image_2D(1);
+
+		transp_region_dynamic_lvl_2.use_shader_prog();
+		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-		
+	
 		//------------------------------------------------------------------------------------------TRANSPOSE
 
 		Texture::activate_tex_unit(0);
@@ -609,14 +617,15 @@ int main() {
 		lvl_2_dwt_inv.bind_texture();
 		lvl_2_dwt_inv.bind_image_2D(1);
 
-	//	Texture::reset_to_base(noised);
+		Texture::reset_to_base(noised);
 		Texture::activate_tex_unit(1);
-		input_img.bind_texture();
-		input_img.bind_image_2D(2);
+		noised.bind_texture();
+		noised.bind_image_2D(2);
 
 		apply_mat_2.use_shader_prog();
 		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(128), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
 		//---------------------------------------------------------------------------------------	TRANSPOSE
 		
 		Texture::activate_tex_unit(7);
@@ -628,21 +637,17 @@ int main() {
 		t_1.bind_texture();
 		t_1.bind_image_2D(1);
 
-		rot.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
+		transp_region_dynamic_lvl_2.use_shader_prog();
+		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		
-		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-
-
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 
 	}
 
 	//----------------------------------LVL 2 INVERSE DWT
 
-	bool do_IDWT = true;
+	bool do_IDWT = false;
 	if (do_IDWT) {
 
 	Texture::activate_tex_unit(7);
@@ -654,15 +659,15 @@ int main() {
 	dwt_mat_inv.bind_texture();
 	dwt_mat_inv.bind_image_2D(1);
 
-	rot.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
+	transp_region_dynamic_lvl_1.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 	
 	Texture::activate_tex_unit(0);
-	t_1.bind_texture();
-	t_1.bind_image_2D(0);
+	noised.bind_texture();
+	noised.bind_image_2D(0);
 
 	Texture::activate_tex_unit(8);
 	dwt_mat_inv.bind_texture();
@@ -681,32 +686,32 @@ int main() {
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 	
 	Texture::activate_tex_unit(7);
-	input_img.bind_texture();
-	input_img.bind_image_2D(0);
+	noised.bind_texture();
+	noised.bind_image_2D(0);
 
 	Texture::reset_to_base(t_1);
 	Texture::activate_tex_unit(8);
 	t_1.bind_texture();
 	t_1.bind_image_2D(1);
 
-	rot.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
+	transp_region_dynamic_lvl_1.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	
 	//------------------------------------------------------------------------------------------TRANSPOSE
 
 	Texture::activate_tex_unit(0);
-	t_1.bind_texture();
-	t_1.bind_image_2D(0);
+	noised.bind_texture();
+	noised.bind_image_2D(0);
 
 	Texture::activate_tex_unit(8);
 	dwt_mat_inv.bind_texture();
 	dwt_mat_inv.bind_image_2D(1);
 
-	Texture::reset_to_base(input_img);
+	Texture::reset_to_base(t_1);
 	Texture::activate_tex_unit(1);
-	input_img.bind_texture();
-	input_img.bind_image_2D(2);
+	t_1.bind_texture();
+	t_1.bind_image_2D(2);
 
 	apply_mat.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256 / 1), 1);
@@ -718,16 +723,16 @@ int main() {
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 	
 	Texture::activate_tex_unit(7);
-	input_img.bind_texture();
-	input_img.bind_image_2D(0);
+	noised.bind_texture();
+	noised.bind_image_2D(0);
 
-	Texture::reset_to_base(t_1);
+	Texture::reset_to_base(input_img);
 	Texture::activate_tex_unit(8);
-	t_1.bind_texture();
-	t_1.bind_image_2D(1);
+	input_img.bind_texture();
+	input_img.bind_image_2D(1);
 
-	rot.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
+	transp_region_dynamic_lvl_1.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
@@ -755,7 +760,7 @@ int main() {
 
 		sh.use_shader_prog();
 		glActiveTexture(GL_TEXTURE7);
-		t_1.bind_texture();
+		noised.bind_texture();
 		//glBindTexture(GL_TEXTURE_2D, ID_1);
 		ShaderProgram::set_uniform(sh.ID, "filterTexture", (unsigned int)7);
 

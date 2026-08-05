@@ -13,7 +13,7 @@ string ApplyTransform::set_compute_shader_values(string source_file_path) {
 	string width_img = "WIDTH_IMG";
 
 	
-//	std::cout << "DYNAMIC APPLY TRANSFORM  : \n " << comp_shader_source << '\n';
+//	std::cout << "DYNAMIC APPLY TRANSFORM  : \n " << comp_shader_source << " end of file " << '\n';
 
 	int num_invocations = img_dimension_x / pow(2, decomp_lvl);
 

@@ -63,10 +63,25 @@ ShaderProgram::ShaderProgram(string path_to_vert, string path_to_frag) {
 }
 
 
-ShaderProgram::ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, int size_filter) {
+ShaderProgram::ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, int size_filter_num_part, ShaderProgram::type_of_shader type_of_shader) {
 
-	GenerateTransform comp(file_path, decomposition_level, img_dimension_width, size_filter);
-	string source_code = comp.set_compute_shader_values(file_path);
+	ShaderSource comp;
+
+	string source_code = "";
+
+	if (type_of_shader == ShaderProgram::type_of_shader::GENERATE_TRANSFORM) {
+		GenerateTransform gt(file_path, decomposition_level, img_dimension_width, size_filter_num_part);
+		source_code = gt.set_compute_shader_values(file_path);
+		comp = gt;
+
+	}
+	if (type_of_shader == ShaderProgram::type_of_shader::SORT_SUBBAND) {
+		SortSubbandLocal ssl(file_path, decomposition_level, img_dimension_width, size_filter_num_part);
+		source_code = ssl.set_compute_shader_values(file_path);
+		comp = ssl;
+	}
+
+	
 
 //	std::cout << "SHADER SOURCE : \n" << source_code << '\n';
 
@@ -105,11 +120,29 @@ ShaderProgram::ShaderProgram(string file_path, int decomposition_level, int img_
 
 }
 
-ShaderProgram::ShaderProgram(string file_path, int decomposition_level, int img_dimension_width) {
+ShaderProgram::ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, ShaderProgram::type_of_shader type_of_shader) {
 
-	ApplyTransform comp(file_path, decomposition_level, img_dimension_width);
-	string source_code = comp.set_compute_shader_values(file_path);
+	ShaderSource comp;
 
+	string source_code = "";
+
+	if (type_of_shader == ShaderProgram::type_of_shader::APPLY_TRANSFORM) {
+		ApplyTransform at(file_path, decomposition_level, img_dimension_width);
+		source_code = at.set_compute_shader_values(file_path);
+		std::cout << "APPLY MATRIX DYNAMIC : \n" << source_code << '\n';
+		comp = at;
+		
+	}
+	if (type_of_shader == ShaderProgram::type_of_shader::TRANSPOSE_REGION) {
+		TransposeRegion tr(file_path, decomposition_level, img_dimension_width);
+		source_code = tr.set_compute_shader_values(file_path);
+		std::cout << "TRANSPOSE REGION DYNAMIC : \n" << source_code << '\n';
+		comp = tr;
+	}
+	
+//	ApplyTransform comp(file_path, decomposition_level, img_dimension_width);
+
+//	std::cout << "APPLY TRANSFORM DYNAMIC source for file : " << file_path << '\n' << source_code << '\n';
 	//std::cout << "SHADER SOURCE APPLY TRANSFORM : \n" << source_code << '\n';
 
 	const char* shader_source_char = source_code.c_str();
