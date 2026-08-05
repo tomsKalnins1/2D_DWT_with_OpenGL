@@ -132,22 +132,22 @@ void swap_val(int left, int right){
 void main()
 {
 store_all_from_img_to_arr(0, 1);
-bitonic_sort_1(0, SUBBAND_WIDTH);
 synchronize();
+bitonic_sort_1(0, SUBBAND_WIDTH);
 store_all_from_arr_to_img(0, 1);
 synchronize();
 
 store_all_from_img_to_arr(1, 0);
-bitonic_sort_1(0, SUBBAND_WIDTH);
 synchronize();
+bitonic_sort_1(0, SUBBAND_WIDTH);
 store_all_from_arr_to_img(1, 0);
 synchronize();
 
 store_all_from_img_to_arr(1, 1);
-bitonic_sort_1(0, SUBBAND_WIDTH);
 synchronize();
+bitonic_sort_1(0, SUBBAND_WIDTH);
 store_all_from_arr_to_img(1, 1);
-
+synchronize();
 
         
  

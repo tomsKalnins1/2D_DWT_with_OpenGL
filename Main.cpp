@@ -333,7 +333,7 @@ int main() {
 		Texture::activate_tex_unit(1);
 		dwt_mat.bind_texture();
 		dwt_mat.bind_image_2D(1);
-
+		
 		Texture::reset_to_base(t_1);
 	//	Texture::activate_tex_unit(2);
 		t_1.bind_texture();
@@ -479,8 +479,8 @@ int main() {
 	//-LVL 2 ---------SORT HH, LH, HL
 	
 	Texture::activate_tex_unit(0);
-	t_2.bind_texture();
-	t_2.bind_image_2D(0);
+	noised.bind_texture();
+	noised.bind_image_2D(0);
 
 	Texture::activate_tex_unit(1);
 	sorted_HH_2.bind_texture();
@@ -494,8 +494,8 @@ int main() {
 
 	
 	Texture::activate_tex_unit(0);
-	t_2.bind_texture();
-	t_2.bind_image_2D(0);
+	noised.bind_texture();
+	noised.bind_image_2D(0);
 
 	Texture::activate_tex_unit(1);
 	sorted_HH.bind_texture();
@@ -514,8 +514,8 @@ int main() {
 
 	if (do_threshold) {
 		Texture::activate_tex_unit(0);
-		t_2.bind_texture();
-		t_2.bind_image_2D(0);
+		noised.bind_texture();
+		noised.bind_image_2D(0);
 
 		Texture::activate_tex_unit(1);
 		sorted_HH.bind_texture();
@@ -647,7 +647,7 @@ int main() {
 
 	//----------------------------------LVL 2 INVERSE DWT
 
-	bool do_IDWT = false;
+	bool do_IDWT = true;
 	if (do_IDWT) {
 
 	Texture::activate_tex_unit(7);
@@ -760,7 +760,7 @@ int main() {
 
 		sh.use_shader_prog();
 		glActiveTexture(GL_TEXTURE7);
-		noised.bind_texture();
+		sorted_HH.bind_texture();
 		//glBindTexture(GL_TEXTURE_2D, ID_1);
 		ShaderProgram::set_uniform(sh.ID, "filterTexture", (unsigned int)7);
 
