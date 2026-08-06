@@ -345,7 +345,7 @@ int main() {
 
 
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-
+		
 
 		Texture::activate_tex_unit(7);
 		noised.bind_texture();
@@ -398,7 +398,7 @@ int main() {
 		
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 			//---------------------------------------------------BITONIC SORT
-
+	
 	}
 	//------------------------------------------LVL 2 DWT FORWARD
 	bool do_lvl_2_dwt = false;
@@ -647,7 +647,7 @@ int main() {
 
 	//----------------------------------LVL 2 INVERSE DWT
 
-	bool do_IDWT = true;
+	bool do_IDWT = false;
 	if (do_IDWT) {
 
 	Texture::activate_tex_unit(7);
@@ -760,7 +760,7 @@ int main() {
 
 		sh.use_shader_prog();
 		glActiveTexture(GL_TEXTURE7);
-		sorted_HH.bind_texture();
+		noised.bind_texture();
 		//glBindTexture(GL_TEXTURE_2D, ID_1);
 		ShaderProgram::set_uniform(sh.ID, "filterTexture", (unsigned int)7);
 
