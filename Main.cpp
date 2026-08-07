@@ -107,6 +107,13 @@ void create_noise_1() {
 	}
 }
 
+struct Subband {
+
+	int H_L_0;
+	int H_L_1;
+
+};
+
 int main() {
 
 	glfwInit();
@@ -253,6 +260,7 @@ int main() {
 	ShaderProgram comp_dwt_matrix("generate_transform_DYNAMIC.glsl", 1, 256, 4, ShaderProgram::type_of_shader::GENERATE_TRANSFORM);
 
 	ShaderProgram apply_mat("apply_DWT_matrix_DYNAMIC.glsl", 1, 256, ShaderProgram::type_of_shader::APPLY_TRANSFORM);
+	ShaderProgram apply_mat_inv("apply_IDWT_matrix_DYNAMIC.glsl", 1, 256, ShaderProgram::type_of_shader::APPLY_TRANSFORM);
 	//--------------------------------------------------------------------------------LVL 1 TRANSFORM AND APPLY TRANSFORM COMP_SH
 	//--------------------------------------------------------------------------------LVL 2 TRANSFORM AND APPLY TRANSFORM COMP_SH
 	ShaderProgram comp_dwt_matrix_2("generate_transform_DYNAMIC.glsl", 2, 256, 4, ShaderProgram::type_of_shader::GENERATE_TRANSFORM);
@@ -289,9 +297,17 @@ int main() {
 	Texture test_Tn = Texture{};
 	Texture t_1 = Texture{};
 	Texture t_2 = Texture{};
+
+	//SYNTHESIS
+	Texture LL = Texture{};
+	Texture LH = Texture{};
+	Texture HL = Texture{};
+	Texture HH = Texture{};
+	Texture subband_buffer = Texture{};
 //------------------------------ TEST TRANSPOSE --------- TEST TRANSPOSE---- TEST TRANSPOSE 
 	
 	ShaderProgram transp_region("transpose_region.glsl");
+	ShaderProgram upsample("upsample.glsl");
 	ShaderProgram transp_region_dynamic_lvl_1("transpose_region_DYNAMIC.glsl", 1, 256, ShaderProgram::type_of_shader::TRANSPOSE_REGION);
 	ShaderProgram transp_region_dynamic_lvl_2("transpose_region_DYNAMIC.glsl", 2, 256, ShaderProgram::type_of_shader::TRANSPOSE_REGION);
 	/*
@@ -647,7 +663,7 @@ int main() {
 
 	//----------------------------------LVL 2 INVERSE DWT
 
-	bool do_IDWT = false;
+	bool do_IDWT = true;
 	if (do_IDWT) {
 
 	Texture::activate_tex_unit(7);
@@ -664,35 +680,58 @@ int main() {
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-	
+		//--------------------------------------------------------------------UPSAMPLE
 	Texture::activate_tex_unit(0);
 	noised.bind_texture();
 	noised.bind_image_2D(0);
 
-	Texture::activate_tex_unit(8);
-	dwt_mat_inv.bind_texture();
-	dwt_mat_inv.bind_image_2D(1);
-
-	Texture::reset_to_base(input_img);
 	Texture::activate_tex_unit(1);
-	input_img.bind_texture();
-	input_img.bind_image_2D(2);
+	subband_buffer.bind_texture();
+	subband_buffer.bind_image_2D(1);
+
+	Subband subband_signal = { 0, 0 };
+
+	unsigned int sub_H_L;
+	glCreateBuffers(1, &sub_H_L);
+	glNamedBufferStorage(sub_H_L, sizeof(Subband), &subband_signal, GL_DYNAMIC_STORAGE_BIT);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, sub_H_L);
 	
-	apply_mat.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
+	upsample.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(128), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	
-	
+	//--------------------------------------------------------------------UPSAMPLE
+	Texture::activate_tex_unit(0);
+	subband_buffer.bind_texture();
+	subband_buffer.bind_image_2D(0);
+
+	Texture::reset_to_base(t_1);
+	Texture::activate_tex_unit(1);
+	t_1.bind_texture();
+	t_1.bind_image_2D(1);
+
+	/*
+	Subband subband_signal = { 0, 0 };
+
+	unsigned int sub_H_L;
+	glCreateBuffers(1, &sub_H_L);
+	glNamedBufferStorage(sub_H_L, sizeof(Subband), &subband_signal, GL_DYNAMIC_STORAGE_BIT);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, sub_H_L);
+	*/
+	apply_mat_inv.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 	
 	Texture::activate_tex_unit(7);
-	noised.bind_texture();
-	noised.bind_image_2D(0);
-
-	Texture::reset_to_base(t_1);
-	Texture::activate_tex_unit(8);
 	t_1.bind_texture();
-	t_1.bind_image_2D(1);
+	t_1.bind_image_2D(0);
+
+	Texture::reset_to_base(t_2);
+	Texture::activate_tex_unit(8);
+	t_2.bind_texture();
+	t_2.bind_image_2D(1);
 
 	transp_region_dynamic_lvl_1.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
@@ -701,19 +740,15 @@ int main() {
 	//------------------------------------------------------------------------------------------TRANSPOSE
 
 	Texture::activate_tex_unit(0);
-	noised.bind_texture();
-	noised.bind_image_2D(0);
-
-	Texture::activate_tex_unit(8);
-	dwt_mat_inv.bind_texture();
-	dwt_mat_inv.bind_image_2D(1);
-
-	Texture::reset_to_base(t_1);
-	Texture::activate_tex_unit(1);
 	t_1.bind_texture();
-	t_1.bind_image_2D(2);
+	t_1.bind_image_2D(0);
 
-	apply_mat.use_shader_prog();
+	Texture::reset_to_base(t_2);
+	Texture::activate_tex_unit(1);
+	t_2.bind_texture();
+	t_2.bind_image_2D(1);
+
+	apply_mat_inv.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256 / 1), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	
@@ -738,6 +773,8 @@ int main() {
 	//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 	
 	}
+
+
 	
 	//Texture::reset_to_base(image_0);
 
@@ -760,7 +797,7 @@ int main() {
 
 		sh.use_shader_prog();
 		glActiveTexture(GL_TEXTURE7);
-		noised.bind_texture();
+		t_2.bind_texture();
 		//glBindTexture(GL_TEXTURE_2D, ID_1);
 		ShaderProgram::set_uniform(sh.ID, "filterTexture", (unsigned int)7);
 

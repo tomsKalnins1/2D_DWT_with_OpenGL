@@ -145,6 +145,12 @@
     <None Include="transpose_region_DYNAMIC.glsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="apply_IDWT_matrix_DYNAMIC.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="upsample.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="CAMERAMAN_ORIGINAL.png">
