@@ -30,8 +30,6 @@ public:
 		std::cout << "DELETE CALLED ! \n";
 		if (ID != 0)
 			glDeleteTextures(1, &ID);
-
-
 	}
 
 	Texture(GLenum internal_format = GL_RGBA32F, GLenum format = GL_RGBA, string file_name = "", int width = 256, int height = 256);

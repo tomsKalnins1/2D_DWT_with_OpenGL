@@ -57,6 +57,9 @@
     <ClCompile Include="SortSubbendLocal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WaveletTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderProgram.h">
@@ -149,6 +152,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="upsample.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="add_textures_dwt_inverse_DYNAMIC.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

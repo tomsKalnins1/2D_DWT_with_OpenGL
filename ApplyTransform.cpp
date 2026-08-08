@@ -1,9 +1,8 @@
 #include "ShaderSource.h"
 
-ApplyTransform::ApplyTransform(string file_path, int decomposition_level, int img_dimension_width) : decomp_lvl{decomposition_level},
-img_dimension_x{img_dimension_width} {
-
-}
+ApplyTransform::ApplyTransform(string file_path, int decomposition_level, int img_dimension_width) :	ShaderSource(file_path),
+																										decomp_lvl{decomposition_level},
+																										img_dimension_x{img_dimension_width} {}
 
 string ApplyTransform::set_compute_shader_values(string source_file_path) {
 
@@ -38,6 +37,48 @@ string ApplyTransform::set_compute_shader_values(string source_file_path) {
 	}
 
 	std::cout << "APPLY TRANSFORM : \n" << comp_shader_source << '\n';
+
+	return comp_shader_source;
+
+}
+
+string ApplyTransform::set_compute_shader_values_inverse(string source_file_path, int H_L) {
+
+	string comp_shader_source = ShaderSource::get_file_content(source_file_path.c_str());
+
+	string filter_0 = "FILTER";
+
+
+
+	//	std::cout << "DYNAMIC APPLY TRANSFORM  : \n " << comp_shader_source << " end of file " << '\n';
+
+	int num_invocations = img_dimension_x / pow(2, decomp_lvl);
+
+	int index = 0;
+
+	string f_0 = "";
+
+	if (H_L == 0) {
+
+		f_0 = "g0";
+	}
+	else {
+		f_0 = "g1";
+	}
+
+
+		while (comp_shader_source.find(filter_0) < comp_shader_source.size()) {
+
+			index = comp_shader_source.find(filter_0);
+
+			comp_shader_source = comp_shader_source.replace(index, filter_0.size(), f_0);
+
+		}
+
+
+	
+
+	std::cout << "INVERSE APPLY TRANSFORM : \n" << comp_shader_source << '\n';
 
 	return comp_shader_source;
 

@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="add_textures_dwt_inverse_DYNAMIC.glsl" />
     <None Include="apply_DWT_LVL_2.glsl" />
     <None Include="apply_DWT_matrix_DYNAMIC.glsl" />
     <None Include="apply_IDWT_matrix_DYNAMIC.glsl" />
@@ -160,6 +161,7 @@
     </Text>
     <ClCompile Include="SortSubbendLocal.cpp" />
     <ClCompile Include="TransposeRegion.cpp" />
+    <ClCompile Include="WaveletTransform.cpp" />
     <ClCompile Include="Wavelet_class.cpp" />
     <None Include="..\FourierTransform\FFT_main.cpp" />
     <ClCompile Include="glad.c" />

@@ -1,10 +1,9 @@
 #include "ShaderSource.h"
 
-SortSubbandLocal::SortSubbandLocal(string file_path, int decomposition_level, int img_dimension_width, int num_part) : decomp_lvl{ decomposition_level },
-img_dimension_x{ img_dimension_width },
-num_partitions{num_part} {
-
-}
+SortSubbandLocal::SortSubbandLocal(string file_path, int decomposition_level, int img_dimension_width, int num_part) :	ShaderSource(file_path),
+																														decomp_lvl{ decomposition_level },
+																														img_dimension_x{ img_dimension_width },
+																														num_partitions{num_part} {}
 
 string SortSubbandLocal::set_compute_shader_values(string source_file_path) {
 
@@ -43,7 +42,7 @@ string SortSubbandLocal::set_compute_shader_values(string source_file_path) {
 
 	
 
-	std::cout << "SORT SUBBAND : \n" << comp_shader_source << '\n';
+//	std::cout << "SORT SUBBAND : \n" << comp_shader_source << '\n';
 
 	return comp_shader_source;
 

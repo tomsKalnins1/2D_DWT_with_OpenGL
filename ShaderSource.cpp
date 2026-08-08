@@ -46,6 +46,7 @@ ShaderSource::ShaderSource(string file_path, GLenum shader_type, int num_samples
 }
 */
 
+
 string ShaderSource::get_file_content(string file_path) {
 	
 	std::ifstream in(file_path.c_str(), std::ios::binary);

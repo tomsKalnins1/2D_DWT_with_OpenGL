@@ -222,22 +222,28 @@ ShaderProgram::ShaderProgram(string path_to_comp) {
 
 }
 
-/*
-ShaderProgram::ShaderProgram(string file_path, int num_samples, int samples_per_processor) {
 
-	string shader_source = ShaderSource::get_file_content(file_path.c_str());
+ShaderProgram::ShaderProgram(string file_path, int img_width, int H_L) {
 
-	const char* shader_source_char = shader_source.c_str();
+	string source_code = "";
+	ApplyTransform comp(file_path, 1, 256);
+	source_code = comp.set_compute_shader_values_inverse(file_path, H_L);
 
-	ID = glCreateShader(GL_COMPUTE_SHADER);
-	glShaderSource(ID, 1, &shader_source_char, NULL);
-	glCompileShader(ID);
+
+	std::cout << "INVERSE DWT : \n" << source_code << '\n';
+
+	const char* shader_source_char = source_code.c_str();
+
+
+	comp.ID = glCreateShader(GL_COMPUTE_SHADER);
+	glShaderSource(comp.ID, 1, &shader_source_char, NULL);
+	glCompileShader(comp.ID);
 
 	GLint compiled;
-	glGetShaderiv(ID, GL_COMPILE_STATUS, &compiled);
+	glGetShaderiv(comp.ID, GL_COMPILE_STATUS, &compiled);
 	if (!compiled) {
 		char errorLog[1024];
-		glGetShaderInfoLog(ID, 1024, NULL, errorLog);
+		glGetShaderInfoLog(comp.ID, 1024, NULL, errorLog);
 		std::cout << ("COMPUTE SHADER " + file_path + " \n COMPILATION FAILED : \n") << errorLog << '\n';
 	}
 
@@ -252,7 +258,7 @@ ShaderProgram::ShaderProgram(string file_path, int num_samples, int samples_per_
 
 		char infoLog[1024];
 		glGetProgramInfoLog(ID, 1024, NULL, infoLog);
-		std::cout << "PROGRAM LINK FAILED, PROBLEM WITH " << path_to_comp <<" :\n" << infoLog << std::endl;
+		std::cout << "PROGRAM LINK FAILED, PROBLEM WITH " << file_path << " :\n" << infoLog << std::endl;
 
 	}
 
@@ -261,7 +267,7 @@ ShaderProgram::ShaderProgram(string file_path, int num_samples, int samples_per_
 
 }
 
-*/
+
 
 void ShaderProgram::use_shader_prog() {
 

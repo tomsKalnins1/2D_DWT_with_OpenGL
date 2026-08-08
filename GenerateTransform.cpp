@@ -1,6 +1,7 @@
 #include "ShaderSource.h"
 
-GenerateTransform::GenerateTransform(string file_path, int decomposition_level, int img_dimension_width, int size_filter) : decomp_lvl{ decomposition_level },
+GenerateTransform::GenerateTransform(string file_path, int decomposition_level, int img_dimension_width, int size_filter) :
+decomp_lvl{ decomposition_level },
 img_dimension_x{img_dimension_width},
 size_of_filter{size_filter} {
 
@@ -65,7 +66,7 @@ string GenerateTransform::set_compute_shader_values(string source_file_path) {
 	index = comp_shader_source.find(hp_filter_val);
 	comp_shader_source = comp_shader_source.replace(index, hp_filter_val.size(), high_pass);
 
-	std::cout << "GENERATE TRANSFORM DYNAMIC : \n" << comp_shader_source << '\n';
+//	std::cout << "GENERATE TRANSFORM DYNAMIC : \n" << comp_shader_source << '\n';
 
 	return comp_shader_source;
 

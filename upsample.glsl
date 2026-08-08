@@ -27,33 +27,36 @@ void upsample(){
     
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
 
-    vec4 pix = vec4(1.0, 0.0, 0.0, 1.0);
-        
+    vec4 pix = vec4(0.0, 0.0, 0.0, 1.0);
     if(H_L_0 == 0 && H_L_1 == 0){
         
         pix = imageLoad(dwt, ivec2(th_id.x, th_id.y));
-    
+   //   imageStore(subband_buffer, ivec2(th_id.x * 2, th_id.y * 2), pix);
     }
 
     if(H_L_0 == 0 && H_L_1 == 1){
         
         pix = imageLoad(dwt, ivec2(th_id.x, th_id.y + 128));
+    //      imageStore(subband_buffer, ivec2(th_id.x * 2, th_id.y * 2), pix);
     
     }
 
     if(H_L_0 == 1 && H_L_1 == 0){
         
         pix = imageLoad(dwt, ivec2(th_id.x + 128, th_id.y));
-    
+    //      imageStore(subband_buffer, ivec2(th_id.x * 2, th_id.y * 2), pix);
+     
     }
 
      if(H_L_0 == 1 && H_L_1 == 1){
         
         pix = imageLoad(dwt, ivec2(th_id.x + 128, th_id.y + 128));
+      //    imageStore(subband_buffer, ivec2(th_id.x * 2, th_id.y * 2), pix);
     
     }
+
    
-      //  vec4 test = vec4(float(H_L_0), float(H_L_0), 0.0, 1.0);
+  //      vec4 test = vec4(float(H_L_0), float(H_L_0), 0.0, 1.0);
         imageStore(subband_buffer, ivec2(th_id.x * 2, th_id.y * 2), pix);
 
         synchronize();
