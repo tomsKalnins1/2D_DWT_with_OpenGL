@@ -21,6 +21,14 @@ WaveletTransform::WaveletTransform(string file_path, int decomposition_level, in
 
 	}
 
+	if (type_of_shader == WaveletTransform::type_of_shader::SOFT_THRESHOLD) {
+		SoftThreshold st(file_path, decomposition_level, img_dimension_width, size_filter_num_part);
+		source_code = st.set_compute_shader_values(file_path);
+		std::cout << "APPLY INVERSE TRANSFORM MATRIX DYNAMIC : \n" << source_code << '\n';
+		comp = st;
+
+	}
+
 
 
 	//	std::cout << "SHADER SOURCE : \n" << source_code << '\n';
@@ -312,6 +320,32 @@ void WaveletTransform::sort_subbands(Texture& input, Texture& output, int decomp
 
 
 }
+
+void WaveletTransform::apply_soft_threshold(Texture& input, Texture& sorted_subband, int decomp_lvl, int img_width, int num_sort_partitions) {
+	
+	WaveletTransform soft("Soft_threshold_DYNAMIC.glsl", decomp_lvl, img_width, num_sort_partitions, WaveletTransform::type_of_shader::SOFT_THRESHOLD);
+
+	Texture::activate_tex_unit(0);
+	input.bind_texture();
+	input.bind_image_2D(0);
+
+	//	Texture::reset_to_base(output);
+	Texture::activate_tex_unit(1);
+	sorted_subband.bind_texture();
+	sorted_subband.bind_image_2D(1);
+
+	soft.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(img_width / pow(2, decomp_lvl)), 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+	input.unbind_image_texture(0);
+	sorted_subband.unbind_image_texture(1);
+	input.unbind_texture(0);
+	sorted_subband.unbind_texture(1);
+
+}
+
+
 
 void WaveletTransform::do_DWT(Texture& input, Texture& output, int decomp_level, int img_width) {
 

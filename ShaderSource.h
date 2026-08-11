@@ -11,6 +11,7 @@
 #include <glm/glm/glm.hpp>
 #include <glm/glm/gtc/matrix_transform.hpp>
 #include <glm/glm/gtc/type_ptr.hpp>
+#include <cmath>
 
 using std::string;
 
@@ -137,6 +138,23 @@ public:
 	UpsampleSubband() = delete;
 
 	UpsampleSubband(string path, int decomposition_level, int img_dimension_x, int H_L_0, int H_L_1);
+
+	string set_compute_shader_values(string source) override;
+
+
+};
+
+class SoftThreshold : public ShaderSource {
+
+public:
+	int decomp_lvl;
+	int img_dimension_x;
+	int num_partitions;
+
+
+	SoftThreshold() = delete;
+
+	SoftThreshold(string path, int decomposition_level, int img_dimension_x, int num_part);
 
 	string set_compute_shader_values(string source) override;
 

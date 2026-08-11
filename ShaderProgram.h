@@ -61,7 +61,8 @@ public :
 		APPLY_SOFT_THRESHOLD = 3,
 		SORT_SUBBAND = 4,
 		ADD_SUBBANDS = 5,
-		UPSAMPLE_SUBBAND = 6
+		UPSAMPLE_SUBBAND = 6,
+		SOFT_THRESHOLD = 7
 
 	};
 	/*
@@ -88,6 +89,7 @@ public :
 	static void upsample(Texture& dwt, Texture& subband, int decomposition_level, int img_width, int H_L_0, int H_L_1);
 	static void convolve(Texture& input, Texture& output, int img_width, int level, int H_L);
 	static void sort_subbands(Texture& input, Texture& output, int decomp_lvl, int img_width, int num_sort_partitions);
+	static void apply_soft_threshold(Texture& input, Texture& output, int decomp_lvl, int img_width, int num_sort_partitions);
 	static void add_IDWT_subbands(Texture& dwt, Texture& LL, Texture& LH, Texture& HL, Texture& HH, int level, int img_width);
 	static void do_DWT(Texture& input, Texture& output, int level, int img_width);
 	static void do_inverse_DWT(Texture& input, Texture& output, int level, int img_width);

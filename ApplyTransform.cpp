@@ -41,7 +41,7 @@ string ApplyTransform::set_compute_shader_values(string source_file_path) {
 
 	}
 
-	std::cout << "APPLY TRANSFORM : \n" << comp_shader_source << '\n';
+//	std::cout << "APPLY TRANSFORM : \n" << comp_shader_source << '\n';
 
 	return comp_shader_source;
 

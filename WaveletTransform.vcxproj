@@ -160,6 +160,7 @@
     <Text Include="transpose_region.glsl">
       <FileType>CppCode</FileType>
     </Text>
+    <ClCompile Include="SoftThreshold.cpp" />
     <ClCompile Include="SortSubbendLocal.cpp" />
     <ClCompile Include="TransposeRegion.cpp" />
     <ClCompile Include="UpsampleSubband.cpp" />
@@ -189,6 +190,7 @@
     <None Include="Soft_thresholding_remove_noise.glsl" />
     <None Include="Soft_thresholding_remove_noise_LOCAL.glsl" />
     <None Include="Soft_thresholding_remove_noise_LOCAL_2.glsl" />
+    <None Include="Soft_threshold_DYNAMIC.glsl" />
     <None Include="Sort_subband_LOCAL_DYNAMIC.glsl" />
     <None Include="Sort_subband_LOCAL_lvl_1.glsl" />
     <None Include="display_DWT.fs" />
