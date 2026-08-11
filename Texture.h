@@ -27,7 +27,7 @@ public:
 	Texture(const Texture&) = delete;
 
 	~Texture(){
-		std::cout << "DELETE CALLED ! \n";
+	//	std::cout << "DELETE CALLED ! \n";
 		if (ID != 0)
 			glDeleteTextures(1, &ID);
 	}
@@ -38,11 +38,13 @@ public:
 
 	void bind_image_2D(int layout);
 
-	void unbind_texture();
+	void unbind_texture(int unit);
 
 	void delete_texture();
 
 	static void activate_tex_unit(int i);
+
+	void unbind_image_texture(int unit);
 
 };
 

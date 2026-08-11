@@ -12,7 +12,7 @@ void synchronize()
 {
 
     barrier();
-    memoryBarrierShared();
+    memoryBarrierImage();
 }
 
 void store_transp_to_tex(){

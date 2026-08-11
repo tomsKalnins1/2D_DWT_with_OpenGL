@@ -1,6 +1,6 @@
 #version 460 core
 
-layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = NUM_INV, local_size_y = 1, local_size_z = 1) in;
 
 
 layout(rgba32f, binding = 0) uniform image2D subband;
@@ -33,28 +33,32 @@ void synchronize(){
 
 }
 
+void store_back_to_input(){
 
-void put_back_to_image_O(){
+     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
+        
+     vec4 pix_l = imageLoad(subband_buffer, ivec2(th_id.x, th_id.y));
+     vec4 pix_r = imageLoad(subband_buffer, ivec2(th_id.x + NUM_INV, th_id.y));
+
+     imageStore(subband, ivec2(th_id.x, th_id.y), pix_l);
+     imageStore(subband, ivec2(th_id.x + NUM_INV, th_id.y), pix_r);
+     
        
-       ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
-
- 
-
 }
 
 void convolve_subband(){
 
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
 
-   int i_0 = ((th_id.x * 2) + 1) & 255;
-   int i_1 = ((th_id.x * 2) + 0) & 255;
-   int i_2 = ((th_id.x * 2) - 1) & 255;
-   int i_3 = ((th_id.x * 2) - 2) & 255;
+   int i_0 = ((th_id.x * 2) + 2) & MASK;
+   int i_1 = ((th_id.x * 2) + 1) & MASK;
+   int i_2 = ((th_id.x * 2) + 0) & MASK;
+   int i_3 = ((th_id.x * 2) - 1) & MASK;
 
-   int i_0_p = ((th_id.x * 2 + 1) + 1) & 255;
-   int i_1_p = ((th_id.x * 2 + 1) + 0) & 255;
-   int i_2_p = ((th_id.x * 2 + 1) - 1) & 255;
-   int i_3_p = ((th_id.x * 2 + 1) - 2) & 255;
+   int i_0_p = ((th_id.x * 2 + 1) + 2) & MASK;
+   int i_1_p = ((th_id.x * 2 + 1) + 1) & MASK;
+   int i_2_p = ((th_id.x * 2 + 1) + 0) & MASK;
+   int i_3_p = ((th_id.x * 2 + 1) - 1) & MASK;
 
    float pix_low = 0.0;
    float pix_low_p = 0.0;
@@ -98,5 +102,6 @@ void convolve_subband(){
 
 void main(){
     convolve_subband();
+    store_back_to_input();
 
 }

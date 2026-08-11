@@ -21,27 +21,20 @@ using std::string;
 class ShaderProgram {
 
 public:
-	enum type_of_shader {
-
-		TRANSPOSE_REGION = 0,
-		APPLY_TRANSFORM = 1,
-		APPLY_SOFT_THRESHOLD = 2,
-		GENERATE_TRANSFORM = 3,
-		SORT_SUBBAND = 4
-
-		
-
-	};
 
 	unsigned int ID;
 
+
+	ShaderProgram() {}
 	ShaderProgram(string vertex_shader, string fragment_shader);
+	/*
 	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, int size_filter, type_of_shader type);
 	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, type_of_shader type);
 	ShaderProgram(string file_path, int decomposition_level, int H_L);
+	*/
 	ShaderProgram(string file_path);
 
-	ShaderProgram() = delete;
+//	ShaderProgram() = delete;
 
 	void use_shader_prog();
 
@@ -59,6 +52,18 @@ public:
 class WaveletTransform : public ShaderProgram {
 
 public :
+
+	enum type_of_shader {
+
+		TRANSPOSE_REGION = 0,
+		APPLY_TRANSFORM = 1,
+		APPLY_INVERSE_TRANSFORM = 2,
+		APPLY_SOFT_THRESHOLD = 3,
+		SORT_SUBBAND = 4,
+		ADD_SUBBANDS = 5,
+		UPSAMPLE_SUBBAND = 6
+
+	};
 	/*
 	add filter coeff arrays values of which are computed at compile time,
 	for now the coeffs are in the filters, MUST REMEMBER TO CHANGE THAT !!!
@@ -72,14 +77,18 @@ public :
 	WaveletTransform(tring file_path, int max_level_of_decomp, int img_width, )
 	*/
 
-	WaveletTransform(string file_path) : ShaderProgram(file_path) {}
-	WaveletTransform(string file_path, int decomposition_level, int img_dimension_width, int size_filter, type_of_shader type) : ShaderProgram(file_path, decomposition_level, img_dimension_width, size_filter, type) {}
-	WaveletTransform(string file_path, int decomposition_level, int img_dimension_width, type_of_shader type) : ShaderProgram(file_path, decomposition_level, img_dimension_width, type) {}
+//	WaveletTransform(string file_path) : ShaderProgram(file_path) {}
+	WaveletTransform(string file_path, int decomposition_level, int img_dimension_width, int size_filter, type_of_shader type);
+	WaveletTransform(string file_path, int decomposition_level, int img_dimension_width, type_of_shader type);
+	WaveletTransform(string file_path, int decomposition_level, int img_dimension_width, int H_L_0, int H_L_1);
+	WaveletTransform(string file_path, int decomposition_level, int H_L);
 
 
-	static void transpose(Texture& img, int decomposition_level, int img_width);
+	static void transpose(Texture& img, Texture& buffer_tex, int decomposition_level, int img_width);
 	static void upsample(Texture& dwt, Texture& subband, int decomposition_level, int img_width, int H_L_0, int H_L_1);
-	static void convolve(Texture& input, Texture& output, int img_width, int H_L);
+	static void convolve(Texture& input, Texture& output, int img_width, int level, int H_L);
+	static void sort_subbands(Texture& input, Texture& output, int decomp_lvl, int img_width, int num_sort_partitions);
+	static void add_IDWT_subbands(Texture& dwt, Texture& LL, Texture& LH, Texture& HL, Texture& HH, int level, int img_width);
 	static void do_DWT(Texture& input, Texture& output, int level, int img_width);
 	static void do_inverse_DWT(Texture& input, Texture& output, int level, int img_width);
 	

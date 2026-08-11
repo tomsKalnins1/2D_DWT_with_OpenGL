@@ -154,6 +154,7 @@
     <None Include="bitonic_sort.txt">
       <FileType>CppCode</FileType>
     </None>
+    <ClCompile Include="AddIDWTSubbands.cpp" />
     <ClCompile Include="ApplyTransform.cpp" />
     <ClCompile Include="GenerateTransform.cpp" />
     <Text Include="transpose_region.glsl">
@@ -161,6 +162,7 @@
     </Text>
     <ClCompile Include="SortSubbendLocal.cpp" />
     <ClCompile Include="TransposeRegion.cpp" />
+    <ClCompile Include="UpsampleSubband.cpp" />
     <ClCompile Include="WaveletTransform.cpp" />
     <ClCompile Include="Wavelet_class.cpp" />
     <None Include="..\FourierTransform\FFT_main.cpp" />

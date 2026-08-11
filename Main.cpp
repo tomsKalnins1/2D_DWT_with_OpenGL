@@ -153,14 +153,14 @@ int main() {
 	vao.unbind_VAO();
 	vbo.unbind_VBO();
 
-	string pathToImage = "C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\CAMERAMAN_ORIGINAL.png";
+	string pathToImage = "C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\SHREK.png";
 
 	Texture input_img(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
 	Texture input_test_offset(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
 	Texture output_1 = Texture{};
 	Texture output_2 = Texture{};
 	//-------------------------------------gen DWT matrix 
-	
+
 
 
 	//------------------------------------NOISE TEXTURE
@@ -170,7 +170,7 @@ int main() {
 
 	unsigned int ID;
 	glGenTextures(1, &ID);
-	cout << "NOISE TEXTURE id = " << ID << '\n';
+
 
 	glBindTexture(GL_TEXTURE_2D, ID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -181,7 +181,6 @@ int main() {
 
 	unsigned int ID_1;
 	glGenTextures(1, &ID_1);
-	cout << "NOISE TEXTURE id = " << ID_1 << '\n';
 
 	glBindTexture(GL_TEXTURE_2D, ID_1);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -246,8 +245,8 @@ int main() {
 	add_noise.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(256), (unsigned int)ceil(256), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-	
-	
+
+
 	//--------------------------------------------------GENERATE DWT MATRIX
 	// 
 
@@ -257,34 +256,24 @@ int main() {
 
 
 	//--------------------------------------------------------------------------------LVL 1 TRANSFORM AND APPLY TRANSFORM COMP_SH
-	ShaderProgram comp_dwt_matrix("generate_transform_DYNAMIC.glsl", 1, 256, 4, ShaderProgram::type_of_shader::GENERATE_TRANSFORM);
 
-	ShaderProgram apply_mat("apply_DWT_matrix_DYNAMIC.glsl", 1, 256, ShaderProgram::type_of_shader::APPLY_TRANSFORM);
-	ShaderProgram conv_shader("apply_IDWT_matrix_DYNAMIC.glsl", 0, 0);
-//	ShaderProgram apply_mat_inv("apply_IDWT_matrix_DYNAMIC.glsl", 1, 256, ShaderProgram::type_of_shader::APPLY_TRANSFORM);
-	//--------------------------------------------------------------------------------LVL 1 TRANSFORM AND APPLY TRANSFORM COMP_SH
+
+	WaveletTransform apply_mat("apply_DWT_matrix_DYNAMIC.glsl", 1, 256, WaveletTransform::type_of_shader::APPLY_TRANSFORM);
+	//WaveletTransform conv_shader("apply_IDWT_matrix_DYNAMIC.glsl", 0, 0);
+	//	ShaderProgram apply_mat_inv("apply_IDWT_matrix_DYNAMIC.glsl", 1, 256, ShaderProgram::type_of_shader::APPLY_TRANSFORM);
+		//--------------------------------------------------------------------------------LVL 1 TRANSFORM AND APPLY TRANSFORM COMP_SH
+		//--------------------------------------------------------------------------------LVL 2 TRANSFORM AND APPLY TRANSFORM COMP_SH
+
+
+
+
+		//ShaderProgram apply_mat_2("apply_DWT_matrix_DYNAMIC.glsl", 2, 256);
+	WaveletTransform apply_mat_2("apply_DWT_matrix_DYNAMIC.glsl", 2, 256, WaveletTransform::type_of_shader::APPLY_TRANSFORM);
 	//--------------------------------------------------------------------------------LVL 2 TRANSFORM AND APPLY TRANSFORM COMP_SH
-	ShaderProgram comp_dwt_matrix_2("generate_transform_DYNAMIC.glsl", 2, 256, 4, ShaderProgram::type_of_shader::GENERATE_TRANSFORM);
 
-	Texture lvl_2_dwt = Texture(GL_RGBA32F, GL_RGBA, "", 128* 2, 128 * 2);
-	Texture lvl_2_dwt_inv = Texture(GL_RGBA32F, GL_RGBA, "", 128 * 2, 128 * 2);
-
-	Texture::activate_tex_unit(0);
-	lvl_2_dwt.bind_texture();
-	lvl_2_dwt.bind_image_2D(0);
-
-	comp_dwt_matrix_2.use_shader_prog();
-	glDispatchCompute((unsigned int)1, (unsigned int)64, 1);
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
-
-	//ShaderProgram apply_mat_2("apply_DWT_matrix_DYNAMIC.glsl", 2, 256);
-	ShaderProgram apply_mat_2("apply_DWT_matrix_DYNAMIC.glsl", 2, 256, ShaderProgram::type_of_shader::APPLY_TRANSFORM);
-	//--------------------------------------------------------------------------------LVL 2 TRANSFORM AND APPLY TRANSFORM COMP_SH
-	
 	ShaderProgram rot("transpose.glsl");
-	ShaderProgram bitonic_sort_comp("Sort_subband_LOCAL_DYNAMIC.glsl", 1, 256, 16, ShaderProgram::SORT_SUBBAND);
-	ShaderProgram bitonic_sort_comp_2("Sort_subband_LOCAL_DYNAMIC.glsl", 2, 256, 8, ShaderProgram::SORT_SUBBAND);
+	WaveletTransform bitonic_sort_comp("Sort_subband_LOCAL_DYNAMIC.glsl", 1, 256, 16, WaveletTransform::SORT_SUBBAND);
+	WaveletTransform bitonic_sort_comp_2("Sort_subband_LOCAL_DYNAMIC.glsl", 2, 256, 8, WaveletTransform::SORT_SUBBAND);
 	ShaderProgram soft_thr_comp("Soft_thresholding_remove_noise_LOCAL.glsl");
 	ShaderProgram soft_thr_comp_2("Soft_thresholding_remove_noise_LOCAL_2.glsl");
 
@@ -300,18 +289,13 @@ int main() {
 	Texture t_2 = Texture{};
 
 	//SYNTHESIS
-	Texture LL = Texture{};
-	Texture LH = Texture{};
-	Texture HL = Texture{};
-	Texture HH = Texture{};
+
 	Texture subband_buffer = Texture{};
-//------------------------------ TEST TRANSPOSE --------- TEST TRANSPOSE---- TEST TRANSPOSE 
-	
+	//------------------------------ TEST TRANSPOSE --------- TEST TRANSPOSE---- TEST TRANSPOSE 
+
 	ShaderProgram transp_region("transpose_region.glsl");
-	WaveletTransform transpose_1("transpose_region_DYNAMIC.glsl", 1, 256, ShaderProgram::type_of_shader::TRANSPOSE_REGION);
-	ShaderProgram upsample("upsample.glsl");
-	ShaderProgram transp_region_dynamic_lvl_1("transpose_region_DYNAMIC.glsl", 1, 256, ShaderProgram::type_of_shader::TRANSPOSE_REGION);
-	ShaderProgram transp_region_dynamic_lvl_2("transpose_region_DYNAMIC.glsl", 2, 256, ShaderProgram::type_of_shader::TRANSPOSE_REGION);
+	//ShaderProgram upsample("upsample.glsl");
+
 	/*
 	Texture::activate_tex_unit(7);
 	input_img.bind_texture();
@@ -326,8 +310,8 @@ int main() {
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	*/
-	
-//------------------------------ TEST TRANSPOSE --------- TEST TRANSPOSE---- TEST TRANSPOSE
+
+	//------------------------------ TEST TRANSPOSE --------- TEST TRANSPOSE---- TEST TRANSPOSE
 	Texture sub_sub = Texture{};
 
 	bool do_DWT = true;
@@ -339,10 +323,82 @@ int main() {
 
 	}
 	
-	WaveletTransform::do_inverse_DWT(noised, t_1, 1, 256);
+
+	//	WaveletTransform::transpose(noised, 2, 256);
+	//	WaveletTransform::sort_subbands(noised, sorted_HH, 1, 256, 16);
+
+//	WaveletTransform::do_DWT(noised, t_1, 2, 256);
+
+	int tex_size = 256 / 1;
+
+	Texture LL(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+	Texture LH(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+	Texture HL(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+	Texture HH(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+
+	Texture LL_b(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+	Texture LH_b(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+	Texture HL_b(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+	Texture HH_b(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+
+	Texture LL_b1(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+	Texture LH_b1(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+	Texture HL_b1(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+	Texture HH_b1(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
+
+//	std::cout << "1. \t SIZE OF HH SYNTHESIS = \t" << HH.height << "  SIZE OF HH_b = \t" << HH_b.height << '\n';
+	
+//	WaveletTransform::do_inverse_DWT(noised, t_1, 2, 256);
+//	WaveletTransform::do_inverse_DWT(noised, t_1, 1, 256);
+	
+	
+	bool do_IDWT_2 = true;
+	if(do_IDWT_2){
+		WaveletTransform::upsample(noised, LL, 1, 256, 0, 0);
+
+		WaveletTransform::upsample(noised, LH, 1, 256, 0, 1);
+		WaveletTransform::upsample(noised, HL, 1, 256, 1, 0);
+		WaveletTransform::upsample(noised, HH, 1, 256, 1, 1);
+
+		WaveletTransform::convolve(LL, LL_b, 256, 1, 0);
+		WaveletTransform::transpose(LL, LL_b1, 1, 256);
+		WaveletTransform::convolve(LL, LL_b, 256, 1, 0);
+		WaveletTransform::transpose(LL, LL_b1, 1, 256);
+
+		WaveletTransform::convolve(LH, LH_b, 256, 1, 0);
+		WaveletTransform::transpose(LH_b, LH, 1, 256);
+		WaveletTransform::convolve(LH_b, LH, 256, 1, 1);
+		WaveletTransform::transpose(LH, LH_b, 1, 256);
+
+		WaveletTransform::convolve(HL, HL_b, 256, 1, 1);
+		WaveletTransform::transpose(HL_b, HL, 1, 256);
+		WaveletTransform::convolve(HL_b, HL, 256, 1, 0);
+		WaveletTransform::transpose(HL, HL_b, 1, 256);
+
+	//	std::cout << " 2. \t SIZE OF HH SYNTHESIS = \t" << HH.height << "  SIZE OF HH_b = \t" << HH_b.height << '\n';
+
+		WaveletTransform::convolve(HH, HH_b, 256, 1, 1);
+		WaveletTransform::transpose(HH_b, HH, 1, 256);
+		WaveletTransform::convolve(HH_b, HH, 256, 1, 1);
+		WaveletTransform::transpose(HH, HH_b, 1, 256);
+
+//	std::cout << " 3. \t SIZE OF HH SYNTHESIS = \t" << HH.height << "  SIZE OF HH_b = \t" << HH_b.height << '\n';
+
+	WaveletTransform::add_IDWT_subbands(noised, LL, LH, HL, HH, 1, 256);
+	}
+	
+
+//	WaveletTransform::do_inverse_DWT(noised, t_1, 2, 256);
+//	   WaveletTransform::do_inverse_DWT(noised, t_1, 1, 256);
+	// Unbind all texture units
+
+//	WaveletTransform::sort_subbands(noised, sorted_HH_2, 2, 256, 8);
+
+
 
 
 	//------------------------------------------LVL 2 DWT FORWARD
+	/*
 	bool do_lvl_2_dwt = false;
 
 	if (do_lvl_2_dwt) {
@@ -427,10 +483,11 @@ int main() {
 
 	}
 
-
+	*/
 	//---------------------------------------------------COMPUTE AND APPLY THRESHOLD
 
 	//----------------------------------LVL 2 INVERSE DWT
+	/*
 	bool do_IDWT_2 = false;
 
 	if (do_IDWT_2) {
@@ -519,126 +576,10 @@ int main() {
 		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
 
 	}
+	*/
 
 	//----------------------------------LVL 2 INVERSE DWT
 
-	bool do_IDWT = false;
-	if (do_IDWT) {
-
-		Texture::activate_tex_unit(7);
-		dwt_mat.bind_texture();
-		dwt_mat.bind_image_2D(0);
-
-
-		Texture::activate_tex_unit(8);
-		dwt_mat_inv.bind_texture();
-		dwt_mat_inv.bind_image_2D(1);
-
-		transp_region_dynamic_lvl_1.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
-		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-			//--------------------------------------------------------------------UPSAMPLE
-		/*
-		Texture::activate_tex_unit(0);
-		noised.bind_texture();
-		noised.bind_image_2D(0);
-
-		Texture::activate_tex_unit(1);
-		subband_buffer.bind_texture();
-		subband_buffer.bind_image_2D(1);
-
-		Subband subband_signal = { 0, 0 };
-
-		unsigned int sub_H_L;
-		glCreateBuffers(1, &sub_H_L);
-		glNamedBufferStorage(sub_H_L, sizeof(Subband), &subband_signal, GL_DYNAMIC_STORAGE_BIT);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, sub_H_L);
-
-		upsample.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(128), 1);
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-		*/
-		//--------------------------------------------------------------------UPSAMPLE
-		/*
-		Texture::activate_tex_unit(0);
-		subband_buffer.bind_texture();
-		subband_buffer.bind_image_2D(0);
-
-		Texture::reset_to_base(t_1);
-		Texture::activate_tex_unit(1);
-		t_1.bind_texture();
-		t_1.bind_image_2D(1);
-		*/
-		/*
-		Subband subband_signal = { 0, 0 };
-
-		unsigned int sub_H_L;
-		glCreateBuffers(1, &sub_H_L);
-		glNamedBufferStorage(sub_H_L, sizeof(Subband), &subband_signal, GL_DYNAMIC_STORAGE_BIT);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, sub_H_L);
-		*/
-		/*
-		apply_mat_inv.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256), 1);
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
-		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-
-		Texture::activate_tex_unit(7);
-		t_1.bind_texture();
-		t_1.bind_image_2D(0);
-
-		Texture::reset_to_base(t_2);
-		Texture::activate_tex_unit(8);
-		t_2.bind_texture();
-		t_2.bind_image_2D(1);
-
-		transp_region_dynamic_lvl_1.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
-		//------------------------------------------------------------------------------------------TRANSPOSE
-
-		Texture::activate_tex_unit(0);
-		t_1.bind_texture();
-		t_1.bind_image_2D(0);
-
-		Texture::reset_to_base(t_2);
-		Texture::activate_tex_unit(1);
-		t_2.bind_texture();
-		t_2.bind_image_2D(1);
-
-		apply_mat_inv.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256 / 1), 1);
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
-
-
-		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-			//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-
-		Texture::activate_tex_unit(7);
-		noised.bind_texture();
-		noised.bind_image_2D(0);
-
-		Texture::reset_to_base(input_img);
-		Texture::activate_tex_unit(8);
-		input_img.bind_texture();
-		input_img.bind_image_2D(1);
-
-		transp_region_dynamic_lvl_1.use_shader_prog();
-		glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(1), 1);
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-		*/
-		//------------------------------------------------------------------------------------------TRANSPOSE	string path_trans_v = "transpose.cs";
-
-	}
-
-
-	
-	//Texture::reset_to_base(image_0);
 
 
 	if (window == NULL) {
@@ -667,8 +608,8 @@ int main() {
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
-
-		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\!!_LVL_1_2_FULL_DENOISE_LEAST_ARTEFACTS_1.png");
+			
+		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\Test_debug_images\\SHREK_NOISE_IDWT_2.png");
 
 		}
 

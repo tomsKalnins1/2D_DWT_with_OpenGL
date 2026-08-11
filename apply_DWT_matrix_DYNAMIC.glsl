@@ -12,7 +12,7 @@ const float h1[4] = { 0.1294095226, 0.224143868, -0.8365163037, 0.4829629131 };
 void synchronize()
 {
 
-    memoryBarrierShared();
+    memoryBarrierImage();
     barrier();
 
 }

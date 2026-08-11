@@ -62,12 +62,15 @@ public:
 
 	int decomp_lvl;
 	int img_dimension_x;
+	int subband; //one of the 4 subbands 0 for L, 1 for H
 
 	ApplyTransform() = delete;
 //	ApplyTransform(const GenerateTransform&) = delete;
 //	ApplyTransform& operator=(const GenerateTransform&) = delete;
 
 	ApplyTransform(string file_path, int decomposition_level, int img_dimension_x);
+	ApplyTransform(string file_path, int decomposition_level, int img_dimension_x, int H_L);
+
 
 	string set_compute_shader_values(string source) override;
 	string set_compute_shader_values_inverse(string source, int H_L);
@@ -99,11 +102,47 @@ public:
 
 	SortSubbandLocal() = delete;
 
-	SortSubbandLocal(string path, int decomposition_level, int img_dimension_x, int num_partiions);
+	SortSubbandLocal(string path, int decomposition_level, int img_dimension_x, int num_partions);
 
 	string set_compute_shader_values(string source) override;
 
 
 };
+
+class AddIDWTSubbands : public ShaderSource {
+
+public:
+	int decomp_lvl;
+	int img_dimension_x;
+	int num_partitions;
+
+	AddIDWTSubbands() = delete;
+
+	AddIDWTSubbands(string path, int decomposition_level, int img_dimension_x);
+
+	string set_compute_shader_values(string source) override;
+
+
+};
+
+class UpsampleSubband : public ShaderSource {
+
+public:
+	int decomp_lvl;
+	int img_dimension_x;
+	int num_partitions;
+	int H_L_0;
+	int H_L_1;
+
+	UpsampleSubband() = delete;
+
+	UpsampleSubband(string path, int decomposition_level, int img_dimension_x, int H_L_0, int H_L_1);
+
+	string set_compute_shader_values(string source) override;
+
+
+};
+
+
 
 #endif
