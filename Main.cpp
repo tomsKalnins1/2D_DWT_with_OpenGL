@@ -327,7 +327,55 @@ int main() {
 	//	WaveletTransform::transpose(noised, 2, 256);
 	//	WaveletTransform::sort_subbands(noised, sorted_HH, 1, 256, 16);
 
-//	WaveletTransform::do_DWT(noised, t_1, 2, 256);
+	WaveletTransform::do_DWT(noised, t_1, 2, 256);
+//	WaveletTransform::do_DWT(noised, t_1, 3, 256);
+
+
+	WaveletTransform dwt("apply_DWT_matrix_DYNAMIC.glsl", 3, 256, WaveletTransform::type_of_shader::APPLY_TRANSFORM);
+
+	Texture::activate_tex_unit(0);
+	noised.bind_texture();
+	noised.bind_image_2D(0);
+
+	//Texture output_intermediate = Texture{};
+//	Texture::reset_to_base(output);
+	Texture::activate_tex_unit(1);
+	t_1.bind_texture();
+	t_1.bind_image_2D(1);
+
+
+	dwt.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256 / pow(2, 2)), 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+	noised.unbind_texture(0);
+	noised.unbind_image_texture(0);
+	t_1.unbind_texture(1);
+	t_1.unbind_image_texture(1);
+
+	WaveletTransform::transpose(noised, t_1, 3, 256);
+
+	Texture::activate_tex_unit(0);
+	noised.bind_texture();
+	noised.bind_image_2D(0);
+
+	//	Texture::reset_to_base(input);
+	Texture::activate_tex_unit(1);
+	t_1.bind_texture();
+	t_1.bind_image_2D(1);
+
+	dwt.use_shader_prog();
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(256 / pow(2, 2)), 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+	noised.unbind_texture(1);
+	noised.unbind_image_texture(1);
+	t_1.unbind_texture(0);
+	t_1.unbind_image_texture(0);
+
+	WaveletTransform::transpose(noised, t_1, 3, 256);
+
+
 
 	int tex_size = 256 / 1;
 
@@ -347,12 +395,12 @@ int main() {
 	Texture HH_b1(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
 
 //	std::cout << "1. \t SIZE OF HH SYNTHESIS = \t" << HH.height << "  SIZE OF HH_b = \t" << HH_b.height << '\n';
+	WaveletTransform::do_inverse_DWT(noised, t_1, 3, 256);
+	WaveletTransform::do_inverse_DWT(noised, t_1, 2, 256);
+	WaveletTransform::do_inverse_DWT(noised, t_1, 1, 256);
 	
-//	WaveletTransform::do_inverse_DWT(noised, t_1, 2, 256);
-//	WaveletTransform::do_inverse_DWT(noised, t_1, 1, 256);
 	
-	
-	bool do_IDWT_2 = true;
+	bool do_IDWT_2 = false;
 	if(do_IDWT_2){
 		WaveletTransform::upsample(noised, LL, 1, 256, 0, 0);
 

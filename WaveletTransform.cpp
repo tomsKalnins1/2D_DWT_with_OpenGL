@@ -329,7 +329,7 @@ void WaveletTransform::do_DWT(Texture& input, Texture& output, int decomp_level,
 
 
 	dwt.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(img_width / decomp_level), 1);
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(img_width / pow(2, decomp_level - 1)), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	input.unbind_texture(0);
@@ -349,7 +349,7 @@ void WaveletTransform::do_DWT(Texture& input, Texture& output, int decomp_level,
 	input.bind_image_2D(1);
 
 	dwt.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(img_width / decomp_level), 1);
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(img_width / pow(2, decomp_level - 1)), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	input.unbind_texture(1);
@@ -417,7 +417,7 @@ void WaveletTransform::add_IDWT_subbands(Texture& dwt, Texture& LL, Texture& LH,
 	HH.bind_image_2D(4);
 
 	add.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(img_width/level), 1);
+	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(img_width / pow(2, level - 1)), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	dwt.unbind_texture(0);
@@ -430,7 +430,7 @@ void WaveletTransform::add_IDWT_subbands(Texture& dwt, Texture& LL, Texture& LH,
 
 void WaveletTransform::do_inverse_DWT(Texture& input, Texture& output, int level, int img_width) {
 
-	int tex_size = img_width / level;
+	int tex_size = img_width / pow(2, level - 1);
 
 	Texture LL(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);
 	Texture LH(GL_RGBA32F, GL_RGBA, "", tex_size, tex_size);

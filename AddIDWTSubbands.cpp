@@ -15,7 +15,7 @@ string AddIDWTSubbands::set_compute_shader_values(string source_file_path) {
 
 	//	std::cout << "DYNAMIC APPLY TRANSFORM  : \n " << comp_shader_source << " end of file " << '\n';
 
-	int num_invocations = img_dimension_x / decomp_lvl;
+	int num_invocations = img_dimension_x / pow(2, decomp_lvl - 1);
 
 	int index = 0;
 

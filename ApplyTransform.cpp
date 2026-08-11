@@ -41,7 +41,7 @@ string ApplyTransform::set_compute_shader_values(string source_file_path) {
 
 	}
 
-//	std::cout << "APPLY TRANSFORM : \n" << comp_shader_source << '\n';
+	std::cout << "APPLY TRANSFORM : \n" << comp_shader_source << '\n';
 
 	return comp_shader_source;
 
@@ -59,7 +59,7 @@ string ApplyTransform::set_compute_shader_values_inverse(string source_file_path
 	//	std::cout << "DYNAMIC APPLY TRANSFORM  : \n " << comp_shader_source << " end of file " << '\n';
 
 	int num_invocations = img_dimension_x/pow(2, decomp_lvl);
-	int mod_mask = img_dimension_x / decomp_lvl - 1;
+	int mod_mask = img_dimension_x / pow(2, decomp_lvl - 1) - 1;
 
 	std::cout << "SET INVERSE DWT COMPUTE VALS img_dimension_x = \t" << img_dimension_x << " decomp level : \t" << decomp_lvl << '\n';
 

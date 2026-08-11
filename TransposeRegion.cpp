@@ -10,7 +10,7 @@ string TransposeRegion::set_compute_shader_values(string source_file_path) {
 
 	string width_img = "WIDTH_IMG";
 
-	int width = img_dimension_x / decomp_lvl;
+	int width = img_dimension_x / pow(2, decomp_lvl - 1);
 
 	int index = 0;
 
