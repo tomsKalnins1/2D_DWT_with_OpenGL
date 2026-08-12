@@ -23,7 +23,7 @@ color_format{ format }, filename{ file_name }, width{ w }, height{ h } {
 	}
 	else {
 
-		glTexImage2D(GL_TEXTURE_2D, 0, internal_color_format, width, height, 0, color_format, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, internal_color_format, width, height, 0, color_format, GL_FLOAT, image);
 		
 	//	std::cout << "EMPTY TEXTURE CREATED \n";
 
@@ -33,19 +33,19 @@ color_format{ format }, filename{ file_name }, width{ w }, height{ h } {
 
 void Texture::reset_to_base(Texture& tex) {
 
-//	std::cout << "OLD TEX ID = " << tex.ID << '\n';
-	//glDeleteTextures(1, &tex.ID);
-	tex.ID = 0;
+	std::cout << "OLD TEX ID = " << tex.ID << '\n';
+//	glDeleteTextures(1, &tex.ID);
+//	tex.ID = 0;
 //	std::cout << "AFTER DELETE, BEFORE MOVE TEX ID = " << tex.ID << '\n';
 	std::cout << "WIDTH OF PREVIOUS TEXTURE : " << tex.width << '\n';
 	tex = std::move(Texture(GL_RGBA32F, GL_RGBA, "", tex.width, tex.width));
-//	std::cout << "NEW TEX ID = " << tex.ID << '\n';
+	std::cout << "NEW TEX ID = " << tex.ID << '\n';
 	//std::cout << "where the tex is moved  = " << &tex << '\n';
 }
 
 Texture& Texture::operator=(Texture&& to_move) {
-//	std::cout << "move operator \n reference is = " <<  &to_move << '\n';
-	glDeleteTextures(1, &ID);
+	std::cout << "move operator \n reference is = " <<  &to_move << '\n';
+//	glDeleteTextures(1, &ID);
 	ID = to_move.ID;
 	height = to_move.height;
 	width = to_move.width;
@@ -53,7 +53,6 @@ Texture& Texture::operator=(Texture&& to_move) {
 	color_format = to_move.color_format;
 	internal_color_format = to_move.internal_color_format;
 	image = to_move.image;
-	
 	to_move.image = nullptr;
 	filename = to_move.filename;
 	filename = to_move.filename;
@@ -65,7 +64,7 @@ Texture& Texture::operator=(Texture&& to_move) {
 }
 
 Texture::Texture(Texture&& to_move) {
-//	std::cout << "move OVERRIDE \n reference is = " << &to_move << '\n';
+	std::cout << "move OVERRIDE \n reference is = " << &to_move << '\n';
 	ID = to_move.ID;
 	height = to_move.height;
 	width = to_move.width;

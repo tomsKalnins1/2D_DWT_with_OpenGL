@@ -69,6 +69,12 @@
     <ClCompile Include="SoftThreshold.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="GaussianNoise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AddGaussianNoise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderProgram.h">
@@ -167,6 +173,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Soft_threshold_DYNAMIC.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Add_Gaussian_Noise_DYNAMIC.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

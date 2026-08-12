@@ -40,8 +40,8 @@ void get_local_medians(int L_H_0, int L_H_1){
     //HH subband
     if(L_H_0 == 1 && L_H_1 == 1 ){
 
-       pix_l = imageLoad(sorted_HH, ivec2((SUBBAND_SIZE / 2) + th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ) - 1, th_id.y + (SUBBAND_SIZE / 2)));
-       pix_r = imageLoad(sorted_HH, ivec2((SUBBAND_SIZE / 2) + th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ), th_id.y + (SUBBAND_SIZE / 2)));
+       pix_l = imageLoad(sorted_HH, ivec2((SUBBAND_SIZE ) + th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ) - 1, th_id.y + (SUBBAND_SIZE )));
+       pix_r = imageLoad(sorted_HH, ivec2((SUBBAND_SIZE ) + th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ), th_id.y + (SUBBAND_SIZE )));
        float median = (pix_l.x + pix_r.x) / 2.0;
        local_medians[th_id.x] = median;
 
@@ -51,8 +51,8 @@ void get_local_medians(int L_H_0, int L_H_1){
     //LH subband
     if(L_H_0 == 0 && L_H_1 == 1 ){
 
-       pix_l = imageLoad(sorted_HH, ivec2(th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ) - 1, th_id.y + (SUBBAND_SIZE / 2)));
-       pix_r = imageLoad(sorted_HH, ivec2(th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ), th_id.y + (SUBBAND_SIZE / 2)));
+       pix_l = imageLoad(sorted_HH, ivec2(th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ) - 1, th_id.y + (SUBBAND_SIZE )));
+       pix_r = imageLoad(sorted_HH, ivec2(th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ), th_id.y + (SUBBAND_SIZE )));
        float median = (pix_l.x + pix_r.x) / 2.0;
        local_medians[th_id.x] = median;
 
@@ -63,8 +63,8 @@ void get_local_medians(int L_H_0, int L_H_1){
     
   
 
-       pix_l = imageLoad(sorted_HH, ivec2((SUBBAND_SIZE / 2) + th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ) - 1, th_id.y));
-       pix_r = imageLoad(sorted_HH, ivec2((SUBBAND_SIZE / 2) + th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ), th_id.y));
+       pix_l = imageLoad(sorted_HH, ivec2((SUBBAND_SIZE ) + th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ) - 1, th_id.y));
+       pix_r = imageLoad(sorted_HH, ivec2((SUBBAND_SIZE ) + th_id.x * PARTITION_SIZE + ( PARTITION_SIZE / 2 ), th_id.y));
        float median = (pix_l.x + pix_r.x) / 2.0;
        local_medians[th_id.x] = median;
 
@@ -92,7 +92,7 @@ void set_local_means(int L_H_0, int L_H_1){
         //!!!!!!!! reduce 8 to 4 for lvl 2 ??
         
         for(int i = 0; i < PARTITION_SIZE; i++){
-            pix = imageLoad(DWT_coeffs, ivec2((SUBBAND_SIZE / 2) + th_id.x * PARTITION_SIZE + i, th_id.y + (SUBBAND_SIZE / 2)));
+            pix = imageLoad(DWT_coeffs, ivec2((SUBBAND_SIZE ) + th_id.x * PARTITION_SIZE + i, th_id.y + (SUBBAND_SIZE)));
             avg += pix.x;
         }
         avg /= float( PARTITION_SIZE );
@@ -107,7 +107,7 @@ void set_local_means(int L_H_0, int L_H_1){
         float avg = 0.0;
 
         for(int i = 0; i < PARTITION_SIZE; i++){
-            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * PARTITION_SIZE + i, th_id.y + (SUBBAND_SIZE / 2)));
+            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * PARTITION_SIZE + i, th_id.y + (SUBBAND_SIZE )));
             avg += pix.x;
         }
         avg /= float( PARTITION_SIZE );
@@ -122,7 +122,7 @@ void set_local_means(int L_H_0, int L_H_1){
         float avg = 0.0;
 
         for(int i = 0; i < PARTITION_SIZE; i++){
-            pix = imageLoad(DWT_coeffs, ivec2((SUBBAND_SIZE / 2) + th_id.x * PARTITION_SIZE + i, th_id.y));
+            pix = imageLoad(DWT_coeffs, ivec2((SUBBAND_SIZE ) + th_id.x * PARTITION_SIZE + i, th_id.y));
             avg += pix.x;
         }
 
@@ -145,7 +145,7 @@ void set_local_diviation_signal(int L_H_0, int L_H_1){
         float sum = 0.0;
 
         for(int i = 0; i < PARTITION_SIZE; i++){
-            pix = imageLoad(DWT_coeffs, ivec2((SUBBAND_SIZE / 2) + th_id.x * PARTITION_SIZE + i, th_id.y + (SUBBAND_SIZE / 2)));
+            pix = imageLoad(DWT_coeffs, ivec2((SUBBAND_SIZE ) + th_id.x * PARTITION_SIZE + i, th_id.y + (SUBBAND_SIZE )));
             sum += pow((pix.x - local_means[th_id.x]), 2.0);
         }
 
@@ -162,7 +162,7 @@ void set_local_diviation_signal(int L_H_0, int L_H_1){
         float sum = 0.0;
 
         for(int i = 0; i < PARTITION_SIZE; i++){
-            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * PARTITION_SIZE + i, th_id.y + (SUBBAND_SIZE / 2)));
+            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * PARTITION_SIZE + i, th_id.y + (SUBBAND_SIZE )));
             sum += pow((pix.x - local_means[th_id.x]), 2.0);
         }
 
@@ -179,7 +179,7 @@ void set_local_diviation_signal(int L_H_0, int L_H_1){
         float sum = 0.0;
 
         for(int i = 0; i < PARTITION_SIZE; i++){
-            pix = imageLoad(DWT_coeffs, ivec2((SUBBAND_SIZE / 2) + th_id.x * PARTITION_SIZE + i, th_id.y));
+            pix = imageLoad(DWT_coeffs, ivec2((SUBBAND_SIZE ) + th_id.x * PARTITION_SIZE + i, th_id.y));
             sum += pow((pix.x - local_means[th_id.x]), 2.0);
         }
 
@@ -209,7 +209,7 @@ void apply_Tn(int L_H_0, int L_H_1){
 
         for(int i = 0; i < PARTITION_SIZE; i++){
             
-            pix = imageLoad(DWT_coeffs, ivec2((SUBBAND_SIZE / 2) + th_id.x * PARTITION_SIZE + i, th_id.y + SUBBAND_SIZE / 2));
+            pix = imageLoad(DWT_coeffs, ivec2(SUBBAND_SIZE  + th_id.x * PARTITION_SIZE + i, th_id.y + SUBBAND_SIZE ));
             float sign = 1.0;
             if(pix.x < 0){
                 sign = -1.0;
@@ -225,8 +225,8 @@ void apply_Tn(int L_H_0, int L_H_1){
             if(local_deviation_noise[th_id.x] > 1.0){
                 pix_Tn = vec4(1.0, 0.0, 0.0, 1.0);
             }
-
-            imageStore(DWT_coeffs, ivec2(SUBBAND_SIZE / 2 + th_id.x * PARTITION_SIZE + i, th_id.y + SUBBAND_SIZE / 2), pix_Tn);
+            vec4 test = vec4(1.0, 0.0, 0.0, 1.0);
+            imageStore(DWT_coeffs, ivec2(SUBBAND_SIZE  + th_id.x * PARTITION_SIZE + i, th_id.y + SUBBAND_SIZE ), pix_Tn);
  
         }
         
@@ -238,7 +238,7 @@ void apply_Tn(int L_H_0, int L_H_1){
 
         for(int i = 0; i < PARTITION_SIZE; i++){
             
-            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * PARTITION_SIZE + i, th_id.y + SUBBAND_SIZE / 2));
+            pix = imageLoad(DWT_coeffs, ivec2(th_id.x * PARTITION_SIZE + i, th_id.y + SUBBAND_SIZE ));
             float sign = 1.0;
             if(pix.x < 0){
                 sign = -1.0;
@@ -254,8 +254,8 @@ void apply_Tn(int L_H_0, int L_H_1){
             if(local_deviation_noise[th_id.x] > 1.0){
                 pix_Tn = vec4(1.0, 0.0, 0.0, 1.0);
             }
-
-            imageStore(DWT_coeffs, ivec2(th_id.x * PARTITION_SIZE + i, th_id.y + SUBBAND_SIZE / 2), pix_Tn);
+             vec4 test = vec4(0.0, 1.0, 0.0, 1.0);
+            imageStore(DWT_coeffs, ivec2(th_id.x * PARTITION_SIZE + i, th_id.y + SUBBAND_SIZE), pix_Tn);
  
         }
         
@@ -267,7 +267,7 @@ void apply_Tn(int L_H_0, int L_H_1){
 
         for(int i = 0; i < PARTITION_SIZE; i++){
             
-            pix = imageLoad(DWT_coeffs, ivec2(SUBBAND_SIZE / 2 + th_id.x * PARTITION_SIZE + i, th_id.y));
+            pix = imageLoad(DWT_coeffs, ivec2(SUBBAND_SIZE  + th_id.x * PARTITION_SIZE + i, th_id.y));
             float sign = 1.0;
             if(pix.x < 0){
                 sign = -1.0;
@@ -281,8 +281,8 @@ void apply_Tn(int L_H_0, int L_H_1){
 
             vec4 pix_Tn = vec4(new_val, new_val, new_val, 1.0);
      
-
-            imageStore(DWT_coeffs, ivec2(SUBBAND_SIZE / 2 + th_id.x * PARTITION_SIZE + i, th_id.y), pix_Tn);
+            vec4 test = vec4(0.0, 0.0, 1.0, 1.0);
+            imageStore(DWT_coeffs, ivec2(SUBBAND_SIZE  + th_id.x * PARTITION_SIZE + i, th_id.y), pix_Tn);
  
         }
         
@@ -338,7 +338,7 @@ void main(){
 
     apply_Tn(1, 1);
     synchronize();
-    /*
+    
     apply_Tn(0, 1);
     synchronize();
 
@@ -346,7 +346,7 @@ void main(){
 
     apply_Tn(1, 0);
     synchronize();
-    */
+    
     
    // apply_Tn(1, 1);
    // synchronize();

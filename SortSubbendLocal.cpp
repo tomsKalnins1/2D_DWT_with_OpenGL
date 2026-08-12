@@ -42,7 +42,7 @@ string SortSubbandLocal::set_compute_shader_values(string source_file_path) {
 
 	
 
-//	std::cout << "SORT SUBBAND : \n" << comp_shader_source << '\n';
+	std::cout << "SORT SUBBAND : \n" << comp_shader_source << '\n';
 
 	return comp_shader_source;
 

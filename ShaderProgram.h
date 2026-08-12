@@ -13,6 +13,7 @@
 #include <glm/glm/gtc/type_ptr.hpp>
 #include "ShaderSource.h"
 #include "Texture.h"
+#include <vector>
 
 
 using std::string;
@@ -93,9 +94,26 @@ public :
 	static void add_IDWT_subbands(Texture& dwt, Texture& LL, Texture& LH, Texture& HL, Texture& HH, int level, int img_width);
 	static void do_DWT(Texture& input, Texture& output, int level, int img_width);
 	static void do_inverse_DWT(Texture& input, Texture& output, int level, int img_width);
+
+};
+
+class AddGaussianNoise : public ShaderProgram {
+
+public:
+
+	int img_dimension_x;
+
+	AddGaussianNoise(string file_path, float deviation, int img_dimension_width);
 	
+	static uint32_t rot_bits_left_32(uint32_t in, uint32_t s);
+	//gen one rand number
+	static uint32_t xoshiro_32(std::vector<uint32_t>& seed);
+	//gen vector of rand numbers
+	static std::vector<float> generate_rands_xoshiro_32(int num_rands, int base);
 
+	static void generate_uniform_noise(Texture& output, int base);
 
+	static void apply_Gaussian_noise(Texture& u_0, Texture& u_1, Texture& input, Texture& output, float deviation);
 
 };
 

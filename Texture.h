@@ -17,7 +17,7 @@ public:
 	int numColorChannels;
 	GLenum color_format;
 	GLenum internal_color_format;
-	float* image;
+	float* image = nullptr;
 	string filename;
 
 	static void reset_to_base(Texture&);

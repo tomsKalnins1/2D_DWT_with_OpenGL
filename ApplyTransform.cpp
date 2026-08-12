@@ -61,7 +61,7 @@ string ApplyTransform::set_compute_shader_values_inverse(string source_file_path
 	int num_invocations = img_dimension_x/pow(2, decomp_lvl);
 	int mod_mask = img_dimension_x / pow(2, decomp_lvl - 1) - 1;
 
-	std::cout << "SET INVERSE DWT COMPUTE VALS img_dimension_x = \t" << img_dimension_x << " decomp level : \t" << decomp_lvl << '\n';
+//	std::cout << "SET INVERSE DWT COMPUTE VALS img_dimension_x = \t" << img_dimension_x << " decomp level : \t" << decomp_lvl << '\n';
 
 	int index = 0;
 

@@ -10,12 +10,20 @@ shared float input_b[SUBBAND_WIDTH];
 shared float medians_of_rows[SUBBAND_WIDTH];
 
 
-void synchronize(){
+void synchronize_shared(){
 
     memoryBarrierShared();
     barrier();
 
 }
+
+void synchronize_image(){
+
+    memoryBarrierImage();
+    barrier();
+
+}
+
 void store_all_from_img_to_arr(int L_H_0, int L_H_1){
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
     int th_ind_l = th_id.x;
@@ -61,8 +69,10 @@ void store_all_from_arr_to_img(int L_H_0, int L_H_1){
     
         //HH subband
         if(L_H_0 == 1 && L_H_1 == 1){
+
             imageStore(image_T, ivec2(th_id.x + SUBBAND_WIDTH, th_id.y + SUBBAND_WIDTH), pix_l);
             imageStore(image_T, ivec2(th_id.x + SUBBAND_WIDTH + NUM_INV, th_id.y + SUBBAND_WIDTH), pix_r);
+            
         }
 
         //LH subband
@@ -119,7 +129,7 @@ void swap_val(int left, int right){
                     }
                 
                 }
-                synchronize();
+                synchronize_shared();
          
             }
         
@@ -131,27 +141,27 @@ void swap_val(int left, int right){
 
 void main()
 {
+
 store_all_from_img_to_arr(0, 1);
-synchronize();
+synchronize_image();
 bitonic_sort_1(0, SUBBAND_WIDTH);
 store_all_from_arr_to_img(0, 1);
-synchronize();
+synchronize_image();
+
 
 store_all_from_img_to_arr(1, 0);
-synchronize();
+synchronize_image();
 bitonic_sort_1(0, SUBBAND_WIDTH);
 store_all_from_arr_to_img(1, 0);
-synchronize();
+synchronize_image();
+
 
 store_all_from_img_to_arr(1, 1);
-synchronize();
+synchronize_image();
 bitonic_sort_1(0, SUBBAND_WIDTH);
 store_all_from_arr_to_img(1, 1);
-synchronize();
+synchronize_image();
 
-        
- 
-   
 
 
 }

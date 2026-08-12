@@ -45,10 +45,10 @@ void main()
    ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
    ivec2 w_id = ivec2(gl_LocalInvocationID.xy);
 
-   int i_0 = (th_id.x * 2 + 1) & (WIDTH_IMG - 1);
-   int i_1 = (th_id.x * 2 + 0) & (WIDTH_IMG - 1);
-   int i_2 = (th_id.x * 2 - 1) & (WIDTH_IMG - 1);
-   int i_3 = (th_id.x * 2 - 2) & (WIDTH_IMG - 1);
+   int i_0 = (th_id.x * 2 + 0) & (WIDTH_IMG - 1);
+   int i_1 = (th_id.x * 2 - 1) & (WIDTH_IMG - 1);
+   int i_2 = (th_id.x * 2 - 2) & (WIDTH_IMG - 1);
+   int i_3 = (th_id.x * 2 - 3) & (WIDTH_IMG - 1);
 
    float pix_low = 0.0;
    float pix_high = 0.0;

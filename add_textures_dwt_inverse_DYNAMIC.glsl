@@ -38,6 +38,7 @@ void main()
     pix_sum_r += imageLoad(HL, ivec2(th_id.x + NUM_INV, th_id.y));
     pix_sum_r += imageLoad(HH, ivec2(th_id.x + NUM_INV, th_id.y));
 
+    vec4 test = vec4(1.0, 0.0, 0.0, 1.0);
     imageStore(dwt, ivec2(th_id.x, th_id.y), pix_sum_l);
     imageStore(dwt, ivec2(th_id.x + NUM_INV, th_id.y), pix_sum_r);
 

@@ -50,15 +50,15 @@ void convolve_subband(){
 
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
 
-   int i_0 = ((th_id.x * 2) + 2) & MASK;
-   int i_1 = ((th_id.x * 2) + 1) & MASK;
-   int i_2 = ((th_id.x * 2) + 0) & MASK;
-   int i_3 = ((th_id.x * 2) - 1) & MASK;
+   int i_0 = ((th_id.x * 2) + 3) & MASK;
+   int i_1 = ((th_id.x * 2) + 2) & MASK;
+   int i_2 = ((th_id.x * 2) + 1) & MASK;
+   int i_3 = ((th_id.x * 2) + 0) & MASK;
 
-   int i_0_p = ((th_id.x * 2 + 1) + 2) & MASK;
-   int i_1_p = ((th_id.x * 2 + 1) + 1) & MASK;
-   int i_2_p = ((th_id.x * 2 + 1) + 0) & MASK;
-   int i_3_p = ((th_id.x * 2 + 1) - 1) & MASK;
+   int i_0_p = ((th_id.x * 2 + 1) + 3) & MASK;
+   int i_1_p = ((th_id.x * 2 + 1) + 2) & MASK;
+   int i_2_p = ((th_id.x * 2 + 1) + 1) & MASK;
+   int i_3_p = ((th_id.x * 2 + 1) + 0) & MASK;
 
    float pix_low = 0.0;
    float pix_low_p = 0.0;

@@ -152,9 +152,34 @@ public:
 	int num_partitions;
 
 
+
+
 	SoftThreshold() = delete;
 
 	SoftThreshold(string path, int decomposition_level, int img_dimension_x, int num_part);
+
+	string set_compute_shader_values(string source) override;
+
+
+};
+
+class GaussianNoise : public ShaderSource {
+
+public:
+	float deviation;
+
+	/*
+
+	struct Xoshiro {
+		std::vector<uint32_t> s;
+
+		Xoshiro() : s(4) {}
+	};
+	*/
+
+	GaussianNoise() = delete;
+
+	GaussianNoise(string path, float deviation);
 
 	string set_compute_shader_values(string source) override;
 

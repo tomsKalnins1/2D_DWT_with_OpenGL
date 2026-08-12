@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="Add_Gaussian_Noise_DYNAMIC.glsl" />
     <None Include="add_textures_dwt_inverse_DYNAMIC.glsl" />
     <None Include="apply_DWT_LVL_2.glsl" />
     <None Include="apply_DWT_matrix_DYNAMIC.glsl" />
@@ -154,7 +155,9 @@
     <None Include="bitonic_sort.txt">
       <FileType>CppCode</FileType>
     </None>
+    <ClCompile Include="AddGaussianNoise.cpp" />
     <ClCompile Include="AddIDWTSubbands.cpp" />
+    <ClCompile Include="GaussianNoise.cpp" />
     <ClCompile Include="ApplyTransform.cpp" />
     <ClCompile Include="GenerateTransform.cpp" />
     <Text Include="transpose_region.glsl">

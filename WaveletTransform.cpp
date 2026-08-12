@@ -16,7 +16,7 @@ WaveletTransform::WaveletTransform(string file_path, int decomposition_level, in
 	if (type_of_shader == WaveletTransform::type_of_shader::APPLY_INVERSE_TRANSFORM) {
 		ApplyTransform ait(file_path, decomposition_level, img_dimension_width, size_filter_num_part);
 		source_code = ait.set_compute_shader_values_inverse(file_path, size_filter_num_part);
-		std::cout << "APPLY INVERSE TRANSFORM MATRIX DYNAMIC : \n" << source_code << '\n';
+	//	std::cout << "APPLY INVERSE TRANSFORM MATRIX DYNAMIC : \n" << source_code << '\n';
 		comp = ait;
 
 	}
@@ -24,7 +24,7 @@ WaveletTransform::WaveletTransform(string file_path, int decomposition_level, in
 	if (type_of_shader == WaveletTransform::type_of_shader::SOFT_THRESHOLD) {
 		SoftThreshold st(file_path, decomposition_level, img_dimension_width, size_filter_num_part);
 		source_code = st.set_compute_shader_values(file_path);
-		std::cout << "APPLY INVERSE TRANSFORM MATRIX DYNAMIC : \n" << source_code << '\n';
+	//	std::cout << "APPLY INVERSE TRANSFORM MATRIX DYNAMIC : \n" << source_code << '\n';
 		comp = st;
 
 	}
@@ -239,8 +239,8 @@ void WaveletTransform::transpose(Texture& img, Texture& buffer_tex,  int decompo
 	img.bind_texture();
 	img.bind_image_2D(0);
 
-	Texture test = Texture{};
-	//Texture::reset_to_base(buffer_tex);
+
+//	Texture::reset_to_base(buffer_tex);
 	Texture::activate_tex_unit(1);
 	buffer_tex.bind_texture();
 	buffer_tex.bind_image_2D(1);
@@ -271,7 +271,7 @@ void WaveletTransform::upsample(Texture& dwt, Texture& subband, int decompositio
 	dwt.bind_texture();
 	dwt.bind_image_2D(0);
 
-	//Texture::reset_to_base(subband);
+	Texture::reset_to_base(subband);
 	Texture::activate_tex_unit(3);
 	subband.bind_texture();
 	subband.bind_image_2D(1);
@@ -311,6 +311,7 @@ void WaveletTransform::sort_subbands(Texture& input, Texture& output, int decomp
 	sort_subbands_comp.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(img_width / pow(2, decomp_lvl)), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	glFinish();
 
 	input.unbind_image_texture(0);
 	output.unbind_image_texture(1);
@@ -406,7 +407,7 @@ void WaveletTransform::convolve(Texture& input, Texture& output, int img_width, 
 	input.bind_texture();
 	input.bind_image_2D(0);
 
-//	Texture::reset_to_base(output);
+	Texture::reset_to_base(output);
 	Texture::activate_tex_unit(1);
 	output.bind_texture();
 	output.bind_image_2D(1);
@@ -459,6 +460,11 @@ void WaveletTransform::add_IDWT_subbands(Texture& dwt, Texture& LL, Texture& LH,
 	LH.unbind_texture(2);
 	HL.unbind_texture(3);
 	HH.unbind_texture(4);
+	dwt.unbind_image_texture(0);
+	LL.unbind_image_texture(1);
+	LH.unbind_image_texture(2);
+	HL.unbind_image_texture(3);
+	HH.unbind_image_texture(4);
 	
 }
 
@@ -504,44 +510,9 @@ void WaveletTransform::do_inverse_DWT(Texture& input, Texture& output, int level
 
 
 	WaveletTransform::add_IDWT_subbands(input, LL, LH, HL, HH, level, img_width);
-	/*
-	Texture::activate_tex_unit(0);
-	input.bind_texture();
-	input.bind_image_2D(0);
 
-	Texture::activate_tex_unit(1);
-	LL.bind_texture();
-	LL.bind_image_2D(1);
-
-	Texture::activate_tex_unit(2);
-	LH.bind_texture();
-	LH.bind_image_2D(2);
-
-
-	Texture::activate_tex_unit(3);
-	HL.bind_texture();
-	HL.bind_image_2D(3);
-
-	Texture::activate_tex_unit(4);
-	HH.bind_texture();
-	HH.bind_image_2D(4);
-
-
-	add.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(img_width), 1);
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-	*/
 	input.unbind_texture(0);
 	input.unbind_image_texture(0);
 	
-	glDeleteTextures(1, &LL.ID);
-	glDeleteTextures(1, &LH.ID);
-	glDeleteTextures(1, &HL.ID);
-	glDeleteTextures(1, &HH.ID);
-
-	glDeleteTextures(1, &LL_b.ID);
-	glDeleteTextures(1, &LH_b.ID);
-	glDeleteTextures(1, &HL_b.ID);
-	glDeleteTextures(1, &HH_b.ID);
 
 }
