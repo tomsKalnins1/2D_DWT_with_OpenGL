@@ -12,7 +12,7 @@ shared float scale_parameter = 1.0; // this is at level 2 decomposition
 
 
 shared float local_medians[NUM_INV];
-shared float local_deviation_noise[NUM_INV];
+shared float local_variance_noise[NUM_INV];
 
 shared float local_diviation_signal[NUM_INV];
 shared float local_Tn[NUM_INV];
@@ -71,12 +71,12 @@ void get_local_medians(int L_H_0, int L_H_1){
     }
 
 }
-//VARIANCE NOT DEVIATION!!!!
-void store_local_deviation_noise(){
+
+void store_local_variance_noise(){
 
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
 
-    local_deviation_noise[th_id.x] = pow(( local_medians[th_id.x] / 0.6745 ), 2.0);
+    local_variance_noise[th_id.x] = pow(( local_medians[th_id.x] / 0.6745 ), 2.0);
 
 }
 
@@ -88,8 +88,6 @@ void set_local_means(int L_H_0, int L_H_1){
     if(L_H_0 == 1 && L_H_1 == 1){
         vec4 pix = vec4(0.0, 0.0, 0.0, 1.0);
         float avg = 0.0;
-
-        //!!!!!!!! reduce 8 to 4 for lvl 2 ??
         
         for(int i = 0; i < PARTITION_SIZE; i++){
             pix = imageLoad(DWT_coeffs, ivec2((SUBBAND_SIZE ) + th_id.x * PARTITION_SIZE + i, th_id.y + (SUBBAND_SIZE)));
@@ -195,13 +193,15 @@ void set_local_Tn(){
 
    ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
 
-   local_Tn[th_id.x] = ( (scale_parameter_beta / 1.0) * local_deviation_noise[th_id.x] ) /  local_diviation_signal[th_id.x];
+   local_Tn[th_id.x] = ( (scale_parameter_beta / 1.0) * local_variance_noise[th_id.x] ) /  local_diviation_signal[th_id.x];
 
 }
 
 void apply_Tn(int L_H_0, int L_H_1){
     
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
+    //each thread has its designated area to apply soft threshold to based on the size of the sorted region
+    //from where the deviation, mean and threshold Tn is computed from
 
     //HH subband
     if(L_H_0 == 1 && L_H_1 == 1){
@@ -222,7 +222,7 @@ void apply_Tn(int L_H_0, int L_H_1){
 
 
             vec4 pix_Tn = vec4(new_val, new_val, new_val, 1.0);
-            if(local_deviation_noise[th_id.x] > 1.0){
+            if(local_variance_noise[th_id.x] > 1.0){
                 pix_Tn = vec4(1.0, 0.0, 0.0, 1.0);
             }
             vec4 test = vec4(1.0, 0.0, 0.0, 1.0);
@@ -251,7 +251,7 @@ void apply_Tn(int L_H_0, int L_H_1){
 
 
             vec4 pix_Tn = vec4(new_val, new_val, new_val, 1.0);
-            if(local_deviation_noise[th_id.x] > 1.0){
+            if(local_variance_noise[th_id.x] > 1.0){
                 pix_Tn = vec4(1.0, 0.0, 0.0, 1.0);
             }
              vec4 test = vec4(0.0, 1.0, 0.0, 1.0);
@@ -280,8 +280,7 @@ void apply_Tn(int L_H_0, int L_H_1){
 
 
             vec4 pix_Tn = vec4(new_val, new_val, new_val, 1.0);
-     
-            vec4 test = vec4(0.0, 0.0, 1.0, 1.0);
+            vec4 test = vec4(1.0, 0.0, 0.0, 1.0);
             imageStore(DWT_coeffs, ivec2(SUBBAND_SIZE  + th_id.x * PARTITION_SIZE + i, th_id.y), pix_Tn);
  
         }
@@ -298,7 +297,7 @@ void draw_Tn(int th_x, int th_y){
 
      if(th_id.x == th_x && th_id.y == th_y ){
         
-        float Tn = local_deviation_noise[th_id.x];
+        float Tn = local_variance_noise[th_id.x];
         uint Tn_bits =  floatBitsToInt(Tn);
 
         uint pix_val = 0; 
@@ -327,7 +326,7 @@ void main(){
 
     get_local_medians(1, 1);
     synchronize();
-    store_local_deviation_noise();
+    store_local_variance_noise();
     synchronize();
     set_local_means(1, 1);
     synchronize();
@@ -339,17 +338,47 @@ void main(){
     apply_Tn(1, 1);
     synchronize();
     
+     apply_Tn(1, 0);
+     synchronize();
+    
+    
     apply_Tn(0, 1);
     synchronize();
-
-  
-
-    apply_Tn(1, 0);
+    
+    
+    /*
+    get_local_medians(1, 0);
+    synchronize();
+    store_local_variance_noise();
+    synchronize();
+    set_local_means(1, 0);
+    synchronize();
+    set_local_diviation_signal(1, 0);
+    synchronize();
+    set_local_Tn();
     synchronize();
     
+    apply_Tn(1, 0);
+    synchronize();
+    */
+    /*
+    get_local_medians(0, 1);
+    synchronize();
+    store_local_variance_noise();
+    synchronize();
+    set_local_means(0, 1);
+    synchronize();
+    set_local_diviation_signal(0, 1);
+    synchronize();
+    set_local_Tn();
+    synchronize();
     
-   // apply_Tn(1, 1);
-   // synchronize();
+    apply_Tn(0, 1);
+    synchronize();
+    */
+ //   apply_Tn(0, 1);
+//    synchronize();
+    
 
 
 

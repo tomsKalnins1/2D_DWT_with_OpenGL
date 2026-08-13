@@ -330,7 +330,7 @@ void WaveletTransform::apply_soft_threshold(Texture& input, Texture& sorted_subb
 	input.bind_texture();
 	input.bind_image_2D(0);
 
-	//	Texture::reset_to_base(output);
+	//Texture::reset_to_base(sorted_subband);
 	Texture::activate_tex_unit(1);
 	sorted_subband.bind_texture();
 	sorted_subband.bind_image_2D(1);
@@ -356,8 +356,8 @@ void WaveletTransform::do_DWT(Texture& input, Texture& output, int decomp_level,
 	input.bind_texture();
 	input.bind_image_2D(0);
 
-	//Texture output_intermediate = Texture{};
-//	Texture::reset_to_base(output);
+	Texture output_intermediate = Texture{};
+	//Texture::reset_to_base(output_intermediate);
 	Texture::activate_tex_unit(1);
 	output.bind_texture();
 	output.bind_image_2D(1);
@@ -367,21 +367,22 @@ void WaveletTransform::do_DWT(Texture& input, Texture& output, int decomp_level,
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(img_width / pow(2, decomp_level - 1)), 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
+
 	input.unbind_texture(0);
 	input.unbind_image_texture(0);
-	output.unbind_texture(1);
-	output.unbind_image_texture(1);
+	output_intermediate.unbind_texture(1);
+	output_intermediate.unbind_image_texture(1);
 
-	transpose(output, input, decomp_level, img_width);
+	transpose(input, output, decomp_level, img_width);
 
 	Texture::activate_tex_unit(0);
-	output.bind_texture();
-	output.bind_image_2D(0);
-
-//	Texture::reset_to_base(input);
-	Texture::activate_tex_unit(1);
 	input.bind_texture();
-	input.bind_image_2D(1);
+	input.bind_image_2D(0);
+
+//	Texture::reset_to_base(output);
+	Texture::activate_tex_unit(1);
+	output.bind_texture();
+	output.bind_image_2D(1);
 
 	dwt.use_shader_prog();
 	glDispatchCompute((unsigned int)ceil(1), (unsigned int)ceil(img_width / pow(2, decomp_level - 1)), 1);
@@ -389,8 +390,8 @@ void WaveletTransform::do_DWT(Texture& input, Texture& output, int decomp_level,
 
 	input.unbind_texture(1);
 	input.unbind_image_texture(1);
-	output.unbind_texture(0);
-	output.unbind_image_texture(0);
+	output_intermediate.unbind_texture(0);
+	output_intermediate.unbind_image_texture(0);
 
 	transpose(input, output, decomp_level, img_width);
 

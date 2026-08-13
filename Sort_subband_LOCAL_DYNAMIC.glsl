@@ -69,7 +69,7 @@ void store_all_from_arr_to_img(int L_H_0, int L_H_1){
     
         //HH subband
         if(L_H_0 == 1 && L_H_1 == 1){
-
+            vec4 test = vec4(1.0, 0.0, 0.0, 1.0);
             imageStore(image_T, ivec2(th_id.x + SUBBAND_WIDTH, th_id.y + SUBBAND_WIDTH), pix_l);
             imageStore(image_T, ivec2(th_id.x + SUBBAND_WIDTH + NUM_INV, th_id.y + SUBBAND_WIDTH), pix_r);
             
@@ -77,6 +77,7 @@ void store_all_from_arr_to_img(int L_H_0, int L_H_1){
 
         //LH subband
         if(L_H_0 == 0 && L_H_1 == 1){
+
             imageStore(image_T, ivec2(th_id.x, th_id.y + SUBBAND_WIDTH), pix_l);
             imageStore(image_T, ivec2(th_id.x + NUM_INV, th_id.y + SUBBAND_WIDTH), pix_r);
         }

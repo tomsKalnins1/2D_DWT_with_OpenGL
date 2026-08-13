@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string>
 #include <map>
+#include <array>
 
 #include <thread>
 #include <mutex>
@@ -107,14 +108,20 @@ void create_noise_1() {
 	}
 }
 
-struct Subband {
-
-	int H_L_0;
-	int H_L_1;
-
-};
+template<class...C> constexpr std::array<float, sizeof...(C)> func(C...arg) {
+	//float arr[sizeof...(C)] = {arg3...};
+	std::array<float, sizeof...(C)> f{ arg... };
+	return f;
+}
 
 int main() {
+
+	constexpr auto arr = func(1.0f, 0.5f, 11.8f);
+
+	for (int i = 0; i < sizeof(arr) / 4; i++) {
+		cout << arr[i] << '\n';
+
+	}
 
 	glfwInit();
 
@@ -145,7 +152,6 @@ int main() {
 
 	ShaderProgram sh(v, f);
 
-
 	VAO vao;
 	vao.bind_VAO();
 	VBO vbo(plane_img, sizeof(plane_img));
@@ -153,160 +159,69 @@ int main() {
 	vao.unbind_VAO();
 	vbo.unbind_VBO();
 
-	string pathToImage = "C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\SHREK.png";
-
+	string pathToImage = "C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\CAMERAMAN_ORIGINAL.png";
+	
 	Texture input_img(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
-	Texture input_test_offset(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
-	Texture output_1 = Texture{};
-	Texture output_2 = Texture{};
-	//-------------------------------------gen DWT matrix 
 
-
-
-	//------------------------------------NOISE TEXTURE
-
-	create_noise_0();
-	create_noise_1();
-
-	unsigned int ID;
-	glGenTextures(1, &ID);
-
-
-	glBindTexture(GL_TEXTURE_2D, ID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 256, 256, 0, GL_RGBA, GL_FLOAT, img_noise);
-
-	unsigned int ID_1;
-	glGenTextures(1, &ID_1);
-
-	glBindTexture(GL_TEXTURE_2D, ID_1);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 256, 256, 0, GL_RGBA, GL_FLOAT, img_noise_1);
-
-
-
-
-	//------------------------------------NOISE TEXTURE
-	// 
+	//------------------------------------ ADD NOISE TEXTURE
+	 
 	Texture noise_u_0 = Texture{};
 	Texture noise_u_1 = Texture{};
 
 	AddGaussianNoise::generate_uniform_noise(noise_u_0, 1);
 	AddGaussianNoise::generate_uniform_noise(noise_u_1, 2);
-
-
-
-	//----------------------------------------GENERATE NOISE
-
-	ShaderProgram noise_comp("Box_Muller_noise_NRNG.glsl");
-
-	Texture noise = Texture{};
-	Texture n_0 = Texture{};
-	Texture n_1 = Texture{};
-	n_0.ID = ID;
-	n_1.ID = ID_1;
-
-	Texture::activate_tex_unit(0);
-	n_0.bind_texture();
-	n_0.bind_image_2D(0);
-
-	Texture::activate_tex_unit(1);
-	n_0.bind_texture();
-	n_1.bind_image_2D(1);
-
-	Texture::activate_tex_unit(2);
-	noise.bind_texture();
-	noise.bind_image_2D(2);
-
-	noise_comp.use_shader_prog();
-	glDispatchCompute((unsigned int)ceil(256), (unsigned int)ceil(256), 1);
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
-	//----------------------------------------GENERATE NOISE
-
-	//------------------------------------ADD NOISE
 	
-	
-	ShaderProgram add_noise("add_noise_to_image.glsl");
 	Texture image_0(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
+	
+	
 	Texture noised = Texture{};
 
-	Texture empty = Texture{};
+	AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, noised, 0.04);
 
-	AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, noised, 0.02);
-
-
-	Texture sorted_HH = Texture{};
-	Texture sorted_HH_2 = Texture{};
-	Texture dwt_mat = Texture{};
-	Texture dwt_mat_inv = Texture{};
-	Texture dwt_mat_inv_flip = Texture{};
-	Texture test_Tn = Texture{};
-	Texture t_1 = Texture{};
-	Texture t_2 = Texture{};
-
-	//SYNTHESIS
-
-	Texture subband_buffer = Texture{};
-	//------------------------------ TEST TRANSPOSE --------- TEST TRANSPOSE---- TEST TRANSPOSE 
-
-	ShaderProgram transp_region("transpose_region.glsl");
-	
-	//------------------------------ TEST TRANSPOSE --------- TEST TRANSPOSE---- TEST TRANSPOSE
-	Texture sub_sub = Texture{};
-
-	Texture sft_1(GL_RGBA32F, GL_RGBA, "", 256, 256);
-	Texture sft_2(GL_RGBA32F, GL_RGBA, "", 128, 128);
-	Texture sft_3(GL_RGBA32F, GL_RGBA, "", 64, 64);
-	Texture sft_4(GL_RGBA32F, GL_RGBA, "", 32, 32);
-
+	//------------------------------------ ADD NOISE TEXTURE
+	Texture t_1 = Texture{}; //dummy store texture
 	
 	WaveletTransform::do_DWT(image_0, t_1, 1, 256);
 	WaveletTransform::do_DWT(image_0, t_1, 2, 256);
 	WaveletTransform::do_DWT(image_0, t_1, 3, 256);
-	WaveletTransform::do_DWT(image_0, t_1, 4, 256);
-	/*
-	WaveletTransform::sort_subbands(image_0, sft_1, 1, 256, 16);
-	WaveletTransform::apply_soft_threshold(image_0, sft_1, 1, 256, 16);
+//	WaveletTransform::do_DWT(image_0, t_1, 4, 256);
 
-	WaveletTransform::sort_subbands(image_0, sft_2, 2, 256, 8);
-	WaveletTransform::apply_soft_threshold(image_0, sft_2, 2, 256, 8);
+	Texture sft_1(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	Texture sft_2(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	Texture sft_3(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	Texture sft_4(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	
 
-	WaveletTransform::sort_subbands(image_0, sft_3, 3, 256, 4);
-	WaveletTransform::apply_soft_threshold(image_0, sft_3, 3, 256, 4);
+//	WaveletTransform::sort_subbands(image_0, sft_4, 4, 256, 1);
+//	WaveletTransform::apply_soft_threshold(image_0, sft_4, 4, 256, 1);
+	bool do_DENOISE = true;
+	if (do_DENOISE) {
+		WaveletTransform::sort_subbands(image_0, sft_3, 3, 256, 1);
+		WaveletTransform::apply_soft_threshold(image_0, sft_3, 3, 256, 1);
 
+		WaveletTransform::sort_subbands(image_0, sft_2, 2, 256, 1);
+		WaveletTransform::apply_soft_threshold(image_0, sft_2, 2, 256, 1);
 
-	WaveletTransform::sort_subbands(image_0, sft_4, 4, 256, 2);
-	WaveletTransform::apply_soft_threshold(image_0, sft_4, 4, 256, 2);
-	*/
-	/*
-	WaveletTransform::sort_subbands(image_0, LL, 2, 256, 8);
-	WaveletTransform::apply_soft_threshold(image_0, LL, 2, 256, 8);
+		WaveletTransform::sort_subbands(image_0, sft_1, 1, 256, 8);
+		WaveletTransform::apply_soft_threshold(image_0, sft_1, 1, 256, 8);
+	}
+	
 
-	WaveletTransform::sort_subbands(image_0, LL, 1, 256, 16);
-	WaveletTransform::apply_soft_threshold(image_0, LL, 1, 256, 16);
-	*/
+//	WaveletTransform::do_inverse_DWT(image_0, t_1, 4, 256);
+	bool do_IDWT = true;
+	if(do_IDWT) {
+		WaveletTransform::do_inverse_DWT(image_0, t_1, 3, 256);
+
+		WaveletTransform::do_inverse_DWT(image_0, t_1, 2, 256);
+		WaveletTransform::do_inverse_DWT(image_0, t_1, 1, 256);
+	}
+	
+	
 
 
 	
-	WaveletTransform::do_inverse_DWT(image_0, t_1, 4, 256);
 
-	WaveletTransform::do_inverse_DWT(image_0, t_1, 3, 256);
-
-	WaveletTransform::do_inverse_DWT(image_0, t_1, 2, 256);
-	WaveletTransform::do_inverse_DWT(image_0, t_1, 1, 256);
-
-	
-
-//	Texture::reset_to_base(image_0);
-
-
+		
 
 
 
@@ -336,8 +251,8 @@ int main() {
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
-			
-		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\Test_debug_images\\XOSHIRO_32_NOISE_DWT_IDWT_NOISE_LVL_1_TO_4.png");
+		
+			saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\IDWT_denoised\\!!!_DB_3_CAMERAMAN_LVL_1_2_3_DWT_IDWT_DENOISE_DEV_004.png");
 
 		}
 

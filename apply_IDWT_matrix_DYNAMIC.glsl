@@ -8,10 +8,27 @@ layout(rgba32f, binding = 1) uniform image2D subband_buffer;
 
 
 
+const float h0[6] = {
+     0.0352262919, -0.0854412739, -0.1350110200,
+     0.4598775021,  0.8068915093,  0.3326705530
+};
 
-const float h0[4] = { 0.4829629131, 0.8365163037, 0.224143868, -0.1294095226 };
-const float h1[4] = { 0.1294095226, 0.224143868, -0.8365163037, 0.4829629131 };
+const float h1[6] = {
+    -0.3326705530,  0.8068915093, -0.4598775021,
+    -0.1350110200, 0.0854412739, 0.0352262919
+};
 
+const float g0[6] = {
+     0.3326705530, 0.8068915093, 0.4598775021,
+    -0.1350110200, -0.0854412739, 0.0352262919
+};
+
+const float g1[6] = {
+     0.0352262919, 0.0854412739, -0.1350110200,
+    -0.4598775021, 0.8068915093, -0.3326705530
+};
+
+/*
 const float g0[4] = {
     -0.1294095226,
      0.224143868,
@@ -25,6 +42,7 @@ const float g1[4] = {
      0.224143868,
      0.1294095226
 };
+*/
 
 void synchronize(){
 
@@ -49,17 +67,21 @@ void store_back_to_input(){
 void convolve_subband(){
 
     ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
-
+/*
    int i_0 = ((th_id.x * 2) + 3) & MASK;
    int i_1 = ((th_id.x * 2) + 2) & MASK;
    int i_2 = ((th_id.x * 2) + 1) & MASK;
    int i_3 = ((th_id.x * 2) + 0) & MASK;
+   int i_4 = ((th_id.x * 2) - 1) & MASK;
+   int i_5 = ((th_id.x * 2) - 2) & MASK;
 
    int i_0_p = ((th_id.x * 2 + 1) + 3) & MASK;
    int i_1_p = ((th_id.x * 2 + 1) + 2) & MASK;
    int i_2_p = ((th_id.x * 2 + 1) + 1) & MASK;
    int i_3_p = ((th_id.x * 2 + 1) + 0) & MASK;
-
+   int i_4_p = ((th_id.x * 2 + 1) - 1) & MASK;
+   int i_5_p = ((th_id.x * 2 + 1) - 2) & MASK;
+   */
    float pix_low = 0.0;
    float pix_low_p = 0.0;
    float pix_high = 0.0;
@@ -67,7 +89,7 @@ void convolve_subband(){
    vec4 pix_low_0 = vec4(0.0);
 
    vec4 pix_low_1 = vec4(0.0);
-    
+    /*
 
         pix_low += imageLoad(subband, ivec2(i_0, th_id.y)).x * FILTER[0];
         synchronize();
@@ -76,7 +98,10 @@ void convolve_subband(){
         pix_low += imageLoad(subband, ivec2(i_2, th_id.y)).x * FILTER[2];
         synchronize();
         pix_low += imageLoad(subband, ivec2(i_3, th_id.y)).x * FILTER[3];
-
+        synchronize();
+        pix_low += imageLoad(subband, ivec2(i_4, th_id.y)).x * FILTER[4];
+        synchronize();
+        pix_low += imageLoad(subband, ivec2(i_5, th_id.y)).x * FILTER[5];
         synchronize();
    
         pix_low_p += imageLoad(subband, ivec2(i_0_p, th_id.y)).x * FILTER[0];
@@ -87,6 +112,20 @@ void convolve_subband(){
         synchronize();
         pix_low_p += imageLoad(subband, ivec2(i_3_p, th_id.y)).x * FILTER[3];
         synchronize();
+        pix_low_p += imageLoad(subband, ivec2(i_4_p, th_id.y)).x * FILTER[4];
+        synchronize();
+        pix_low_p += imageLoad(subband, ivec2(i_5_p, th_id.y)).x * FILTER[5];
+        synchronize();
+        */
+        for(int i = 6 - 1 ; i >= 0; i--){
+
+           int i_0 = ((th_id.x * 2) + i - 2) & MASK;
+           int i_0_p = ((th_id.x * 2 + 1) + i - 2) & MASK;
+
+           pix_low += imageLoad(subband, ivec2(i_0, th_id.y)).x * FILTER[5 - i];
+           pix_low_p += imageLoad(subband, ivec2(i_0_p, th_id.y)).x * FILTER[5 - i];
+
+        }
 
    pix_low_0 = vec4(pix_low, pix_low, pix_low, 1.0);
        synchronize();

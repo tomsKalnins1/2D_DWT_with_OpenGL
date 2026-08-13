@@ -27,9 +27,13 @@ public:
 	Texture(const Texture&) = delete;
 
 	~Texture(){
-	//	std::cout << "DELETE CALLED ! \n";
-		if (ID != 0)
+	//	std::cout << "DESTRUCTOR ON TEX ID : " << ID << '\n';
+		if (ID != 0) {
 			glDeleteTextures(1, &ID);
+		}
+		if (image) {
+			stbi_image_free(image);
+		}
 	}
 
 	Texture(GLenum internal_format = GL_RGBA32F, GLenum format = GL_RGBA, string file_name = "", int width = 256, int height = 256);
