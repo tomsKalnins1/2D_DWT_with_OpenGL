@@ -12,6 +12,7 @@
 #include <glm/glm/gtc/matrix_transform.hpp>
 #include <glm/glm/gtc/type_ptr.hpp>
 #include <cmath>
+#include <array>
 
 using std::string;
 
@@ -75,6 +76,7 @@ public:
 
 	string set_compute_shader_values(string source) override;
 	string set_compute_shader_values_inverse(string source, int H_L);
+
 
 };
 

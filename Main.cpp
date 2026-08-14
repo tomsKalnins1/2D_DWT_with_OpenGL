@@ -18,6 +18,7 @@
 #include <algorithm>
 
 #include "ShaderProgram.h"
+#include "ShaderSource.h"
 
 #include "VAO.h"
 #include "VBO.h"
@@ -108,20 +109,63 @@ void create_noise_1() {
 	}
 }
 
-template<class...C> constexpr std::array<float, sizeof...(C)> func(C...arg) {
-	//float arr[sizeof...(C)] = {arg3...};
-	std::array<float, sizeof...(C)> f{ arg... };
-	return f;
-}
+
+
+template<class ...H>
+class Filter {
+	
+public:
+	std::array<float, sizeof ...(H)> h0;
+
+
+	Filter() {}
+	constexpr Filter(H ...arg) : h0{ static_cast<float>(arg) ... } {}
+
+	constexpr std::array<float, sizeof ...(H)> get_highpass() const{
+		std::array<float, sizeof ...(H)> h1{};
+		for (int i = 0; i < sizeof ...(H); i++) {
+			int val = -1;
+			for (int k = 0; k < i; k++) {
+				val *= (-1);
+			}
+			h1[sizeof...(H) - 1 - i] = h0[i] * (-1) * val;
+			
+		}
+			return h1;	
+	}
+
+};
+
+
 
 int main() {
 
-	constexpr auto arr = func(1.0f, 0.5f, 11.8f);
+	constexpr Filter fff{ 0.0352262919f, -0.0854412739f, -0.1350110200f, 0.4598775021f, 0.8068915093f, 0.3326705530f };
+	constexpr auto high_p = fff.get_highpass();
 
-	for (int i = 0; i < sizeof(arr) / 4; i++) {
-		cout << arr[i] << '\n';
+//	constexpr Container<float> cont{0.0352262919f, 0.0352262919f};
+// //constexpr auto fil = get_arr<float>(0.0352262919, -0.0854412739, -0.1350110200, 0.4598775021, 0.8068915093, 0.3326705530);
 
+	for (int i = 0; i < 6; i++) {
+		cout << "Filter compile time compute output h0 = " << fff.h0[i] << '\n';
 	}
+
+	for (int i = 0; i < 6; i++) {
+		cout << "Filter compile time compute output h1 = " << high_p[i] << '\n';
+	}
+
+	//ValueV<std::array<float, 3>> vvv{ 1.55555f, 4.000123f, 4.000123f };
+
+	//constexpr ValueV values[]{ ValueV{1.1f}, ValueV{2.1f}, ValueV{3.0f} };
+
+
+
+	/*
+	std::array<float, 6> arr = { 0.0352262919, -0.0854412739, -0.1350110200,
+	 0.4598775021,  0.8068915093,  0.3326705530 };
+	*/
+
+
 
 	glfwInit();
 
@@ -184,7 +228,7 @@ int main() {
 	WaveletTransform::do_DWT(image_0, t_1, 1, 256);
 	WaveletTransform::do_DWT(image_0, t_1, 2, 256);
 	WaveletTransform::do_DWT(image_0, t_1, 3, 256);
-//	WaveletTransform::do_DWT(image_0, t_1, 4, 256);
+	WaveletTransform::do_DWT(image_0, t_1, 4, 256);
 
 	Texture sft_1(GL_RGBA32F, GL_RGBA, "", 256, 256);
 	Texture sft_2(GL_RGBA32F, GL_RGBA, "", 256, 256);
@@ -194,8 +238,12 @@ int main() {
 
 //	WaveletTransform::sort_subbands(image_0, sft_4, 4, 256, 1);
 //	WaveletTransform::apply_soft_threshold(image_0, sft_4, 4, 256, 1);
+
 	bool do_DENOISE = true;
 	if (do_DENOISE) {
+
+		WaveletTransform::sort_subbands(image_0, sft_4, 4, 256, 1);
+		WaveletTransform::apply_soft_threshold(image_0, sft_4, 4, 256, 1);
 		WaveletTransform::sort_subbands(image_0, sft_3, 3, 256, 1);
 		WaveletTransform::apply_soft_threshold(image_0, sft_3, 3, 256, 1);
 
@@ -207,7 +255,7 @@ int main() {
 	}
 	
 
-//	WaveletTransform::do_inverse_DWT(image_0, t_1, 4, 256);
+	WaveletTransform::do_inverse_DWT(image_0, t_1, 4, 256);
 	bool do_IDWT = true;
 	if(do_IDWT) {
 		WaveletTransform::do_inverse_DWT(image_0, t_1, 3, 256);
@@ -252,7 +300,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 		
-			saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\IDWT_denoised\\!!!_DB_3_CAMERAMAN_LVL_1_2_3_DWT_IDWT_DENOISE_DEV_004.png");
+			//saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\IDWT_denoised\\!!!_DB_3_CAMERAMAN_LVL_1_2_3_DWT_IDWT_DENOISE_DEV_004.png");
 
 		}
 

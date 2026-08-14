@@ -62,7 +62,7 @@ string SoftThreshold::set_compute_shader_values(string source_file_path) {
 		comp_shader_source = comp_shader_source.replace(index, subband_size.size(), std::to_string(size_sub));
 
 	}
-	std::cout << "SOFT THRESHOLD SHADER : \n" << comp_shader_source << '\n';
+//	std::cout << "SOFT THRESHOLD SHADER : \n" << comp_shader_source << '\n';
 
 	return comp_shader_source;
 

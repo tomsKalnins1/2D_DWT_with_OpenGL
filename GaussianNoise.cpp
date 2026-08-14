@@ -22,7 +22,7 @@ int index = comp_shader_source.find(st_deviation);
 comp_shader_source = comp_shader_source.replace(index, st_deviation.size(), std::to_string(deviation));
 
 
-std::cout << "GAUSSIAN NOISE SHADER : \n" << comp_shader_source << '\n';
+//std::cout << "GAUSSIAN NOISE SHADER : \n" << comp_shader_source << '\n';
 
 return comp_shader_source;
 
