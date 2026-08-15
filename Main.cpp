@@ -113,7 +113,7 @@ void create_noise_1() {
 
 template<class ...H>
 class Filter {
-	
+
 public:
 	std::array<float, sizeof ...(H)> h0;
 
@@ -121,7 +121,7 @@ public:
 	Filter() {}
 	constexpr Filter(H ...arg) : h0{ static_cast<float>(arg) ... } {}
 
-	constexpr std::array<float, sizeof ...(H)> get_highpass() const{
+	constexpr std::array<float, sizeof ...(H)> get_highpass_analysis() const {
 		std::array<float, sizeof ...(H)> h1{};
 		for (int i = 0; i < sizeof ...(H); i++) {
 			int val = -1;
@@ -129,9 +129,32 @@ public:
 				val *= (-1);
 			}
 			h1[sizeof...(H) - 1 - i] = h0[i] * (-1) * val;
-			
+
 		}
-			return h1;	
+		return h1;
+	}
+
+	constexpr std::array<float, sizeof ...(H)> get_lowpass_synthesis() const {
+		std::array<float, sizeof ...(H)> g0{};
+		for (int i = 0; i < sizeof ...(H); i++) {
+
+			g0[sizeof...(H) - 1 - i] = h0[i];
+
+		}
+		return g0;
+	}
+
+	constexpr std::array<float, sizeof ...(H)> get_highpass_synthesis() const {
+		std::array<float, sizeof ...(H)> g1{};
+		for (int i = 0; i < sizeof ...(H); i++) {
+			int val = -1;
+			for (int k = 0; k < i; k++) {
+				val *= (-1);
+			}
+			g1[sizeof...(H) - 1 - i] = h0[i] * val;
+
+		}
+		return g1;
 	}
 
 };
@@ -141,18 +164,31 @@ public:
 int main() {
 
 	constexpr Filter fff{ 0.0352262919f, -0.0854412739f, -0.1350110200f, 0.4598775021f, 0.8068915093f, 0.3326705530f };
-	constexpr auto high_p = fff.get_highpass();
+	constexpr auto high_p = fff.get_highpass_analysis();
+	constexpr auto lowp_synthesis = fff.get_lowpass_synthesis();
+	constexpr auto highp_synthesis = fff.get_highpass_synthesis();
 
-//	constexpr Container<float> cont{0.0352262919f, 0.0352262919f};
-// //constexpr auto fil = get_arr<float>(0.0352262919, -0.0854412739, -0.1350110200, 0.4598775021, 0.8068915093, 0.3326705530);
+	//	constexpr Container<float> cont{0.0352262919f, 0.0352262919f};
+	// //constexpr auto fil = get_arr<float>(0.0352262919, -0.0854412739, -0.1350110200, 0.4598775021, 0.8068915093, 0.3326705530);
 
 	for (int i = 0; i < 6; i++) {
 		cout << "Filter compile time compute output h0 = " << fff.h0[i] << '\n';
 	}
-
+	cout << '\n';
 	for (int i = 0; i < 6; i++) {
 		cout << "Filter compile time compute output h1 = " << high_p[i] << '\n';
 	}
+	cout << '\n';
+	for (int i = 0; i < 6; i++) {
+		cout << "Filter compile time compute output g0 = " << lowp_synthesis[i] << '\n';
+	}
+
+	cout << '\n';
+
+	for (int i = 0; i < 6; i++) {
+		cout << "Filter compile time compute output g1 = " << highp_synthesis[i] << '\n';
+	}
+
 
 	//ValueV<std::array<float, 3>> vvv{ 1.55555f, 4.000123f, 4.000123f };
 
