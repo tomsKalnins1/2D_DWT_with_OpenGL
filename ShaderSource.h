@@ -75,7 +75,7 @@ public:
 
 
 	string set_compute_shader_values(string source) override;
-	string set_compute_shader_values_inverse(string source, int H_L);
+	string set_compute_shader_values_inverse(string source, int H_L, int filter_size, string filter_coeffs);
 
 
 };

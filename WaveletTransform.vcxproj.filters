@@ -57,9 +57,6 @@
     <ClCompile Include="SortSubbendLocal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WaveletTransform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AddIDWTSubbands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -96,6 +93,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Wavelet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DiscreteWaveletTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -177,6 +177,9 @@
     </None>
     <None Include="Add_Gaussian_Noise_DYNAMIC.glsl">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="WaveletTransform.cpp">
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

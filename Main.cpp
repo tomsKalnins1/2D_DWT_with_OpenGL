@@ -24,6 +24,7 @@
 #include "VBO.h"
 #include "Texture.h"
 #include "Wavelet.h"
+#include "DiscreteWaveletTransform.h"
 
 
 #define M_PI 3.14159265358979323846
@@ -110,7 +111,7 @@ void create_noise_1() {
 }
 
 
-
+/*
 template<class ...H>
 class Filter {
 
@@ -158,11 +159,11 @@ public:
 	}
 
 };
-
+*/
 
 
 int main() {
-
+	/*
 	constexpr Filter fff{ 0.0352262919f, -0.0854412739f, -0.1350110200f, 0.4598775021f, 0.8068915093f, 0.3326705530f };
 	constexpr auto high_p = fff.get_highpass_analysis();
 	constexpr auto lowp_synthesis = fff.get_lowpass_synthesis();
@@ -188,6 +189,10 @@ int main() {
 	for (int i = 0; i < 6; i++) {
 		cout << "Filter compile time compute output g1 = " << highp_synthesis[i] << '\n';
 	}
+	*/
+
+
+
 
 
 	//ValueV<std::array<float, 3>> vvv{ 1.55555f, 4.000123f, 4.000123f };
@@ -255,12 +260,49 @@ int main() {
 	
 	
 	Texture noised = Texture{};
+	Texture t_1 = Texture{};
+//	AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, noised, 0.04);
 
-	AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, noised, 0.04);
+	constexpr Test test_f{ 0.0352262919f, -0.0854412739f, -0.1350110200f, 0.4598775021f, 0.8068915093f, 0.3326705530f };
+	// static_assert(test_f.h0_w[0] == 0.0352262919f);
+	for (int i = 0; i < 6; i++) {
+		cout << "VARIADIC FILTER TEST : " << test_f.ff.h0[i] << '\n';
+	}
+	std::array<float, 6> h00 = test_f.h0_w;
+	std::array<float, 6> h11 = test_f.h1_w;
+	std::array<float, 6> g00 = test_f.g0_w;
+	std::array<float, 6> g11 = test_f.g1_w;
 
-	//------------------------------------ ADD NOISE TEXTURE
-	Texture t_1 = Texture{}; //dummy store texture
-	
+	Wavelet_0 w0{ 256, h00, h11, g00, g11 };
+	w0.do_IDWT_prog(1, 0);
+
+	for (int i = 0; i < 6; i++) {
+		std::cout << h00[i] << '\t' << h11[i] << '\t' << g00[i] << '\t' << g11[i] << '\n';
+	}
+
+	std::cout << w0.h0.size() << '\n';
+	/*
+	w0.transpose(image_0, noised, 2);
+	//w0.upsample(image_0, noised, 1, 0, 0);
+	w0.sort_subbands(image_0, noised, 1, 4);
+
+	w0.apply_soft_threshold(image_0, noised, 1, 4);
+	*/
+
+	w0.do_DWT(image_0, t_1, 1);
+	w0.do_DWT(image_0, t_1, 2);
+	w0.do_DWT(image_0, t_1, 3);
+	w0.do_DWT(image_0, t_1, 4);
+//	w0.do_DWT(image_0, t_1, 5);
+
+//	w0.do_IDWT(image_0, t_1, 5);
+	w0.do_IDWT(image_0, t_1, 4);
+	w0.do_IDWT(image_0, t_1, 3);
+	w0.do_IDWT(image_0, t_1, 2);
+	w0.do_IDWT(image_0, t_1, 1);
+//------------------------------------ ADD NOISE TEXTURE
+	 //dummy store texture
+	/*
 	WaveletTransform::do_DWT(image_0, t_1, 1, 256);
 	WaveletTransform::do_DWT(image_0, t_1, 2, 256);
 	WaveletTransform::do_DWT(image_0, t_1, 3, 256);
@@ -301,7 +343,7 @@ int main() {
 	}
 	
 	
-
+	*/
 
 	
 

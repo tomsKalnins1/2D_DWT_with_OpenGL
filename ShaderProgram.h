@@ -23,7 +23,7 @@ class ShaderProgram {
 
 public:
 
-	unsigned int ID;
+	unsigned int ID = 0;
 
 
 	ShaderProgram() {}

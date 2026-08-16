@@ -167,7 +167,7 @@
     <ClCompile Include="SortSubbendLocal.cpp" />
     <ClCompile Include="TransposeRegion.cpp" />
     <ClCompile Include="UpsampleSubband.cpp" />
-    <ClCompile Include="WaveletTransform.cpp" />
+    <None Include="WaveletTransform.cpp" />
     <ClCompile Include="Wavelet_class.cpp" />
     <None Include="..\FourierTransform\FFT_main.cpp" />
     <ClCompile Include="glad.c" />
@@ -205,6 +205,7 @@
     <None Include="vertex_shader.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DiscreteWaveletTransform.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="ShaderSource.h" />
     <ClInclude Include="stb_image.h" />

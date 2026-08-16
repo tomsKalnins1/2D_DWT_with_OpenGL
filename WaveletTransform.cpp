@@ -128,14 +128,6 @@ WaveletTransform::WaveletTransform(string file_path, int decomposition_level, in
 
 	}
 
-	if (type_of_shader == WaveletTransform::type_of_shader::ADD_SUBBANDS) {
-		AddIDWTSubbands aidwts(file_path, decomposition_level, img_dimension_width);
-		source_code = aidwts.set_compute_shader_values(file_path);
-		//	std::cout << "APPLY MATRIX DYNAMIC : \n" << source_code << '\n';
-		comp = aidwts;
-
-	}
-
 	if (type_of_shader == WaveletTransform::type_of_shader::TRANSPOSE_REGION) {
 		TransposeRegion tr(file_path, decomposition_level, img_dimension_width);
 		source_code = tr.set_compute_shader_values(file_path);
