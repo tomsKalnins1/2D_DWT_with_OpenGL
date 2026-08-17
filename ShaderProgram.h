@@ -28,19 +28,13 @@ public:
 
 	ShaderProgram() {}
 	ShaderProgram(string vertex_shader, string fragment_shader);
-	/*
-	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, int size_filter, type_of_shader type);
-	ShaderProgram(string file_path, int decomposition_level, int img_dimension_width, type_of_shader type);
-	ShaderProgram(string file_path, int decomposition_level, int H_L);
-	*/
 	ShaderProgram(string file_path);
 
-//	ShaderProgram() = delete;
-
 	void use_shader_prog();
-
 	void delete_shader_prog();
 
+	static ShaderProgram undo_gamma_correction_prog(int img_width);
+	static void undo_gamma_correction(Texture& input, int img_width);
 	static void set_uniform(unsigned int shader_id, string uniformName, glm::vec3 vector);
 	static void set_uniform(unsigned int shader_id, string uniformName, glm::mat4 matrix);
 	static void set_uniform(unsigned int shader_id, string uniformName, float value);

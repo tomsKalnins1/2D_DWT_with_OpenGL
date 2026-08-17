@@ -9,12 +9,15 @@ ApplyTransform::ApplyTransform(string file_path, int decomposition_level, int im
 																												img_dimension_x{ img_dimension_width },
 																												subband{H_L} {}
 
-string ApplyTransform::set_compute_shader_values(string source_file_path) {
+string ApplyTransform::set_compute_shader_values(string source_file_path, int filter_size, string coeff_h0_values, string coeff_h1_values) {
 
 	string comp_shader_source = ShaderSource::get_file_content(path_to_shader);
 
 	string num_invoc = "NUM_INV";
 	string width_img = "WIDTH_IMG";
+	string filt_size = "SIZE";
+	string coeffs_h0 = "COEFFS_H0";
+	string coeffs_h1 = "COEFFS_H1";
 
 	
 //	std::cout << "DYNAMIC APPLY TRANSFORM  : \n " << comp_shader_source << " end of file " << '\n';
@@ -35,11 +38,23 @@ string ApplyTransform::set_compute_shader_values(string source_file_path) {
 
 	while (comp_shader_source.find(width_img) < comp_shader_source.size()) {
 
-
 		index = comp_shader_source.find(width_img);
 		comp_shader_source = comp_shader_source.replace(index, width_img.size(), std::to_string(num_invocations * 2));
 
 	}
+
+	index = 0;
+	while (comp_shader_source.find(filt_size) < comp_shader_source.size()) {
+		
+		index = comp_shader_source.find(filt_size);
+		comp_shader_source = comp_shader_source.replace(index, filt_size.size(), std::to_string(filter_size));
+	}
+
+	index = comp_shader_source.find(coeffs_h0);
+	comp_shader_source = comp_shader_source.replace(index, coeffs_h0.size(), coeff_h0_values);
+
+	index = comp_shader_source.find(coeffs_h1);
+	comp_shader_source = comp_shader_source.replace(index, coeffs_h1.size(), coeff_h1_values);
 
 //	std::cout << "APPLY TRANSFORM : \n" << comp_shader_source << '\n';
 
@@ -50,7 +65,7 @@ string ApplyTransform::set_compute_shader_values(string source_file_path) {
 string ApplyTransform::set_compute_shader_values_inverse(string source_file_path, int H_L, int filter_size, string coeff_values) {
 
 	string comp_shader_source = ShaderSource::get_file_content(source_file_path.c_str());
-	std::cout << "INVERSE : \n" << comp_shader_source << '\n';
+//	std::cout << "INVERSE : \n" << comp_shader_source << '\n';
 
 	string filter_0 = "FILTER";
 	string num_invoc = "NUM_INV";
@@ -120,7 +135,7 @@ string ApplyTransform::set_compute_shader_values_inverse(string source_file_path
 
 		comp_shader_source = comp_shader_source.replace(index, coeffs.size(), coeff_values);
 
-	std::cout << "INVERSE APPLY TRANSFORM : \n" << comp_shader_source << '\n';
+//	std::cout << "INVERSE APPLY TRANSFORM : \n" << comp_shader_source << '\n';
 
 	return comp_shader_source;
 

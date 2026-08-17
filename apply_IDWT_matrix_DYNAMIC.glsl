@@ -48,8 +48,8 @@ void convolve_subband(){
            int i_0 = ((th_id.x * 2) + i - 2) & MASK;
            int i_0_p = ((th_id.x * 2 + 1) + i - 2) & MASK;
 
-           pix_low += imageLoad(subband, ivec2(i_0, th_id.y)).x * FILTER[5 - i];
-           pix_low_p += imageLoad(subband, ivec2(i_0_p, th_id.y)).x * FILTER[5 - i];
+           pix_low += imageLoad(subband, ivec2(i_0, th_id.y)).x * FILTER[(SIZE - 1) - i];
+           pix_low_p += imageLoad(subband, ivec2(i_0_p, th_id.y)).x * FILTER[(SIZE - 1) - i];
 
         }
 

@@ -74,7 +74,7 @@ public:
 	ApplyTransform(string file_path, int decomposition_level, int img_dimension_x, int H_L);
 
 
-	string set_compute_shader_values(string source) override;
+	string set_compute_shader_values(string source, int filter_size, string coeff_h0_values, string coeff_h1_values);
 	string set_compute_shader_values_inverse(string source, int H_L, int filter_size, string filter_coeffs);
 
 

@@ -176,7 +176,7 @@ public:
 	ShaderProgram upsample_prog(int decomp_lvl, int H_L_0, int H_L_1) {
 		
 		ShaderProgram upsmpl;
-		string path = "upsample.glsl";
+		string path = "upsample_subband_DYNAMIC.glsl";
 
 		UpsampleSubband us(path, decomp_lvl, image_width, H_L_0, H_L_1);
 
@@ -316,9 +316,30 @@ public:
 		ShaderProgram do_dwt;
 		string path = "apply_DWT_matrix_DYNAMIC.glsl";
 		string source_code = "";
+
+		string analysis_low = "";
+		string analysis_high = "";
+
+		char sep;
+
+		for (int i = 0; i < h0.size(); i++) {
+
+			sep = (i != h0.size() - 1) ? ',' : ' ';
+			analysis_low += std::to_string(h0[i]) + sep;
+			//	std::cout << g0[i] << '\n';
+		}
+
+
+		for (int i = 0; i < h0.size(); i++) {
+
+			sep = (i != h0.size() - 1) ? ',' : ' ';
+			analysis_high += std::to_string(h1[i]) + sep;
+			//	std::cout << g1[i] << '\n';
+		}
 	
 		ApplyTransform at(path, decomp_lvl, image_width);
-		source_code = at.set_compute_shader_values(path);
+		source_code = at.set_compute_shader_values(path, h0.size(), analysis_low, analysis_high);
+	//	std::cout << "DO_DWT_SAHDER CODE : \n" << source_code << '\n';
 
 		const char* shader_source_char = source_code.c_str();
 
@@ -398,7 +419,7 @@ public:
 		ApplyTransform ait(path, decomp_lvl, image_width, H_L);
 		source_code = ait.set_compute_shader_values_inverse(path, H_L, h0.size(), filter_conv);
 
-		std::cout << "INVERSE DWT SOURCE = \n" << source_code << '\n';
+	//	std::cout << "INVERSE DWT SOURCE = \n" << source_code << '\n';
 
 
 		const char* shader_source_char = source_code.c_str();
@@ -776,100 +797,5 @@ public:
 	}
 };
 
-
-
-/*
-template<std::size_t W>
-class DiscreteWaveletTransform {
-
-public:
-	enum type_of_shader {
-
-		TRANSPOSE_REGION = 0,
-		APPLY_TRANSFORM = 1,
-		APPLY_INVERSE_TRANSFORM = 2,
-		APPLY_SOFT_THRESHOLD = 3,
-		SORT_SUBBAND = 4,
-		ADD_SUBBANDS = 5,
-		UPSAMPLE_SUBBAND = 6,
-		SOFT_THRESHOLD = 7
-
-	};
-
-	std::array<float, W> h0;
-	std::array<float, W> h1;
-	std::array<float, W> g0;
-	std::array<float, W> g1;
-
-	int image_width;
-	
-	DiscreteWaveletTransform(int image_w, const std::array<float, W> f0, const std::array<float, W> f1, const std::array<float, W> k0, const std::array<float, W> k1) :
-		image_width{image_w},
-		h0{ f0 },
-		h1{ f1 },
-		g0{ k0 },
-		g1{ k1 } {
-	}
-	
-	ShaderProgram transpose_prog(string file_path, decomp_level) {
-		
-		string source_code;
-		TransposeRegion comp(file_path, decomp_level);
-		source_code = comp.set_compute_shader_values(file_path);
-
-		const char* shader_source_char = source_code.c_str();
-
-
-		comp.ID = glCreateShader(GL_COMPUTE_SHADER);
-		glShaderSource(comp.ID, 1, &shader_source_char, NULL);
-		glCompileShader(comp.ID);
-
-		GLint compiled;
-		glGetShaderiv(comp.ID, GL_COMPILE_STATUS, &compiled);
-		if (!compiled) {
-			char errorLog[1024];
-			glGetShaderInfoLog(comp.ID, 1024, NULL, errorLog);
-			std::cout << (" APPLY TRANSFORM COMPUTE SHADER " + file_path + " \n COMPILATION FAILED : \n") << errorLog << '\n';
-		}
-
-		ID = glCreateProgram();
-
-		glAttachShader(ID, comp.ID);
-		glLinkProgram(ID);
-		GLint linkSuccess = 0;
-		glGetProgramiv(ID, GL_LINK_STATUS, &linkSuccess);
-
-		if (linkSuccess == GL_FALSE) {
-
-			char infoLog[1024];
-			glGetProgramInfoLog(ID, 1024, NULL, infoLog);
-			std::cout << "APPLY PROGRAM LINK FAILED, PROBLEM WITH " << file_path << " :\n" << infoLog << std::endl;
-
-		}
-
-		glDeleteShader(comp.ID);
-
-		ShaderProgram transp();
-		transp.ID = ID;
-
-		return transp;
-
-	
-	}
-
-
-	static void transpose(Texture& img, Texture& buffer_tex, int decomposition_level, int img_width);
-	static void upsample(Texture& dwt, Texture& subband, int decomposition_level, int img_width, int H_L_0, int H_L_1);
-	static void convolve(Texture& input, Texture& output, int img_width, int level, int H_L);
-	static void sort_subbands(Texture& input, Texture& output, int decomp_lvl, int img_width, int num_sort_partitions);
-	static void apply_soft_threshold(Texture& input, Texture& output, int decomp_lvl, int img_width, int num_sort_partitions);
-	static void add_IDWT_subbands(Texture& dwt, Texture& LL, Texture& LH, Texture& HL, Texture& HH, int level, int img_width);
-	static void do_DWT(Texture& input, Texture& output, int level, int img_width);
-	static void do_inverse_DWT(Texture& input, Texture& output, int level, int img_width);
-
-
-
-};
-*/
 
 #endif

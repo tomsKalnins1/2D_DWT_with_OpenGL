@@ -258,49 +258,58 @@ int main() {
 	
 	Texture image_0(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
 	
+	ShaderProgram::undo_gamma_correction(image_0, 256);
 	
 	Texture noised = Texture{};
 	Texture t_1 = Texture{};
-//	AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, noised, 0.04);
+	//AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, noised, 0.04);
 
-	constexpr Test test_f{ 0.0352262919f, -0.0854412739f, -0.1350110200f, 0.4598775021f, 0.8068915093f, 0.3326705530f };
-	// static_assert(test_f.h0_w[0] == 0.0352262919f);
-	for (int i = 0; i < 6; i++) {
+	constexpr Test test_f{ 0.4829629131f, 0.8365163037f, 0.224143868f, -0.1294095226f };
+
+	for (int i = 0; i < 4; i++) {
 		cout << "VARIADIC FILTER TEST : " << test_f.ff.h0[i] << '\n';
 	}
-	std::array<float, 6> h00 = test_f.h0_w;
-	std::array<float, 6> h11 = test_f.h1_w;
-	std::array<float, 6> g00 = test_f.g0_w;
-	std::array<float, 6> g11 = test_f.g1_w;
+	std::array<float, 4> h00 = test_f.h0_w;
+	std::array<float, 4> h11 = test_f.h1_w;
+	std::array<float, 4> g00 = test_f.g0_w;
+	std::array<float, 4> g11 = test_f.g1_w;
 
 	Wavelet_0 w0{ 256, h00, h11, g00, g11 };
 	w0.do_IDWT_prog(1, 0);
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 4; i++) {
 		std::cout << h00[i] << '\t' << h11[i] << '\t' << g00[i] << '\t' << g11[i] << '\n';
 	}
 
 	std::cout << w0.h0.size() << '\n';
-	/*
-	w0.transpose(image_0, noised, 2);
-	//w0.upsample(image_0, noised, 1, 0, 0);
-	w0.sort_subbands(image_0, noised, 1, 4);
-
-	w0.apply_soft_threshold(image_0, noised, 1, 4);
-	*/
+	
+	Texture sft_1(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	Texture sft_2(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	Texture sft_3(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	Texture sft_4(GL_RGBA32F, GL_RGBA, "", 256, 256);
 
 	w0.do_DWT(image_0, t_1, 1);
 	w0.do_DWT(image_0, t_1, 2);
 	w0.do_DWT(image_0, t_1, 3);
-	w0.do_DWT(image_0, t_1, 4);
+//	w0.do_DWT(image_0, t_1, 4);
 //	w0.do_DWT(image_0, t_1, 5);
+	w0.sort_subbands(image_0, sft_3, 3, 2);
+	w0.apply_soft_threshold(image_0, sft_3, 3, 2);
+
+	w0.sort_subbands(image_0, sft_2, 2, 8);
+	w0.apply_soft_threshold(image_0, sft_2, 2, 8);
+
+//	w0.sort_subbands(image_0, sft_1, 1, 32);
+//	w0.apply_soft_threshold(image_0, sft_1, 1, 32);
 
 //	w0.do_IDWT(image_0, t_1, 5);
-	w0.do_IDWT(image_0, t_1, 4);
+//	w0.do_IDWT(image_0, t_1, 4);
+	
 	w0.do_IDWT(image_0, t_1, 3);
 	w0.do_IDWT(image_0, t_1, 2);
 	w0.do_IDWT(image_0, t_1, 1);
-//------------------------------------ ADD NOISE TEXTURE
+	
+	//------------------------------------ ADD NOISE TEXTURE
 	 //dummy store texture
 	/*
 	WaveletTransform::do_DWT(image_0, t_1, 1, 256);
@@ -308,42 +317,12 @@ int main() {
 	WaveletTransform::do_DWT(image_0, t_1, 3, 256);
 	WaveletTransform::do_DWT(image_0, t_1, 4, 256);
 
-	Texture sft_1(GL_RGBA32F, GL_RGBA, "", 256, 256);
-	Texture sft_2(GL_RGBA32F, GL_RGBA, "", 256, 256);
-	Texture sft_3(GL_RGBA32F, GL_RGBA, "", 256, 256);
-	Texture sft_4(GL_RGBA32F, GL_RGBA, "", 256, 256);
-	
+	*/
 
 //	WaveletTransform::sort_subbands(image_0, sft_4, 4, 256, 1);
 //	WaveletTransform::apply_soft_threshold(image_0, sft_4, 4, 256, 1);
 
-	bool do_DENOISE = true;
-	if (do_DENOISE) {
 
-		WaveletTransform::sort_subbands(image_0, sft_4, 4, 256, 1);
-		WaveletTransform::apply_soft_threshold(image_0, sft_4, 4, 256, 1);
-		WaveletTransform::sort_subbands(image_0, sft_3, 3, 256, 1);
-		WaveletTransform::apply_soft_threshold(image_0, sft_3, 3, 256, 1);
-
-		WaveletTransform::sort_subbands(image_0, sft_2, 2, 256, 1);
-		WaveletTransform::apply_soft_threshold(image_0, sft_2, 2, 256, 1);
-
-		WaveletTransform::sort_subbands(image_0, sft_1, 1, 256, 8);
-		WaveletTransform::apply_soft_threshold(image_0, sft_1, 1, 256, 8);
-	}
-	
-
-	WaveletTransform::do_inverse_DWT(image_0, t_1, 4, 256);
-	bool do_IDWT = true;
-	if(do_IDWT) {
-		WaveletTransform::do_inverse_DWT(image_0, t_1, 3, 256);
-
-		WaveletTransform::do_inverse_DWT(image_0, t_1, 2, 256);
-		WaveletTransform::do_inverse_DWT(image_0, t_1, 1, 256);
-	}
-	
-	
-	*/
 
 	
 
@@ -378,7 +357,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 		
-			//saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\IDWT_denoised\\!!!_DB_3_CAMERAMAN_LVL_1_2_3_DWT_IDWT_DENOISE_DEV_004.png");
+		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\IDWT_denoised\\GAMMA_CORRECTED_SUBBANDS_NO_NOISE_LVL_1_2_3.png");
 
 		}
 

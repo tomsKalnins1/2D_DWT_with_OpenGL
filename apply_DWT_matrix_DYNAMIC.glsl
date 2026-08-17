@@ -11,15 +11,10 @@ layout(rgba32f, binding = 1) uniform image2D image_T;
 //const float h0[4] = { 0.4829629131, 0.8365163037, 0.224143868, -0.1294095226 };
 //const float h1[4] = { 0.1294095226, 0.224143868, -0.8365163037, 0.4829629131 }
 
-const float h0[6] = {
-     0.0352262919, -0.0854412739, -0.1350110200,
-     0.4598775021,  0.8068915093,  0.3326705530
-};
+const float h0[ SIZE ] = { COEFFS_H0 };
+const float h1[ SIZE ] = { COEFFS_H1 };
 
-const float h1[6] = {
-    -0.3326705530,  0.8068915093, -0.4598775021,
-    -0.1350110200, 0.0854412739, 0.0352262919
-};
+
 
 const float g0[6] = {
      0.3326705530, 0.8068915093, 0.4598775021,
@@ -66,33 +61,11 @@ void main()
 {
    ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
    ivec2 w_id = ivec2(gl_LocalInvocationID.xy);
-   /*
-   int i_0 = (th_id.x * 2 + 2) & (WIDTH_IMG - 1);
-   int i_1 = (th_id.x * 2 + 1) & (WIDTH_IMG - 1);
-   int i_2 = (th_id.x * 2 + 0) & (WIDTH_IMG - 1);
-   int i_3 = (th_id.x * 2 - 1) & (WIDTH_IMG - 1);
-   int i_4 = (th_id.x * 2 - 2) & (WIDTH_IMG - 1);
-   int i_5 = (th_id.x * 2 - 3) & (WIDTH_IMG - 1);
-   */
+
    float pix_low = 0.0;
    float pix_high = 0.0;
-/*
-   pix_low += imageLoad(image_O, ivec2(i_0, th_id.y)).x * h0[0];
-   pix_low += imageLoad(image_O, ivec2(i_1, th_id.y)).x * h0[1];
-   pix_low += imageLoad(image_O, ivec2(i_2, th_id.y)).x * h0[2];
-   pix_low += imageLoad(image_O, ivec2(i_3, th_id.y)).x * h0[3];
-   pix_low += imageLoad(image_O, ivec2(i_4, th_id.y)).x * h0[4];
-   pix_low += imageLoad(image_O, ivec2(i_5, th_id.y)).x * h0[5];
 
-   pix_high += imageLoad(image_O, ivec2(i_0, th_id.y)).x * h1[0];
-   pix_high += imageLoad(image_O, ivec2(i_1, th_id.y)).x * h1[1];
-   pix_high += imageLoad(image_O, ivec2(i_2, th_id.y)).x * h1[2];
-   pix_high += imageLoad(image_O, ivec2(i_3, th_id.y)).x * h1[3];
-   pix_high += imageLoad(image_O, ivec2(i_4, th_id.y)).x * h1[4];
-   pix_high += imageLoad(image_O, ivec2(i_5, th_id.y)).x * h1[5];
-
-   */
-   for(int i = 0; i < 6; i++){
+   for(int i = 0; i < SIZE; i++){
      int i_0 = (th_id.x * 2 - i + 2) & (WIDTH_IMG - 1);
      pix_low += imageLoad(image_O, ivec2(i_0, th_id.y)).x * h0[i];
      pix_high += imageLoad(image_O, ivec2(i_0, th_id.y)).x * h1[i];
@@ -108,29 +81,6 @@ void main()
 
     store_back_to_input();
     synchronize();
-    /*
-    float low_c = 0.0;
-    float high_c = 0.0;
 
-    for(int i = 0; i < WIDTH_IMG; i++){
-
-         vec4 img = imageLoad(image_O, ivec2(i,th_id.y));
-         vec4 low = imageLoad(dwt, ivec2(i, th_id.x));
-         low_c += img.x * low.x;
-         vec4 high = imageLoad(dwt, ivec2(i, NUM_INV + th_id.x));
-         high_c += img.x * high.x;
-   
-    }
-    synchronize();
-    vec4 output_apprx = vec4(low_c, low_c, low_c, 1.0);
-    vec4 output_det = vec4(high_c, high_c, high_c, 1.0);
-    vec4 test_vec = vec4(1.0, 0.0, 0.0, 1.0);
-    imageStore(image_T, ivec2(th_id.x, th_id.y), output_apprx);
-
-    imageStore(image_T, ivec2(th_id.x + NUM_INV, th_id.y), output_det);
-
-    store_back_to_input();
-    synchronize();
-*/
 
 }

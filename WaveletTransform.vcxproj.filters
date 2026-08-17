@@ -166,7 +166,7 @@
     <None Include="apply_IDWT_matrix_DYNAMIC.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="upsample.glsl">
+    <None Include="upsample_subband_DYNAMIC.glsl">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="add_textures_dwt_inverse_DYNAMIC.glsl">
@@ -180,6 +180,9 @@
     </None>
     <None Include="WaveletTransform.cpp">
       <Filter>Source Files</Filter>
+    </None>
+    <None Include="undo_gamma_correction_DYNAMIC.glsl">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
