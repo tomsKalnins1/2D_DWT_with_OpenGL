@@ -93,6 +93,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Libraries\MyLibraries\includeOpenGL\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,6 +110,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Libraries\MyLibraries\includeOpenGL\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,6 +125,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Libraries\MyLibraries\includeOpenGL\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,6 +142,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Libraries\MyLibraries\includeOpenGL\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,76 +151,46 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="Add_Gaussian_Noise_DYNAMIC.glsl" />
-    <None Include="add_textures_dwt_inverse_DYNAMIC.glsl" />
-    <None Include="apply_DWT_LVL_2.glsl" />
-    <None Include="apply_DWT_matrix_DYNAMIC.glsl" />
-    <None Include="apply_IDWT_matrix_DYNAMIC.glsl" />
-    <None Include="bitonic_sort.txt">
-      <FileType>CppCode</FileType>
-    </None>
-    <ClCompile Include="AddGaussianNoise.cpp" />
-    <ClCompile Include="AddIDWTSubbands.cpp" />
-    <ClCompile Include="GaussianNoise.cpp" />
-    <ClCompile Include="ApplyTransform.cpp" />
-    <ClCompile Include="GenerateTransform.cpp" />
-    <Text Include="transpose_region.glsl">
-      <FileType>CppCode</FileType>
-    </Text>
-    <ClCompile Include="SoftThreshold.cpp" />
-    <ClCompile Include="SortSubbendLocal.cpp" />
-    <ClCompile Include="TransposeRegion.cpp" />
-    <ClCompile Include="UpsampleSubband.cpp" />
-    <None Include="undo_gamma_correction_DYNAMIC.glsl" />
-    <None Include="WaveletTransform.cpp" />
-    <ClCompile Include="Wavelet_class.cpp" />
-    <None Include="..\FourierTransform\FFT_main.cpp" />
+    <None Include="Compute_shaders\Add_Gaussian_Noise_DYNAMIC.glsl" />
+    <None Include="Compute_shaders\add_textures_dwt_inverse_DYNAMIC.glsl" />
+    <None Include="Compute_shaders\apply_DWT_matrix_DYNAMIC.glsl" />
+    <None Include="Compute_shaders\apply_IDWT_matrix_DYNAMIC.glsl" />
+    <None Include="Compute_shaders\Soft_threshold_DYNAMIC.glsl" />
+    <None Include="Compute_shaders\Sort_subband_LOCAL_DYNAMIC.glsl" />
+    <None Include="Compute_shaders\transpose_region_DYNAMIC.glsl" />
+    <None Include="Compute_shaders\undo_gamma_correction_DYNAMIC.glsl" />
+    <None Include="Compute_shaders\upsample_subband_DYNAMIC.glsl" />
+    <None Include="Fragment_shaders\display_DWT.fs" />
     <ClCompile Include="glad.c" />
-    <ClCompile Include="Main.cpp">
-      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpplatest</LanguageStandard>
-      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdcpplatest</LanguageStandard>
-      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpplatest</LanguageStandard>
-      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpplatest</LanguageStandard>
-    </ClCompile>
-    <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="ShaderSource.cpp" />
+    <ClCompile Include="Source_files\AddGaussianNoise.cpp" />
+    <ClCompile Include="Source_files\AddIDWTSubbands.cpp" />
+    <ClCompile Include="Source_files\ApplyTransform.cpp" />
+    <ClCompile Include="Source_files\GaussianNoise.cpp" />
+    <ClCompile Include="Source_files\Main.cpp" />
+    <ClCompile Include="Source_files\ShaderProgram.cpp" />
+    <ClCompile Include="Source_files\ShaderSource.cpp" />
+    <ClCompile Include="Source_files\SoftThreshold.cpp" />
+    <ClCompile Include="Source_files\SortSubbendLocal.cpp" />
+    <ClCompile Include="Source_files\Texture.cpp" />
+    <ClCompile Include="Source_files\TransposeRegion.cpp" />
+    <ClCompile Include="Source_files\UpsampleSubband.cpp" />
+    <ClCompile Include="Source_files\VAO.cpp" />
+    <ClCompile Include="Source_files\VBO.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="stb_write.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="VAO.cpp" />
-    <ClCompile Include="VBO.cpp" />
-    <None Include="add_noise_to_image.glsl" />
-    <None Include="bitonic_sort.glsl" />
-    <None Include="generate_inverse_transform.glsl" />
-    <None Include="generate_transform.glsl" />
-    <None Include="Box_Muller_noise_NRNG.glsl" />
-    <None Include="generate_transform_DYNAMIC.glsl" />
-    <None Include="Soft_thresholding_remove_noise.glsl" />
-    <None Include="Soft_thresholding_remove_noise_LOCAL.glsl" />
-    <None Include="Soft_thresholding_remove_noise_LOCAL_2.glsl" />
-    <None Include="Soft_threshold_DYNAMIC.glsl" />
-    <None Include="Sort_subband_LOCAL_DYNAMIC.glsl" />
-    <None Include="Sort_subband_LOCAL_lvl_1.glsl" />
-    <None Include="display_DWT.fs" />
-    <None Include="apply_DWT_IDT_matrix.glsl" />
-    <None Include="Sort_subband_LOCAL_lvl_2.glsl" />
-    <None Include="transpose.glsl" />
-    <None Include="transpose_region_DYNAMIC.glsl" />
-    <None Include="upsample_subband_DYNAMIC.glsl" />
-    <None Include="vertex_shader.vs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="DiscreteWaveletTransform.h" />
-    <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="ShaderSource.h" />
-    <ClInclude Include="stb_image.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="VAO.h" />
-    <ClInclude Include="VBO.h" />
-    <ClInclude Include="Wavelet.h" />
+    <None Include="Vertex_shaders\vertex_shader.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="CAMERAMAN_ORIGINAL.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Libraries\MyLibraries\includeOpenGL\stb\stb_image.h" />
+    <ClInclude Include="Header_files\DiscreteWaveletTransform.h" />
+    <ClInclude Include="Header_files\ShaderProgram.h" />
+    <ClInclude Include="Header_files\ShaderSource.h" />
+    <ClInclude Include="Header_files\Texture.h" />
+    <ClInclude Include="Header_files\VAO.h" />
+    <ClInclude Include="Header_files\VBO.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

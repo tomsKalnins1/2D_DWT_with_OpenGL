@@ -107,7 +107,7 @@ public:
 
 	static void generate_uniform_noise(Texture& output, int base);
 
-	static void apply_Gaussian_noise(Texture& u_0, Texture& u_1, Texture& input, Texture& output, float deviation);
+	static void apply_Gaussian_noise(Texture& u_0, Texture& u_1, Texture& input, Texture& output,  float deviation);
 
 };
 

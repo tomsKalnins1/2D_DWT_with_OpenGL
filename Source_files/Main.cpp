@@ -17,14 +17,13 @@
 #include <glm/glm/gtc/type_ptr.hpp>
 #include <algorithm>
 
-#include "ShaderProgram.h"
-#include "ShaderSource.h"
+#include "../Header_files/ShaderProgram.h"
+#include "../Header_files/ShaderSource.h"
 
-#include "VAO.h"
-#include "VBO.h"
-#include "Texture.h"
-#include "Wavelet.h"
-#include "DiscreteWaveletTransform.h"
+#include "../Header_files/VAO.h"
+#include "../Header_files/VBO.h"
+#include "../Header_files/Texture.h"
+#include "../Header_files/DiscreteWaveletTransform.h"
 
 
 #define M_PI 3.14159265358979323846
@@ -232,8 +231,8 @@ int main() {
 
 	};
 
-	string v = "vertex_shader.vs";
-	string f = "display_DWT.fs";
+	string v = "Vertex_shaders\\vertex_shader.vs";
+	string f = "Fragment_shaders\\display_DWT.fs";
 
 	ShaderProgram sh(v, f);
 
@@ -244,55 +243,49 @@ int main() {
 	vao.unbind_VAO();
 	vbo.unbind_VBO();
 
-	string pathToImage = "C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\CAMERAMAN_ORIGINAL.png";
-	
-	Texture input_img(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
 
-	//------------------------------------ ADD NOISE TEXTURE
-	 
-	Texture noise_u_0 = Texture{};
-	Texture noise_u_1 = Texture{};
+	//------------------------------------ LOAD INPUT IMAGE
+
+	string pathToImage = "C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\CAMERAMAN_ORIGINAL.png";
+	Texture image_0(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
+	ShaderProgram::undo_gamma_correction(image_0, 256);
+
+	//------------------------------------ LOAD INPUT IMAGE
+
+	//------------------------------------ GENERATE GAUSSIAN NOISE TO ADD TO IMAGE
+
+	Texture noise_u_0 = Texture{};	//uniform noise
+	Texture noise_u_1 = Texture{};	//uniform noise
+	Texture AWGN = Texture{};		// white Gaussian noise
+	Texture deviations = Texture{};
 
 	AddGaussianNoise::generate_uniform_noise(noise_u_0, 1);
 	AddGaussianNoise::generate_uniform_noise(noise_u_1, 2);
-	
-	Texture image_0(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
-	
-	ShaderProgram::undo_gamma_correction(image_0, 256);
-	
-	Texture noised = Texture{};
-	Texture t_1 = Texture{};
-	//AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, noised, 0.04);
+	AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, AWGN, 0.04);
 
-	constexpr Test test_f{ 0.4829629131f, 0.8365163037f, 0.224143868f, -0.1294095226f };
+	//------------------------------------ GENERATE GAUSSIAN NOISE TO ADD TO IMAGE
 
-	for (int i = 0; i < 4; i++) {
-		cout << "VARIADIC FILTER TEST : " << test_f.ff.h0[i] << '\n';
-	}
-	std::array<float, 4> h00 = test_f.h0_w;
-	std::array<float, 4> h11 = test_f.h1_w;
-	std::array<float, 4> g00 = test_f.g0_w;
-	std::array<float, 4> g11 = test_f.g1_w;
+	constexpr Filter filter_vals{ 0.4829629131f, 0.8365163037f, 0.224143868f, -0.1294095226f };
+	std::array<float, 4> h00 = filter_vals.h0_w;
+	std::array<float, 4> h11 = filter_vals.h1_w;
+	std::array<float, 4> g00 = filter_vals.g0_w;
+	std::array<float, 4> g11 = filter_vals.g1_w;
 
 	Wavelet_0 w0{ 256, h00, h11, g00, g11 };
-	w0.do_IDWT_prog(1, 0);
 
-	for (int i = 0; i < 4; i++) {
-		std::cout << h00[i] << '\t' << h11[i] << '\t' << g00[i] << '\t' << g11[i] << '\n';
-	}
-
-	std::cout << w0.h0.size() << '\n';
+	Texture buff_tex = Texture{};
 	
 	Texture sft_1(GL_RGBA32F, GL_RGBA, "", 256, 256);
 	Texture sft_2(GL_RGBA32F, GL_RGBA, "", 256, 256);
 	Texture sft_3(GL_RGBA32F, GL_RGBA, "", 256, 256);
 	Texture sft_4(GL_RGBA32F, GL_RGBA, "", 256, 256);
 
-	w0.do_DWT(image_0, t_1, 1);
-	w0.do_DWT(image_0, t_1, 2);
-	w0.do_DWT(image_0, t_1, 3);
-//	w0.do_DWT(image_0, t_1, 4);
-//	w0.do_DWT(image_0, t_1, 5);
+	w0.do_DWT(image_0, buff_tex, 1);
+	w0.do_DWT(image_0, buff_tex, 2);
+	w0.do_DWT(image_0, buff_tex, 3);
+//	w0.do_DWT(image_0, buff_tex, 4);
+//	w0.do_DWT(image_0, buff_tex, 5);
+
 	w0.sort_subbands(image_0, sft_3, 3, 2);
 	w0.apply_soft_threshold(image_0, sft_3, 3, 2);
 
@@ -302,31 +295,12 @@ int main() {
 //	w0.sort_subbands(image_0, sft_1, 1, 32);
 //	w0.apply_soft_threshold(image_0, sft_1, 1, 32);
 
-//	w0.do_IDWT(image_0, t_1, 5);
-//	w0.do_IDWT(image_0, t_1, 4);
+//	w0.do_IDWT(image_0, buff_tex, 5);
+//	w0.do_IDWT(image_0, buff_tex, 4);	
+	w0.do_IDWT(image_0, buff_tex, 3);
+	w0.do_IDWT(image_0, buff_tex, 2);
+	w0.do_IDWT(image_0, buff_tex, 1);
 	
-	w0.do_IDWT(image_0, t_1, 3);
-	w0.do_IDWT(image_0, t_1, 2);
-	w0.do_IDWT(image_0, t_1, 1);
-	
-	//------------------------------------ ADD NOISE TEXTURE
-	 //dummy store texture
-	/*
-	WaveletTransform::do_DWT(image_0, t_1, 1, 256);
-	WaveletTransform::do_DWT(image_0, t_1, 2, 256);
-	WaveletTransform::do_DWT(image_0, t_1, 3, 256);
-	WaveletTransform::do_DWT(image_0, t_1, 4, 256);
-
-	*/
-
-//	WaveletTransform::sort_subbands(image_0, sft_4, 4, 256, 1);
-//	WaveletTransform::apply_soft_threshold(image_0, sft_4, 4, 256, 1);
-
-
-
-	
-
-		
 
 
 
@@ -357,7 +331,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 		
-		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\IDWT_denoised\\GAMMA_CORRECTED_SUBBANDS_NO_NOISE_LVL_1_2_3.png");
+		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\IDWT_denoised\\GAUSS_NOISE_DEVIATIONS.png");
 
 		}
 

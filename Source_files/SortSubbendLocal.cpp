@@ -1,4 +1,4 @@
-#include "ShaderSource.h"
+#include "../Header_files/ShaderSource.h"
 
 SortSubbandLocal::SortSubbandLocal(string file_path, int decomposition_level, int img_dimension_width, int num_part) :	ShaderSource(file_path),
 																														decomp_lvl{ decomposition_level },

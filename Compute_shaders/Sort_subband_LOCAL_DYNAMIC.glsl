@@ -84,6 +84,7 @@ void store_all_from_arr_to_img(int L_H_0, int L_H_1){
 
         //HL subband
         if(L_H_0 == 1 && L_H_1 == 0){
+
             imageStore(image_T, ivec2(th_id.x + SUBBAND_WIDTH, th_id.y), pix_l);
             imageStore(image_T, ivec2(th_id.x + SUBBAND_WIDTH + NUM_INV, th_id.y), pix_r);
         }
@@ -91,6 +92,7 @@ void store_all_from_arr_to_img(int L_H_0, int L_H_1){
 }
 
 void swap_val(int left, int right){
+
     float temp = input_b[left];
     input_b[left] = input_b[right];
     input_b[right] = temp;
@@ -112,8 +114,10 @@ void swap_val(int left, int right){
                 int offset = (th_ind) % j;
                 int left = block * (j * 2) + offset;
                 int right = left ^ j;
-                //odd up_down has 1 at the end and even has 0 at the end ANDing then with one is better 
-                //as one and operation is simpler that modulus
+                /*
+                odd up_down has 1 at the end and even has 0 at the end ANDing them with one is better
+                simpler than doing modulus for each time
+                */
                 int up_down = (left/k) & 1;
 
                 if(up_down == 1){
@@ -140,8 +144,7 @@ void swap_val(int left, int right){
 
 
 
-void main()
-{
+void main(){
 
 store_all_from_img_to_arr(0, 1);
 synchronize_image();

@@ -20,14 +20,14 @@
 
 
 template<class ...H>
-class Filter {
+class GetFilter {
 
 public:
 	std::array<float, sizeof ...(H)> h0;
 
 
-	constexpr Filter() = default;
-	constexpr Filter(H ...arg) : h0{ static_cast<float>(arg) ... } {}
+	constexpr GetFilter() = default;
+	constexpr GetFilter(H ...arg) : h0{ static_cast<float>(arg) ... } {}
 
 	constexpr std::array<float, sizeof ...(H)> get_highpass_analysis() const {
 		std::array<float, sizeof ...(H)> h1{};
@@ -70,11 +70,11 @@ public:
 
 //class Test kas variable number of types
 template<typename... C>
-class Test {
+class Filter {
 public:
 
 	//instantiates parametriced Filter<float, float, float, ...> (floats in my case of use)
-	Filter<C ...> ff;
+	GetFilter<C ...> ff;
 	std::array<float, sizeof ...(C)> h0_w;
 	std::array<float, sizeof ...(C)> h1_w;
 	std::array<float, sizeof ...(C)> g0_w;
@@ -83,7 +83,7 @@ public:
 	//exprects to be evaluated at compile time when instantiated
 	//C... unpacks the parameter list to be Test(float, float, float, ...) and calls the the arguments to be args
 	//args ... unpacks the actual values to bet then Test(float a, float b, float c, ...) : ff {a, b, c, ...}
-	constexpr Test(C ...args) : ff{ args ... } {
+	constexpr Filter(C ...args) : ff{ args ... } {
 		h0_w = ff.h0;
 		h1_w = ff.get_highpass_analysis();
 		g0_w = ff.get_lowpass_synthesis();
@@ -97,18 +97,6 @@ class Wavelet_0 {
 
 public:
 
-	enum type_of_shader {
-
-		TRANSPOSE_REGION = 0,
-		APPLY_TRANSFORM = 1,
-		APPLY_INVERSE_TRANSFORM = 2,
-		APPLY_SOFT_THRESHOLD = 3,
-		SORT_SUBBAND = 4,
-		ADD_SUBBANDS = 5,
-		UPSAMPLE_SUBBAND = 6,
-		SOFT_THRESHOLD = 7
-
-	};
 
 	int image_width;
 
@@ -127,7 +115,7 @@ public:
 	ShaderProgram transpose_prog(int decomp_level) {
 		
 		ShaderProgram transp;
-		string path = "transpose_region_DYNAMIC.glsl";
+		string path = "Compute_shaders\\transpose_region_DYNAMIC.glsl";
 
 		string source_code;
 		TransposeRegion comp(path, decomp_level, image_width);
@@ -176,7 +164,7 @@ public:
 	ShaderProgram upsample_prog(int decomp_lvl, int H_L_0, int H_L_1) {
 		
 		ShaderProgram upsmpl;
-		string path = "upsample_subband_DYNAMIC.glsl";
+		string path = "Compute_shaders\\upsample_subband_DYNAMIC.glsl";
 
 		UpsampleSubband us(path, decomp_lvl, image_width, H_L_0, H_L_1);
 
@@ -225,7 +213,7 @@ public:
 
 		ShaderProgram sort;
 		
-		string path = "Sort_subband_LOCAL_DYNAMIC.glsl";
+		string path = "Compute_shaders\\Sort_subband_LOCAL_DYNAMIC.glsl";
 		string source_code = "";
 		SortSubbandLocal srt(path, decomp_lvl, image_width, num_sort_partitions);
 		source_code = srt.set_compute_shader_values(path);
@@ -269,7 +257,7 @@ public:
 
 	ShaderProgram apply_soft_threshold_prog(int decomp_lvl, int num_sort_partitions) {
 		ShaderProgram soft;
-		string path = "Soft_threshold_DYNAMIC.glsl";
+		string path = "Compute_shaders\\Soft_threshold_DYNAMIC.glsl";
 		string source_code = "";
 
 		SoftThreshold st(path, decomp_lvl, image_width, num_sort_partitions);
@@ -314,7 +302,7 @@ public:
 	ShaderProgram do_DWT_prog(int decomp_lvl) {
 
 		ShaderProgram do_dwt;
-		string path = "apply_DWT_matrix_DYNAMIC.glsl";
+		string path = "Compute_shaders\\apply_DWT_matrix_DYNAMIC.glsl";
 		string source_code = "";
 
 		string analysis_low = "";
@@ -383,7 +371,7 @@ public:
 
 		ShaderProgram idwt;
 		string source_code = "";
-		string path = "apply_IDWT_matrix_DYNAMIC.glsl";
+		string path = "Compute_shaders\\apply_IDWT_matrix_DYNAMIC.glsl";
 
 		string synthesis_low = "";
 		string synthesis_high = "";
@@ -463,7 +451,7 @@ public:
 		
 		ShaderProgram add;
 
-		string path = "add_textures_dwt_inverse_DYNAMIC.glsl";
+		string path = "Compute_shaders\\add_textures_dwt_inverse_DYNAMIC.glsl";
 		string source_code = "";
 
 		AddIDWTSubbands ads(path, decomp_lvl, image_width);

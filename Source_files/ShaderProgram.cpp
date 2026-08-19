@@ -1,4 +1,4 @@
-#include "ShaderProgram.h"
+#include "../Header_files/ShaderProgram.h"
 
 
 ShaderProgram::ShaderProgram(string path_to_vert, string path_to_frag) {
@@ -138,7 +138,7 @@ ShaderProgram ShaderProgram::undo_gamma_correction_prog(int img_width) {
 
 	ShaderProgram no_gamma;
 
-	string file_path = "undo_gamma_correction_DYNAMIC.glsl";
+	string file_path = "Compute_shaders\\undo_gamma_correction_DYNAMIC.glsl";
 	
 	string shader_source = ShaderSource::get_file_content(file_path);
 	int index = 0;

@@ -10,18 +10,9 @@ layout(rgba32f, binding = 4) uniform image2D HH;
 
 
 
-void synchronize()
-{
 
-    memoryBarrierShared();
-    barrier();
+void main(){
 
-}
-
-
-
-void main()
-{
    ivec2 th_id = ivec2(gl_GlobalInvocationID.xy);
     ivec2 w_id = ivec2(gl_LocalInvocationID.xy);
 

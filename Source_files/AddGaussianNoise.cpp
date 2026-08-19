@@ -1,4 +1,4 @@
-#include "ShaderProgram.h"
+#include "../Header_files/ShaderProgram.h"
 #include <random>
 #include <string>
 #include <vector>
@@ -73,11 +73,11 @@ uint32_t AddGaussianNoise::xoshiro_32(std::vector<uint32_t>& seed) {
 
 std::vector<float> AddGaussianNoise::generate_rands_xoshiro_32(int num_rands, int base) {
 
-	std::vector<float> rands(num_rands);
+	std::vector<float> rands(num_rands, 0.0f);
 	int num_proc = std::thread::hardware_concurrency();
 	std::vector<std::thread> thrds(num_proc);
 	int mod = num_rands % num_proc;
-	int num_rands_per_proc = num_rands / num_proc;
+	int num_rands_per_proc = (num_rands / 4 ) / num_proc;
 	std::cout << "NUM RANDS PER PROC = " << num_rands_per_proc << '\n';
 //	int mod = num;
 	int add = 0;
@@ -108,7 +108,8 @@ std::vector<float> AddGaussianNoise::generate_rands_xoshiro_32(int num_rands, in
 
 			for (int k = 0; k < num_rands_per_proc + add_0; k++) {
 
-				rands[i * num_rands_per_proc + k] = ((float) xoshiro_32(x.s)) / normalize;
+				rands[(i * num_rands_per_proc + k ) * 4] = ((float) xoshiro_32(x.s)) / normalize;
+				float val = rands[(i * num_rands_per_proc + k) * 4];
 
 			}
 
@@ -120,6 +121,7 @@ std::vector<float> AddGaussianNoise::generate_rands_xoshiro_32(int num_rands, in
 		thrds[i].join();
 
 	}
+
 
 	return rands;
 
@@ -145,7 +147,7 @@ void AddGaussianNoise::generate_uniform_noise(Texture& output, int base) {
 
 void AddGaussianNoise::apply_Gaussian_noise(Texture& u_0, Texture& u_1, Texture& input, Texture& output, float deviation) {
 	
-	AddGaussianNoise agn("Add_Gaussian_Noise_DYNAMIC.glsl", deviation, output.width);
+	AddGaussianNoise agn("Compute_shaders\\Add_Gaussian_Noise_DYNAMIC.glsl", deviation, output.width);
 
 	Texture::activate_tex_unit(0);
 	u_0.bind_texture();

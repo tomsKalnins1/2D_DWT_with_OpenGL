@@ -1,4 +1,4 @@
-#include "ShaderSource.h"
+#include "../Header_files/ShaderSource.h"
 
 AddIDWTSubbands::AddIDWTSubbands(string file_path, int decomposition_level, int img_dimension_width) :  ShaderSource(file_path),
 																										decomp_lvl{ decomposition_level },

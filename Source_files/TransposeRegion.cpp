@@ -1,4 +1,4 @@
-#include "ShaderSource.h"
+#include "../Header_files/ShaderSource.h"
 
 TransposeRegion::TransposeRegion(string path, int decomposition_lvl, int img_dimension_x) : ShaderSource(path),
 																							decomp_lvl{ decomposition_lvl },

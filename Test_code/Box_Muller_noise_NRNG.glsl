@@ -11,8 +11,6 @@ layout(rgba32f, binding = 2) uniform image2D NRNG;
 const float pi = 3.141592653589793238462643383279502884197169399375;
 
 
-
-
 void main()
 {
 

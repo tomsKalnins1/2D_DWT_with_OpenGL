@@ -1,4 +1,4 @@
-#include "ShaderSource.h"
+#include "../Header_files/ShaderSource.h"
 
 /*
 ShaderSource::ShaderSource(string file_path, GLenum shader_type) {

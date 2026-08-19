@@ -345,42 +345,5 @@ void main(){
     apply_Tn(0, 1);
     synchronize();
     
-    
-    /*
-    get_local_medians(1, 0);
-    synchronize();
-    store_local_variance_noise();
-    synchronize();
-    set_local_means(1, 0);
-    synchronize();
-    set_local_diviation_signal(1, 0);
-    synchronize();
-    set_local_Tn();
-    synchronize();
-    
-    apply_Tn(1, 0);
-    synchronize();
-    */
-    /*
-    get_local_medians(0, 1);
-    synchronize();
-    store_local_variance_noise();
-    synchronize();
-    set_local_means(0, 1);
-    synchronize();
-    set_local_diviation_signal(0, 1);
-    synchronize();
-    set_local_Tn();
-    synchronize();
-    
-    apply_Tn(0, 1);
-    synchronize();
-    */
- //   apply_Tn(0, 1);
-//    synchronize();
-    
-
-
-
 
 }

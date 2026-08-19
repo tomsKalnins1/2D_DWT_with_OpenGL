@@ -1,4 +1,4 @@
-#include "ShaderSource.h"
+#include "../Header_files/ShaderSource.h"
 
 GenerateTransform::GenerateTransform(string file_path, int decomposition_level, int img_dimension_width, int size_filter) :
 decomp_lvl{ decomposition_level },
