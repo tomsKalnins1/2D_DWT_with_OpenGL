@@ -2,11 +2,8 @@
 #include <vector>
 #include <math.h>
 #include <string>
-#include <map>
 #include <array>
 
-#include <thread>
-#include <mutex>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -19,7 +16,6 @@
 
 #include "../Header_files/ShaderProgram.h"
 #include "../Header_files/ShaderSource.h"
-
 #include "../Header_files/VAO.h"
 #include "../Header_files/VBO.h"
 #include "../Header_files/Texture.h"
@@ -28,16 +24,8 @@
 
 #define M_PI 3.14159265358979323846
 
-using std::vector, std::string, std::cout, std::endl, std::mutex, std::thread;
+using std::vector, std::string, std::cout, std::endl;
 
-mutex m;
-
-
-
-
-namespace A {
-	int a = 100;
-}
 
 bool save = true;
 
@@ -55,156 +43,11 @@ void saveImg(string path) {
 	stbi_write_png(path.c_str(), 1024, 1024, 3, buffer.data(), stride);
 
 }
-mutex mut;
-
-float img_noise[256 * 256 * 4];
-float img_noise_1[256 * 256 * 4];
 
 
-void xor_shift(float& seed, int th_id) {
-	uint32_t int_ptr = reinterpret_cast<uintptr_t>(&seed);
-	int_ptr *= (th_id + 1);
-	int_ptr ^= int_ptr << 13;
-	int_ptr ^= int_ptr >> 17;
-	int_ptr ^= int_ptr << 5;
-
-	
-	img_noise[th_id ] = ((float)int_ptr) / 4294967295.0f;
-	img_noise[th_id + 1] = ((float)int_ptr) / 4294967295.0f;
-	img_noise[th_id + 2] = ((float)int_ptr) / 4294967295.0f;
-	img_noise[th_id + 3] = 1.0f;
-
-}
-
-void xor_shift_1(float& seed, int th_id) {
-	uint32_t int_ptr = reinterpret_cast<uintptr_t>(&seed);
-	int_ptr *= (th_id + 1);
-	int_ptr ^= int_ptr << 13;
-	int_ptr ^= int_ptr >> 17;
-	int_ptr ^= int_ptr << 5;
-
-
-	img_noise_1[th_id] = ((float)int_ptr) / 4294967295.0f;
-	img_noise_1[th_id + 1] = ((float)int_ptr) / 4294967295.0f;
-	img_noise_1[th_id + 2] = ((float)int_ptr) / 4294967295.0f;
-	img_noise_1[th_id + 3] = 1.0f;
-
-}
-
-void create_noise_0() {
-	for (int i = 0; i < 256 * 256; i++) {
-		xor_shift(img_noise[i * 4], i * 4);
-	//	thread t(xor_shift, std::ref(img_noise[i * 4]), i * 4);
-	//	t.join();
-	
-	}
-}
-void create_noise_1() {
-	for (int i = 0; i < 256 * 256; i++) {
-		xor_shift_1(img_noise_1[i * 4], i * 4);
-
-		//	thread t(xor_shift, std::ref(img_noise[i * 4]), i * 4);
-		//	t.join();
-
-	}
-}
-
-
-/*
-template<class ...H>
-class Filter {
-
-public:
-	std::array<float, sizeof ...(H)> h0;
-
-
-	Filter() {}
-	constexpr Filter(H ...arg) : h0{ static_cast<float>(arg) ... } {}
-
-	constexpr std::array<float, sizeof ...(H)> get_highpass_analysis() const {
-		std::array<float, sizeof ...(H)> h1{};
-		for (int i = 0; i < sizeof ...(H); i++) {
-			int val = -1;
-			for (int k = 0; k < i; k++) {
-				val *= (-1);
-			}
-			h1[sizeof...(H) - 1 - i] = h0[i] * (-1) * val;
-
-		}
-		return h1;
-	}
-
-	constexpr std::array<float, sizeof ...(H)> get_lowpass_synthesis() const {
-		std::array<float, sizeof ...(H)> g0{};
-		for (int i = 0; i < sizeof ...(H); i++) {
-
-			g0[sizeof...(H) - 1 - i] = h0[i];
-
-		}
-		return g0;
-	}
-
-	constexpr std::array<float, sizeof ...(H)> get_highpass_synthesis() const {
-		std::array<float, sizeof ...(H)> g1{};
-		for (int i = 0; i < sizeof ...(H); i++) {
-			int val = -1;
-			for (int k = 0; k < i; k++) {
-				val *= (-1);
-			}
-			g1[sizeof...(H) - 1 - i] = h0[i] * val;
-
-		}
-		return g1;
-	}
-
-};
-*/
 
 
 int main() {
-	/*
-	constexpr Filter fff{ 0.0352262919f, -0.0854412739f, -0.1350110200f, 0.4598775021f, 0.8068915093f, 0.3326705530f };
-	constexpr auto high_p = fff.get_highpass_analysis();
-	constexpr auto lowp_synthesis = fff.get_lowpass_synthesis();
-	constexpr auto highp_synthesis = fff.get_highpass_synthesis();
-
-	//	constexpr Container<float> cont{0.0352262919f, 0.0352262919f};
-	// //constexpr auto fil = get_arr<float>(0.0352262919, -0.0854412739, -0.1350110200, 0.4598775021, 0.8068915093, 0.3326705530);
-
-	for (int i = 0; i < 6; i++) {
-		cout << "Filter compile time compute output h0 = " << fff.h0[i] << '\n';
-	}
-	cout << '\n';
-	for (int i = 0; i < 6; i++) {
-		cout << "Filter compile time compute output h1 = " << high_p[i] << '\n';
-	}
-	cout << '\n';
-	for (int i = 0; i < 6; i++) {
-		cout << "Filter compile time compute output g0 = " << lowp_synthesis[i] << '\n';
-	}
-
-	cout << '\n';
-
-	for (int i = 0; i < 6; i++) {
-		cout << "Filter compile time compute output g1 = " << highp_synthesis[i] << '\n';
-	}
-	*/
-
-
-
-
-
-	//ValueV<std::array<float, 3>> vvv{ 1.55555f, 4.000123f, 4.000123f };
-
-	//constexpr ValueV values[]{ ValueV{1.1f}, ValueV{2.1f}, ValueV{3.0f} };
-
-
-
-	/*
-	std::array<float, 6> arr = { 0.0352262919, -0.0854412739, -0.1350110200,
-	 0.4598775021,  0.8068915093,  0.3326705530 };
-	*/
-
 
 
 	glfwInit();
@@ -231,8 +74,8 @@ int main() {
 
 	};
 
-	string v = "Vertex_shaders\\vertex_shader.vs";
-	string f = "Fragment_shaders\\display_DWT.fs";
+	string v = "Vertex_shaders\\vertex_shader.glsl";
+	string f = "Fragment_shaders\\display_DWT.glsl";
 
 	ShaderProgram sh(v, f);
 
@@ -271,7 +114,7 @@ int main() {
 	std::array<float, 4> g00 = filter_vals.g0_w;
 	std::array<float, 4> g11 = filter_vals.g1_w;
 
-	Wavelet_0 w0{ 256, h00, h11, g00, g11 };
+	DiscreteWaveletTransform w0{ 256, h00, h11, g00, g11 };
 
 	Texture buff_tex = Texture{};
 	
@@ -281,25 +124,36 @@ int main() {
 	Texture sft_4(GL_RGBA32F, GL_RGBA, "", 256, 256);
 
 	w0.do_DWT(image_0, buff_tex, 1);
-	w0.do_DWT(image_0, buff_tex, 2);
-	w0.do_DWT(image_0, buff_tex, 3);
+//	w0.do_DWT(image_0, buff_tex, 2);
+//	w0.do_DWT(image_0, buff_tex, 3);
 //	w0.do_DWT(image_0, buff_tex, 4);
 //	w0.do_DWT(image_0, buff_tex, 5);
 
-	w0.sort_subbands(image_0, sft_3, 3, 2);
-	w0.apply_soft_threshold(image_0, sft_3, 3, 2);
+//	w0.sort_subbands(image_0, sft_3, 3, 2);
+//	w0.apply_soft_threshold(image_0, sft_3, 3, 2);
 
-	w0.sort_subbands(image_0, sft_2, 2, 8);
-	w0.apply_soft_threshold(image_0, sft_2, 2, 8);
+//	w0.sort_subbands(image_0, sft_2, 2, 8);
+//	w0.apply_soft_threshold(image_0, sft_2, 2, 8);
 
 //	w0.sort_subbands(image_0, sft_1, 1, 32);
 //	w0.apply_soft_threshold(image_0, sft_1, 1, 32);
 
+	Texture LL = Texture{};
+	Texture LL_b = Texture{};
+
+	w0.upsample(image_0, LL, 1, 1, 0);
+
+	w0.convolve(LL, LL_b, 1, 1);
+	w0.transpose(LL, LL_b, 1);
+	w0.convolve(LL, LL_b, 1, 0);
+	w0.transpose(LL, LL_b, 1);
+
+
 //	w0.do_IDWT(image_0, buff_tex, 5);
 //	w0.do_IDWT(image_0, buff_tex, 4);	
-	w0.do_IDWT(image_0, buff_tex, 3);
-	w0.do_IDWT(image_0, buff_tex, 2);
-	w0.do_IDWT(image_0, buff_tex, 1);
+//	w0.do_IDWT(image_0, buff_tex, 3);
+//	w0.do_IDWT(image_0, buff_tex, 2);
+//	w0.do_IDWT(image_0, buff_tex, 1);
 	
 
 
@@ -323,7 +177,6 @@ int main() {
 		sh.use_shader_prog();
 		glActiveTexture(GL_TEXTURE7);
 		image_0.bind_texture();
-		//glBindTexture(GL_TEXTURE_2D, ID_1);
 		ShaderProgram::set_uniform(sh.ID, "filterTexture", (unsigned int)7);
 
 		vao.bind_VAO();
@@ -331,7 +184,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 		
-		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\IDWT_denoised\\GAUSS_NOISE_DEVIATIONS.png");
+		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\IDWT_subbands\\HL_subband.png");
 
 		}
 

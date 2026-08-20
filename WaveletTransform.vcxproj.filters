@@ -95,10 +95,10 @@
     <None Include="Compute_shaders\add_textures_dwt_inverse_DYNAMIC.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Fragment_shaders\display_DWT.fs">
+    <None Include="Fragment_shaders\display_DWT.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Vertex_shaders\vertex_shader.vs">
+    <None Include="Vertex_shaders\vertex_shader.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -126,7 +126,7 @@
     <ClInclude Include="Header_files\VBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\MyLibraries\includeOpenGL\stb\stb_image.h">
+    <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

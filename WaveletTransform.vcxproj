@@ -93,7 +93,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Libraries\MyLibraries\includeOpenGL\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Toms\Desktop\OpenGL\WaveletTransform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,7 +110,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Libraries\MyLibraries\includeOpenGL\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Toms\Desktop\OpenGL\WaveletTransform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,7 +125,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Libraries\MyLibraries\includeOpenGL\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Toms\Desktop\OpenGL\WaveletTransform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,7 +142,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Libraries\MyLibraries\includeOpenGL\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Toms\Desktop\OpenGL\WaveletTransform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,7 +160,6 @@
     <None Include="Compute_shaders\transpose_region_DYNAMIC.glsl" />
     <None Include="Compute_shaders\undo_gamma_correction_DYNAMIC.glsl" />
     <None Include="Compute_shaders\upsample_subband_DYNAMIC.glsl" />
-    <None Include="Fragment_shaders\display_DWT.fs" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Source_files\AddGaussianNoise.cpp" />
     <ClCompile Include="Source_files\AddIDWTSubbands.cpp" />
@@ -178,19 +177,20 @@
     <ClCompile Include="Source_files\VBO.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="stb_write.cpp" />
-    <None Include="Vertex_shaders\vertex_shader.vs" />
+    <None Include="Fragment_shaders\display_DWT.glsl" />
+    <None Include="Vertex_shaders\vertex_shader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="CAMERAMAN_ORIGINAL.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Libraries\MyLibraries\includeOpenGL\stb\stb_image.h" />
     <ClInclude Include="Header_files\DiscreteWaveletTransform.h" />
     <ClInclude Include="Header_files\ShaderProgram.h" />
     <ClInclude Include="Header_files\ShaderSource.h" />
     <ClInclude Include="Header_files\Texture.h" />
     <ClInclude Include="Header_files\VAO.h" />
     <ClInclude Include="Header_files\VBO.h" />
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

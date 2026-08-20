@@ -93,7 +93,7 @@ public:
 };
 
 template<std::size_t W>
-class Wavelet_0 {
+class DiscreteWaveletTransform {
 
 public:
 
@@ -104,7 +104,7 @@ public:
 	std::array<float, W> h1;
 	std::array<float, W> g0;
 	std::array<float, W> g1;
-	Wavelet_0(int img_w, const std::array<float, W> f0, const std::array<float, W> f1, const std::array<float, W> k0, const std::array<float, W> k1) :
+	DiscreteWaveletTransform(int img_w, const std::array<float, W> f0, const std::array<float, W> f1, const std::array<float, W> k0, const std::array<float, W> k1) :
 		h0{ f0 },
 		h1{ f1 },
 		g0{ k0 },
