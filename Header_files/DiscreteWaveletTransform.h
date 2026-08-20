@@ -24,73 +24,40 @@ class GetFilter {
 
 public:
 	std::array<float, sizeof ...(H)> h0;
+	std::array<float, sizeof ...(H)> h1_w;
+	std::array<float, sizeof ...(H)> g0_w;
+	std::array<float, sizeof ...(H)> g1_w;
 
 
 	constexpr GetFilter() = default;
-	constexpr GetFilter(H ...arg) : h0{ static_cast<float>(arg) ... } {}
-
-	constexpr std::array<float, sizeof ...(H)> get_highpass_analysis() const {
-		std::array<float, sizeof ...(H)> h1{};
+	constexpr GetFilter(H ...arg) : h0{ static_cast<float>(arg) ... } {
 		for (int i = 0; i < sizeof ...(H); i++) {
 			int val = -1;
 			for (int k = 0; k < i; k++) {
 				val *= (-1);
 			}
-			h1[sizeof...(H) - 1 - i] = h0[i] * (-1) * val;
+			h1_w[sizeof...(H) - 1 - i] = h0[i] * (-1) * val;
 
 		}
-		return h1;
-	}
 
-	constexpr std::array<float, sizeof ...(H)> get_lowpass_synthesis() const {
-		std::array<float, sizeof ...(H)> g0{};
 		for (int i = 0; i < sizeof ...(H); i++) {
 
-			g0[sizeof...(H) - 1 - i] = h0[i];
+			g0_w[sizeof...(H) - 1 - i] = h0[i];
 
 		}
-		return g0;
-	}
 
-	constexpr std::array<float, sizeof ...(H)> get_highpass_synthesis() const {
-		std::array<float, sizeof ...(H)> g1{};
 		for (int i = 0; i < sizeof ...(H); i++) {
 			int val = 1;
 			for (int k = 0; k < i; k++) {
 				val *= (-1);
 			}
-			g1[i] = h0[i] * val;
+			g1_w[i] = h0[i] * val;
 
 		}
-		return g1;
 	}
 
 };
 
-
-//class Test kas variable number of types
-template<typename... C>
-class Filter {
-public:
-
-	//instantiates parametriced Filter<float, float, float, ...> (floats in my case of use)
-	GetFilter<C ...> ff;
-	std::array<float, sizeof ...(C)> h0_w;
-	std::array<float, sizeof ...(C)> h1_w;
-	std::array<float, sizeof ...(C)> g0_w;
-	std::array<float, sizeof ...(C)> g1_w;
-
-	//exprects to be evaluated at compile time when instantiated
-	//C... unpacks the parameter list to be Test(float, float, float, ...) and calls the the arguments to be args
-	//args ... unpacks the actual values to bet then Test(float a, float b, float c, ...) : ff {a, b, c, ...}
-	constexpr Filter(C ...args) : ff{ args ... } {
-		h0_w = ff.h0;
-		h1_w = ff.get_highpass_analysis();
-		g0_w = ff.get_lowpass_synthesis();
-		g1_w = ff.get_highpass_synthesis();
-	}
-
-};
 
 template<std::size_t W>
 class DiscreteWaveletTransform {
