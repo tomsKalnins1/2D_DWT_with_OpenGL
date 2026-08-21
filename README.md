@@ -48,7 +48,7 @@ w0.sort_subbands(image_0, sft_1, 1, 16); // input_img, sorted_subband_texture, l
 ...
 ```
 
-<img src="Test_debug_images/!_SORTED_COEFFS_0.png" align="left" width="480"  style="margin-right: 10px;"/>
+<img src="Test_debug_images/!_SORTED_COEFFS_0.png" width="480"  style="margin-right: 10px;"/>
 
 The rest of the necessary computations like estimated variance of noise, standard deviation of the subband and threshold are computed in [Soft_threshold_DYNAMIC.glsl](Compute_shaders/Soft_threshold_DYNAMIC.glsl). All of these are obtained for each partition of a row of subband separately, while the scaling parameter is the same for all partitions but differs depending on the level.
 
@@ -60,7 +60,7 @@ w0.apply_soft_threshold(image_0, sft_1, 1, 16);
 ...
 ```
 
-<img src="Description_images/BEFORE_AFTER_DENOISE_SOFT_TH.png" align="left" width="480" style="margin-right: 10px;"/>
+<img src="Description_images/BEFORE_AFTER_DENOISE_SOFT_TH.png" style="margin-right: 10px;"/>
      
 ##To perform the inverse DWT the calls have to be made to the respective levels in reverse order:
 
