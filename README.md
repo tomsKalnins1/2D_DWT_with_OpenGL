@@ -62,7 +62,7 @@ w0.apply_soft_threshold(image_0, sft_1, 1, 16);
 
 <img src="Description_images/BEFORE_AFTER_DENOISE_SOFT_TH.png" style="margin-right: 10px;"/>
      
-##To perform the inverse DWT the calls have to be made to the respective levels in reverse order:
+## To perform the inverse DWT the calls have to be made to the respective levels in reverse order:
 
 ```cpp
 ...
@@ -71,7 +71,7 @@ w0.do_IDWT(image_0, buff_tex, 2); //for level 2 dwt_output, buffer_texture, lvl_
 w0.do_IDWT(image_0, buff_tex, 1); //for level 1 dwt_output, buffer_texture, lvl_decomp
 ...
 ```
-<IMAGE EXAMPLE OF DENOISED IDWT>
+<img src="Description_images/3_LVL_DWT_IDWT_LVL_1_2_16_1_PART_DENOISE.png" style="margin-right: 10px;"/>
 
 <h2>Initial implementation</h2>
 
@@ -94,6 +94,7 @@ for(int i = 0; i < 4; i++){
 }
 ...
 ```
+
 pix_low and pix_high are then the outputs of convolution with low pass and high pass filters respectively.
 Another perk of having the image with power of 2 dimensions is that the modulus operation can be implemented instead with & operator by using size_of_subband * 2 - 1 as a sort of a mask, so the above loop becomes :
 
