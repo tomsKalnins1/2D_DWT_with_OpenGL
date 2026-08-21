@@ -1,6 +1,6 @@
 Discrete Wavelet Transform
 <IMAGE ORIGINAL -> DWT OUTPUT -> IDWT OUTPUT>
-<img src="main/Description_images/ORIGINAL_DWT_IDWT.png" align="left" width="280" style="margin-right: 10px;"/>
+<img src="Description_images/ORIGINAL_DWT_IDWT.png" width="280" style="margin-right: 10px;"/>
 DWT function calls, example with db2 wavelet:
 
 GetFilter takes in variable number of analysis lowpass filter and computes the rest at compile time. Program uses Quadriture mirror filter pairs. The h00 and g00, low pass analysis and synthesis filters respectively are reverses of each other, and the same relationship applies for h11 and g11, high pass analysis and synthesis filters respectively, they are also derived from h00 but with sign alternation :
