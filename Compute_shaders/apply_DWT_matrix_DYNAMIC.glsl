@@ -66,7 +66,7 @@ void main()
    float pix_high = 0.0;
 
    for(int i = 0; i < SIZE; i++){
-     int i_0 = (th_id.x * 2 - i + 2) & (WIDTH_IMG - 1);
+     int i_0 = (th_id.x * 2 - i) & (WIDTH_IMG - 1);
      pix_low += imageLoad(image_O, ivec2(i_0, th_id.y)).x * h0[i];
      pix_high += imageLoad(image_O, ivec2(i_0, th_id.y)).x * h1[i];
    }

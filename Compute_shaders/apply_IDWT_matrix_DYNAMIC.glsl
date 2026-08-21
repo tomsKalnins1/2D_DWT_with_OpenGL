@@ -43,13 +43,17 @@ void convolve_subband(){
 
    vec4 pix_low_1 = vec4(0.0);
 
-        for(int i = SIZE - 1 ; i >= 0; i--){
+        for(int i = SIZE - 1; i >= 0; i--){
+        /*
+        if it is db2 with 4 coefcients then each index of i added to the pixel index has shift of 3 which seems consistent with
+        the correction phase shift with z^(-3) for the db2 filter, so I think the additional shift added to the index just starts the convolution
+        at a different place, but has no effect on the actual output    int i_0 = ((th_id.x * 2) + i + some_conv_offset) & MASK; (?)
+        */
+           int i_0 = ((th_id.x * 2) + i) & MASK;
+           int i_0_p = ((th_id.x * 2 + 1) + i) & MASK;
 
-           int i_0 = ((th_id.x * 2) + i - 2) & MASK;
-           int i_0_p = ((th_id.x * 2 + 1) + i - 2) & MASK;
-
-           pix_low += imageLoad(subband, ivec2(i_0, th_id.y)).x * FILTER[(SIZE - 1) - i];
-           pix_low_p += imageLoad(subband, ivec2(i_0_p, th_id.y)).x * FILTER[(SIZE - 1) - i];
+           pix_low += imageLoad(subband, ivec2(i_0, th_id.y)).x * FILTER[( SIZE - 1) - i];
+           pix_low_p += imageLoad(subband, ivec2(i_0_p, th_id.y)).x * FILTER[(SIZE - 1 ) - i];
 
         }
 
