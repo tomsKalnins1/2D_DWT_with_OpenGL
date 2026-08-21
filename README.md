@@ -1,6 +1,6 @@
 <h1>Discrete Wavelet Transform</h1>
 
-<img src="Description_images/ORIGINAL_DWT_IDWT.png" width="560" style="margin-right: 10px;"/>
+<img src="Description_images/ORIGINAL_DWT_IDWT.png"  style="margin-right: 10px;"/>
 
 <h2>DWT function calls, example with db2 wavelet: </h2>
 
