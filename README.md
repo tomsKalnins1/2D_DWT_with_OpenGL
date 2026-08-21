@@ -38,7 +38,7 @@ w0.do_DWT(image_0, buff_tex, 3); //for level 3 dwt_output, buffer_texture, lvl_d
 
 The program can apply denoising with soft thresholding to partitions of the image separately by computing a separate threshold for each.
 To obtain the threshold one of the parameters needed is the median value of a DWT subband. To get it, DWT coefficients have to be sorted.
-The program uses parallel bitonic sort and based on the number of given partitions stops the sorting. This is done by [fft_compute_horizontal.cs](Compute_shaders/Sort_subband_LOCAL_DYNAMIC.glsl).
+The program uses parallel bitonic sort and based on the number of given partitions stops the sorting. This is done by [Sort_subband_LOCAL_DYNAMIC.glsl](Compute_shaders/Sort_subband_LOCAL_DYNAMIC.glsl).
 
 ## Sorting can by done by call:
 
