@@ -5,42 +5,60 @@
 <h2>DWT function calls, example with db2 wavelet: </h2>
 
 GetFilter takes in variable number of analysis lowpass filter and computes the rest at compile time. Program uses Quadriture mirror filter pairs. The h00 and g00, low pass analysis and synthesis filters respectively are reverses of each other, and the same relationship applies for h11 and g11, high pass analysis and synthesis filters respectively, they are also derived from h00 but with sign alternation :
-
+```cpp
+...
 constexpr GetFilter filter_vals{ 0.4829629131f, 0.8365163037f, 0.224143868f, -0.1294095226f };
+...
+```
 
-The arguments for DiscreteWaveletTransform constructor :
+##The arguments for DiscreteWaveletTransform constructor :
 
+```cpp
+...
 std::array<float, 4> h00 = filter_vals.h0;
 std::array<float, 4> h11 = filter_vals.h1_w;
 std::array<float, 4> g00 = filter_vals.g0_w;
 std::array<float, 4> g11 = filter_vals.g1_w;
-and image width (for now the program requires the image to have dimensions 256x256).
+int img_width = 256; // (for now the program requires the image to have dimensions 256x256).
+
 
 DiscreteWaveletTransform w0{ 256, h00, h11, g00, g11 }; //img_width, analysis_low_pass, analysis_high_pass, synthesis_low_pass, synthesis_high_pass
-
+...
+```
 To perform DWT call do_DWT trough the w0 object and specify the input image texture, buffer texture and the level of decomposition:
-
+```cpp
+...
 w0.do_DWT(image_0, buff_tex, 1); //for level 1 dwt_output, buffer_texture, lvl_decomp
 w0.do_DWT(image_0, buff_tex, 2); //for level 2 dwt_output, buffer_texture, lvl_decomp
 w0.do_DWT(image_0, buff_tex, 3); //for level 3 dwt_output, buffer_texture, lvl_decomp
+...
+```
 
-<IMAGE 3 level dwT example>
+<img src="Description_images/NOISY_3_LVL_DWT.png"  style="margin-right: 10px;"/>
 
 The program can apply denoising with soft thresholding to partitions of the image separately by computing a separate threshold for each.
 To obtain the threshold one of the parameters needed is the median value of a DWT subband. To get it, DWT coefficients have to be sorted.
-The program uses parallel bitonic sort and based on the number of given partitions stops the sorting. This is done by <link to sorting shader file>.
-Sorting can by done by call:
+The program uses parallel bitonic sort and based on the number of given partitions stops the sorting. This is done by [fft_compute_horizontal.cs](Compute_shaders/Sort_subband_LOCAL_DYNAMIC.glsl).
 
+## Sorting can by done by call:
+
+```cpp
+...
 w0.sort_subbands(image_0, sft_1, 1, 16); // input_img, sorted_subband_texture, lvl_decomp, num_partitions
+...
+```
 
-<IMAGE sorted subband example for level 1>  
+<img src="Test_debug_images/!_SORTED_COEFFS_0.png"  style="margin-right: 10px;"/>
 
 The rest of the necessary computations like estimated variance of noise, standard deviation of the subband and threshold are computed in <link to soft threshold shader file>. All of these are obtained for each partition of a row of subband separately, while the scaling parameter is the same for all partitions but differs depending on the level.
 
-Method call to apply soft threshold :
+##Method call to apply soft threshold :
 
+```cpp
+...
 w0.apply_soft_threshold(image_0, sft_1, 1, 16);
-
+...
+```
 <IMAGE OF DWT BEFORE AND AFTER SOFT THRESHOLD>
 
 To perform the inverse DWT the calls have to be made to the respective levels in reverse order:
