@@ -115,16 +115,16 @@ Similarly to C++ modulus with a negative number in glsl has to be done with ((in
 
 The most basic approach the way it is shown in the filter bank diagrams, where each subband is upsampled and then convolved, transposed, convolved and transposed with its respective set of synthesis filters. For example upsampled HL subband has high pass filter and then lowpass filter applied. When these operations are applied to all of them, they are added together pixel by pixel. While this may not be the most efficient way to do that, personally, I wanted to see the exact diagrams of analysis and synthesis from all the articles and videos in action :
 
-<IMAGE OF LL + LH + HL + HH  = IDWT OUTPUT>
+<img src="Description_images/IDWT_SUBBANDS_ADDED.png"  style="margin-right: 10px;"/>
 
-Examples of different partition sizes used of denoising
-some levels are denoised better with higher number of partitions (which have to be a power of 2 since bitonic sort is used), for example level 1 decomposition has better results with 16 partitions with their respective local thresholds, while giving a higher number to higher levels results in
+## Examples of different partition sizes used of denoising
+Some levels are denoised better with higher number of partitions (which have to be a power of 2 since bitonic sort is used), for example level 1 decomposition has better results with 16 partitions with their respective local thresholds, while giving a higher number to higher levels results in
 artefacts, because too much information is removed:
 
 LEFT : denoising applied to levels : 1, 2, 3 with number of partitions 32, 8, 4, has very visible artefacts
 RIGHT : denoising applied to levels : 1, 2 with number of partitions 16, 1 has a less damaged output
 
-<IMAGE OF 32_8_4 DENOISE AND 16_1 DENOISE OUTPUT OF IDWT>
+<img src="Description_images/DENOISE_LVL_1_2_3_32_8_4_PARTITIONS.png" width="48%"/> <img src="Description_images/3_LVL_DWT_IDWT_LVL_1_2_16_1_PART_DENOISE.png" width="48%"/>
 
 
 
@@ -132,6 +132,7 @@ RIGHT : denoising applied to levels : 1, 2 with number of partitions 16, 1 has a
 
 <h2> Incorrect order of applying synthesis filters </h2>
 <IMAGE OF ORDER OF FILTER CONVOLUTION BEING INCORRECT>
+
 
 <h2> Not scaling the filter coefficients by sqrt(2) </h2>
 If the filter values are obtained with the shift orthagonality condition SUM h0[n] * h0[n + 2k] = 2delta(k) , k = 0 to size_of_filter - 1 then coefficient sum is 2, however sum of the coeffiecients has to be sqrt(2). This is the result of not dividing all coefficients by sqrt(2):
