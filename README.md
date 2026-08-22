@@ -1,10 +1,13 @@
 # 2D Discrete Wavelet Transform and Image Denoising Using Wavelet Thresholding 
+
 <p align="center">
 <img src="Description_images/ORIGINAL_DWT_IDWT.png"/>
 </p>
+
 ## DWT function calls, example with db2 wavelet: 
 
 `GetFilter` class constructor takes in variable number of analysis low-pass filter coefficients and computes the rest at compile time. Program uses quadrature mirror filter pairs. The `h00` and `g00`, low-pass analysis and synthesis filters respectively are reverses of each other, and the same relationship applies for `h11` and `g11`, high-pass analysis and synthesis filters respectively, they are also derived from h00 but with sign alternation :
+
 ```cpp
 ...
 constexpr GetFilter filter_vals{ 0.4829629131f, 0.8365163037f, 0.224143868f, -0.1294095226f };
@@ -25,6 +28,7 @@ int img_width = 256; // (for now the program requires the image to have dimensio
 DiscreteWaveletTransform w0{ 256, h00, h11, g00, g11 }; //img_width, analysis_low_pass, analysis_high_pass, synthesis_low_pass, synthesis_high_pass
 ...
 ```
+
 ### To perform DWT, call `do_DWT` trough the `w0` object and specify the input image texture, buffer texture and the level of decomposition:
 
 ```cpp
@@ -51,6 +55,7 @@ The program uses parallel bitonic sort and based on the number of given partitio
 w0.sort_subbands(image_0, sft_1, 1, 16); // input_img, sorted_subband_texture, lvl_decomp, num_partitions
 ...
 ```
+
 The sorted subband coefficients: <br> <br>
 <p align="center">
 <img src="Test_debug_images/!_SORTED_COEFFS_0.png" width="420"/>
@@ -65,6 +70,7 @@ https://www.ee.iitb.ac.in/~icvgip/PAPERS/202.pdf
 w0.apply_soft_threshold(image_0, sft_1, 1, 16);
 ...
 ```
+
 LEFT : noisy DWT <br>
 RIGHT : denoised DWT <br>
 <p align="center">
@@ -153,12 +159,12 @@ AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, AWGN, 0.04
 
 The Xoshiro_32 algorithm was used to obtain uniformly distributed noise_u_0 and noise_u_1 which then were used in the Box-Muller method to get the required noise:
 
-
 ```glsl
 ...
 float noised = sqrt((-2.0) * log(n_0.x)) * cos(2.0 * pi * n_1.x);
 ...
 ```
+
 <p align="center">
 <img src="IDWT_denoised/UNIFORM_NOISE_U_0.png" width="31%"/> <img src="IDWT_denoised/UNIFORM_NOISE_U_1.png" width="31%"/> <img src="IDWT_denoised/BOX_MULLER_NOISE_U_0_U_1.png" width="31%"/>
 </p>
