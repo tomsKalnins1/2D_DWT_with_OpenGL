@@ -63,7 +63,7 @@ w0.apply_soft_threshold(image_0, sft_1, 1, 16);
 ...
 ```
 
-<img src="Description_images/BEFORE_AFTER_DENOISE_SOFT_TH.png" style="margin-right: 10px;" width="48%"/>
+<img src="Description_images/BEFORE_AFTER_DENOISE_SOFT_TH.png" style="margin-right: 10px;"/>
      
 ## To perform the inverse DWT the calls have to be made to the respective levels in reverse order:
 
