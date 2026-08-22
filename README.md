@@ -157,7 +157,7 @@ AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, AWGN, 0.04
 ...
 ```
 
-The Xoshiro_32 algorithm was used to obtain uniformly distributed noise_u_0 and noise_u_1 which then were used in the Box-Muller method to get the required noise:
+The Xoshiro_32 algorithm was used to obtain uniformly distributed `noise_u_0` and `noise_u_1` which then were used in the Box-Muller method to get the required noise:
 
 ```glsl
 ...
