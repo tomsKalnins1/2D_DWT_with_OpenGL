@@ -1,6 +1,6 @@
 # 2D Discrete Wavelet Transform and Image Denoising Using Wavelet Thresholding 
 
-<img src="Description_images/ORIGINAL_DWT_IDWT.png"  style="margin-right: 10px;"/>
+<img src="Description_images/ORIGINAL_DWT_IDWT.png"  align="center"/>
 
 ## DWT function calls, example with db2 wavelet: 
 
@@ -35,7 +35,7 @@ w0.do_DWT(image_0, buff_tex, 3); //for level 3 dwt_output, buffer_texture, lvl_d
 ...
 ```
 <br>
-<img src="Description_images/NOISY_3_LVL_DWT.png" align="left" width="420" style="margin-right: 10px;"/>
+<img src="Description_images/NOISY_3_LVL_DWT.png" width="420" align="center"/>
 
 
 The program can apply denoising with soft thresholding to partitions of the image separately by computing a separate threshold for each.
@@ -51,7 +51,7 @@ w0.sort_subbands(image_0, sft_1, 1, 16); // input_img, sorted_subband_texture, l
 ...
 ```
 The sorted subband coefficients: <br> <br>
-<img src="Test_debug_images/!_SORTED_COEFFS_0.png" width="480"  style="margin-right: 10px;"/>
+<img src="Test_debug_images/!_SORTED_COEFFS_0.png" width="480"  align="center"/>
 
 The rest of the necessary computations like estimated variance of noise, standard deviation of the subband and threshold are computed in [Soft_threshold_DYNAMIC.glsl](Compute_shaders/Soft_threshold_DYNAMIC.glsl). All of these are obtained for each partition of each subband row separately, while the scaling parameter is the same for all partitions but differs depending on the level. The formula used for computing the thresholds can be found here:
 https://www.ee.iitb.ac.in/~icvgip/PAPERS/202.pdf
@@ -64,7 +64,7 @@ w0.apply_soft_threshold(image_0, sft_1, 1, 16);
 ...
 ```
 
-<img src="Description_images/BEFORE_AFTER_DENOISE_SOFT_TH.png" style="margin-right: 10px;"/>
+<img src="Description_images/BEFORE_AFTER_DENOISE_SOFT_TH.png" align="center"/>
      
 ### To perform the inverse DWT the calls have to be made to the respective levels in reverse order:
 
@@ -119,7 +119,7 @@ As in C++, GLSL's % operator with a negative dividend can produce a negative rem
 
 The most basic approach, the way it is shown in the filter bank diagrams, where each subband is upsampled and then convolved, transposed, convolved and transposed with its respective set of synthesis filters. For example upsampled HL subband has high pass filter and then low-pass filter applied. When these operations are applied to all of them, they are added together pixel by pixel. While this may not be the most efficient way to do that, personally, I wanted to see this part from the DWT diagrams of analysis and synthesis from all the articles and videos in action :
 
-<img src="Description_images/IDWT_SUBBANDS_ADDED.png"  style="margin-right: 10px;"/>
+<img src="Description_images/IDWT_SUBBANDS_ADDED.png"  align="center"/>
 
 ## Examples of different partition sizes used for denoising
 
@@ -157,14 +157,14 @@ float noised = sqrt((-2.0) * log(n_0.x)) * cos(2.0 * pi * n_1.x);
 
 ### Incorrect order of applying synthesis filters 
 Incorrect order of low/high pass filter application for LH and HL subbands.
-<img src="Description_images/INCORRECT_ORDER_OF_FILTER_APPLICATION_0.png"  style="margin-right: 10px;"/>
+<img src="Description_images/INCORRECT_ORDER_OF_FILTER_APPLICATION_0.png"  align="center"/>
 
 ### Not scaling the filter coefficients by sqrt(2)
 If the filter values are obtained with the shift orthogonality condition SUM h0[n] * h0[n + 2k] = 2delta(k) , k = 0 to size_of_filter - 1 then coefficient sum is 2, however sum of the coefficients has to be sqrt(2).
 If the approach in (https://www.dsprelated.com/showarticle/1006.php) is used to obtain the filter values, then the division is necessary otherwise it results in the example below.<br>
 This is the result of not dividing all coefficients by sqrt(2) :
 
-<img src="3_LVL_DWT_IDWT_NOT_DIVIDING_BY_SQRT_2_PHASE_SHIFT.png"  style="margin-right: 10px;"/>
+<img src="3_LVL_DWT_IDWT_NOT_DIVIDING_BY_SQRT_2_PHASE_SHIFT.png"  align="center"/>
 
 ## Dependencies
 * [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)
