@@ -128,7 +128,19 @@ RIGHT : denoising applied to levels : 1, 2 with number of partitions 16, 1 has a
 <img src="Description_images/DENOISE_LVL_1_2_3_32_8_4_PARTITIONS.png" width="48%"/> <img src="Description_images/3_LVL_DWT_IDWT_LVL_1_2_16_1_PART_DENOISE.png" width="48%"/>
 
 <h2>Noise generation</h2>
-The image had additive Gaussian noise applied to it. Xoshiro_32 algorithm was used to obtain uniformlys distributed noise u_0 and u_1 which then were used in Box-Muller method to get the required noise:
+
+The image had additive Gaussian noise applied to it:
+
+```cpp
+...
+AddGaussianNoise::generate_uniform_noise(noise_u_0, 1); //args : Texture& noise_0, 
+AddGaussianNoise::generate_uniform_noise(noise_u_1, 2);
+AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, AWGN, 0.04);
+...
+```
+
+Xoshiro_32 algorithm was used to obtain uniformlys distributed noise u_0 and u_1 which then were used in Box-Muller method to get the required noise:
+
 
 ```glsl
 ...
@@ -138,7 +150,7 @@ float noised = sqrt((-2.0) * log(n_0.x)) * cos(2.0 * pi * n_1.x);
 
 <img src="IDWT_denoised/UNIFORM_NOISE_U_0.png" width="31%"/> <img src="IDWT_denoised/UNIFORM_NOISE_U_1.png" width="31%"/> <img src="IDWT_denoised/BOX_MULLER_NOISE_U_0_U_1.png" width="31%"/>
 
-<h2>Some of the many, many bugs</h2>
+<h2>Some of the bugs</h2>
 
 ## Incorrect order of applying synthesis filters 
 Incorrect order of low/high pass filter application for LH and HL subbands.
