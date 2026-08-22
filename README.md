@@ -35,8 +35,9 @@ w0.do_DWT(image_0, buff_tex, 3); //for level 3 dwt_output, buffer_texture, lvl_d
 ...
 ```
 <br>
+<p align="center">
 <img src="Description_images/NOISY_3_LVL_DWT.png" width="420" align="center"/>
-
+</p>
 
 The program can apply denoising with soft thresholding to partitions of the image separately by computing a separate threshold for each.
 To obtain the thresholds for the partitions one of the parameters needed is the median values for each partition. To obtain them, DWT coefficients have to be sorted.
