@@ -81,7 +81,7 @@ w0.do_IDWT(image_0, buff_tex, 1); //for level 1 dwt_output, buffer_texture, lvl_
 ...
 ```
 LEFT : DWT input <br>
-RIGHT : denoised DWT output <br>
+RIGHT : denoised IDWT output <br>
 <p align="center">
 <img src="Description_images/3_LVL_DWT_IDWT_NOISY.png" style="margin-right: 10px;" width="48%"/> <img src="Description_images/3_LVL_DWT_IDWT_LVL_1_2_16_1_PART_DENOISE.png" style="margin-right: 10px;" width="48%"/>
 </p>
@@ -91,7 +91,7 @@ The initial approach was to create a DWT matrix as a texture from analysis low a
 LEFT : DWT matrix <br>
 RIGHT : IDWT matrix <br>
 <p align="center">
-<img src="Test_debug_images/DB_2_transform_matrix_1.png" width="35%"/> <img src="Test_debug_images/DB_2_IDWT_CIRCULAR_CONV_MATRIX.png" width="35%"/>
+<img src="Test_debug_images/DB_2_transform_matrix_1.png" width="48%"/> <img src="Test_debug_images/DB_2_IDWT_CIRCULAR_CONV_MATRIX.png" width="48%"/>
 </p>
 It is clear that to perform the convolution needed, there are many redundant multiplications done, if the image and the transform are multiplied element by element. The newer implementation in  [apply_DWT_matrix_DYNAMIC.glsl](Compute_shaders/apply_DWT_matrix_DYNAMIC.glsl) and [apply_IDWT_matrix_DYNAMIC.glsl](Compute_shaders/apply_IDWT_matrix_DYNAMIC.glsl) uses sparse convolution to avoid redundant operations.
 For example, in the level 1 DWT, each row has 128 threads if the width of subband is 128. One thread gathers only the needed pixels based on the size of the filter and the respective shift by 2, and performs the convolution with low and high pass coefficients, thread with id 0 and db2 being the wavelet of choice,
