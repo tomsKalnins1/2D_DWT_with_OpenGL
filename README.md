@@ -1,7 +1,7 @@
 # 2D Discrete Wavelet Transform and Image Denoising Using Wavelet Thresholding 
-
-<img src="Description_images/ORIGINAL_DWT_IDWT.png"  align="center"/>
-
+<p align="center">
+<img src="Description_images/ORIGINAL_DWT_IDWT.png"/>
+</p>
 ## DWT function calls, example with db2 wavelet: 
 
 `GetFilter` class constructor takes in variable number of analysis low-pass filter coefficients and computes the rest at compile time. Program uses quadrature mirror filter pairs. The `h00` and `g00`, low-pass analysis and synthesis filters respectively are reverses of each other, and the same relationship applies for `h11` and `g11`, high-pass analysis and synthesis filters respectively, they are also derived from h00 but with sign alternation :
@@ -157,14 +157,14 @@ float noised = sqrt((-2.0) * log(n_0.x)) * cos(2.0 * pi * n_1.x);
 
 ### Incorrect order of applying synthesis filters 
 Incorrect order of low/high pass filter application for LH and HL subbands.
-<img src="Description_images/INCORRECT_ORDER_OF_FILTER_APPLICATION_0.png"  align="center"/>
+<img src="Description_images/INCORRECT_ORDER_OF_FILTER_APPLICATION_0.png" width="480" align="center"/>
 
 ### Not scaling the filter coefficients by sqrt(2)
 If the filter values are obtained with the shift orthogonality condition SUM h0[n] * h0[n + 2k] = 2delta(k) , k = 0 to size_of_filter - 1 then coefficient sum is 2, however sum of the coefficients has to be sqrt(2).
 If the approach in (https://www.dsprelated.com/showarticle/1006.php) is used to obtain the filter values, then the division is necessary otherwise it results in the example below.<br>
 This is the result of not dividing all coefficients by sqrt(2) :
 
-<img src="3_LVL_DWT_IDWT_NOT_DIVIDING_BY_SQRT_2_PHASE_SHIFT.png"  align="center"/>
+<img src="3_LVL_DWT_IDWT_NOT_DIVIDING_BY_SQRT_2_PHASE_SHIFT.png" width="480" align="center"/>
 
 ## Dependencies
 * [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)
