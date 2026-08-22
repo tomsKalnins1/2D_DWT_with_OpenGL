@@ -49,7 +49,7 @@ The program uses parallel bitonic sort and based on the number of given partitio
 w0.sort_subbands(image_0, sft_1, 1, 16); // input_img, sorted_subband_texture, lvl_decomp, num_partitions
 ...
 ```
-The sorted subband coefficients :
+The sorted subband coefficients : <br>
 <img src="Test_debug_images/!_SORTED_COEFFS_0.png" width="480"  style="margin-right: 10px;"/>
 
 The rest of the necessary computations like estimated variance of noise, standard deviation of the subband and threshold are computed in [Soft_threshold_DYNAMIC.glsl](Compute_shaders/Soft_threshold_DYNAMIC.glsl). All of these are obtained for each partition of a row of subband separately, while the scaling parameter is the same for all partitions but differs depending on the level. Formula used for computing the thresholds can be found here :
