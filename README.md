@@ -65,7 +65,7 @@ w0.apply_soft_threshold(image_0, sft_1, 1, 16);
 
 <img src="Description_images/BEFORE_AFTER_DENOISE_SOFT_TH.png" style="margin-right: 10px;"/>
      
-## To perform the inverse DWT the calls have to be made to the respective levels in reverse order:
+### To perform the inverse DWT the calls have to be made to the respective levels in reverse order:
 
 ```cpp
 ...
@@ -74,7 +74,9 @@ w0.do_IDWT(image_0, buff_tex, 2); //for level 2 dwt_output, buffer_texture, lvl_
 w0.do_IDWT(image_0, buff_tex, 1); //for level 1 dwt_output, buffer_texture, lvl_decomp
 ...
 ```
-<img src="Description_images/3_LVL_DWT_IDWT_LVL_1_2_16_1_PART_DENOISE.png" style="margin-right: 10px;" width="48%"/>
+LEFT : DWT input <br>
+RIGHT : denoised DWT output <br>
+<img src="Description_images/3_LVL_DWT_IDWT_NOISY.png" style="margin-right: 10px;" width="48%"/> <img src="Description_images/3_LVL_DWT_IDWT_LVL_1_2_16_1_PART_DENOISE.png" style="margin-right: 10px;" width="48%"/>
 
 <h2>Initial implementation</h2>
 
