@@ -140,7 +140,7 @@ The most basic approach, the way it is shown in the filter bank diagrams, where 
 Some levels are denoised better with a higher number of partitions (which have to be a power of 2 since bitonic sort is used), for example level 1 decomposition has better results with 16 partitions with their respective local thresholds, while giving a higher number of partitions for higher levels results in artefacts, because too much information is removed:
 
 LEFT : denoising applied to levels : 1, 2, 3 with number of partitions 32, 8, 4, has very visible artefacts <br>
-RIGHT : denoising applied to levels : 1, 2 with number of partitions 16, 1 has a less damaged output
+RIGHT : denoising applied to levels : 1, 2 with number of partitions 16, 1, has a less damaged output
 <p align="center">
 <img src="Description_images/DENOISE_LVL_1_2_3_32_8_4_PARTITIONS.png" width="48%"/> <img src="Description_images/3_LVL_DWT_IDWT_LVL_1_2_16_1_PART_DENOISE.png" width="48%"/>
 </p>
