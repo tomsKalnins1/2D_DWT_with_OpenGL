@@ -11,7 +11,7 @@ constexpr GetFilter filter_vals{ 0.4829629131f, 0.8365163037f, 0.224143868f, -0.
 ...
 ```
 
-The arguments for DiscreteWaveletTransform constructor :
+## The arguments for DiscreteWaveletTransform constructor :
 
 ```cpp
 ...
@@ -42,17 +42,17 @@ The program can apply denoising with soft thresholding to partitions of the imag
 To obtain the thresholds for the partitions one of the parameters needed are the median values for each partition. To get it, DWT coefficients have to be sorted.
 The program uses parallel bitonic sort and based on the number of given partitions stops the sorting. This is done by [Sort_subband_LOCAL_DYNAMIC.glsl](https://github.com/tomsKalnins1/2D_DWT_with_OpenGL/blob/main/Compute_shaders/Sort_subband_LOCAL_DYNAMIC.glsl) .
 <br clear="both">
-Sorting can by done by call:
+## Sorting can by done by call:
 
 ```cpp
 ...
 w0.sort_subbands(image_0, sft_1, 1, 16); // input_img, sorted_subband_texture, lvl_decomp, num_partitions
 ...
 ```
-
+The sorted subband coefficients :
 <img src="Test_debug_images/!_SORTED_COEFFS_0.png" width="480"  style="margin-right: 10px;"/>
 
-The rest of the necessary computations like estimated variance of noise, standard deviation of the subband and threshold are computed in [Soft_threshold_DYNAMIC.glsl](Compute_shaders/Soft_threshold_DYNAMIC.glsl). All of these are obtained for each partition of a row of subband separately, while the scaling parameter is the same for all partitions but differs depending on the level. Formula used for computing the thresholds :
+The rest of the necessary computations like estimated variance of noise, standard deviation of the subband and threshold are computed in [Soft_threshold_DYNAMIC.glsl](Compute_shaders/Soft_threshold_DYNAMIC.glsl). All of these are obtained for each partition of a row of subband separately, while the scaling parameter is the same for all partitions but differs depending on the level. Formula used for computing the thresholds can be found here :
 https://www.ee.iitb.ac.in/~icvgip/PAPERS/202.pdf
 
 ## Method call to apply soft threshold :
@@ -62,8 +62,9 @@ https://www.ee.iitb.ac.in/~icvgip/PAPERS/202.pdf
 w0.apply_soft_threshold(image_0, sft_1, 1, 16);
 ...
 ```
-
-<img src="Description_images/BEFORE_AFTER_DENOISE_SOFT_TH.png" style="margin-right: 10px;"/>
+LEFT : DWT input image
+RIGHT : DWT denoised output image
+<img src="Description_images/3_LVL_DWT_IDWT_NOISY.png" width="48%"/> <img src="Description_images/BEFORE_AFTER_DENOISE_SOFT_TH.png" style="margin-right: 10px;" width="48%"/>
      
 ## To perform the inverse DWT the calls have to be made to the respective levels in reverse order:
 
@@ -84,8 +85,7 @@ RIGHT : IDWT matrix <br>
 <img src="Test_debug_images/DB_2_transform_matrix_1.png" width="35%"/> <img src="Test_debug_images/DB_2_IDWT_CIRCULAR_CONV_MATRIX.png" width="35%"/>
 
 It is clear that to perform the convolution needed, there are many redundant multiplications done, if the image and the transform are multiplied element by element. The newer version is [apply_DWT_matrix_DYNAMIC.glsl](Compute_shaders/apply_DWT_matrix_DYNAMIC.glsl) [apply_IDWT_matrix_DYNAMIC.glsl](Compute_shaders/apply_IDWT_matrix_DYNAMIC.glsl) implementation uses sparse convolution to avoid redundant operations.
-
-For example in the level 1 DWT each row has 128 threads if the width of subband is 128. One thread gathers the needed pixels based on the size of the filter, and performs the convolution with low and high pass coefficients. For example threads with id 0 and db2 being the wavelet of choice,
+For example in the level 1 DWT each row has 128 threads if the width of subband is 128. One thread gathers only the needed pixels based on the size of the filter and the respective shift by 2, and performs the convolution with low and high pass coefficients, threads with id 0 and db2 being the wavelet of choice,
 the picked pixel indices are :
 
 ```glsl
