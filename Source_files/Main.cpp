@@ -88,8 +88,8 @@ int main() {
 
 
 	//------------------------------------ LOAD INPUT IMAGE
-
-	string pathToImage = "OpenGL\\WaveletTransform\\CAMERAMAN_ORIGINAL.png";
+	
+	string pathToImage = "C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\CAMERAMAN_ORIGINAL.png";
 	
 	
 	Texture image_0(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
@@ -104,8 +104,8 @@ int main() {
 	Texture AWGN = Texture{};		// white Gaussian noise
 	Texture deviations = Texture{};
 
-	AddGaussianNoise::generate_uniform_noise(noise_u_0, 1);
-	AddGaussianNoise::generate_uniform_noise(noise_u_1, 2);
+	AddGaussianNoise::generate_uniform_noise(noise_u_0);
+	AddGaussianNoise::generate_uniform_noise(noise_u_1);
 	AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, AWGN, 0.04);
 
 	//------------------------------------ GENERATE GAUSSIAN NOISE TO ADD TO IMAGE
@@ -181,8 +181,8 @@ int main() {
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
-		
-		//	saveImg("OpenGL\\WaveletTransform\\Description_images\\INCORRECT_ORDER_OF_FILTER_APPLICATION_0.png");
+	
+			//saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\Description_images\\UNIFORM_NOISE_0.png");
 
 		}
 

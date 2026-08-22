@@ -71,7 +71,7 @@ uint32_t AddGaussianNoise::xoshiro_32(std::vector<uint32_t>& seed) {
 	return res;
 }
 
-std::vector<float> AddGaussianNoise::generate_rands_xoshiro_32(int num_rands, int base) {
+std::vector<float> AddGaussianNoise::generate_rands_xoshiro_32(int num_rands) {
 
 	std::vector<float> rands(num_rands, 0.0f);
 	int num_proc = std::thread::hardware_concurrency();
@@ -97,7 +97,11 @@ std::vector<float> AddGaussianNoise::generate_rands_xoshiro_32(int num_rands, in
 	for (int i = 0; i < num_proc; i++) {
 
 		Xoshiro x;
-		std::seed_seq s{ base + i, base + i, base + i, base + i };
+		int s_0 = rand();
+		int s_1 = rand();
+		int s_2 = rand();
+		int s_3 = rand();
+		std::seed_seq s{ s_0 + i, s_1 + i, s_2 + i, s_3 + i };
 		std::vector<uint32_t> seeds(4);
 		s.generate(seeds.begin(), seeds.end());
 		x.s = seeds;
@@ -127,11 +131,11 @@ std::vector<float> AddGaussianNoise::generate_rands_xoshiro_32(int num_rands, in
 
 }
 
-void AddGaussianNoise::generate_uniform_noise(Texture& output, int base) {
+void AddGaussianNoise::generate_uniform_noise(Texture& output) {
 
 	int size = output.width * output.width * 4;
 	
-	std::vector<float> n_0 = generate_rands_xoshiro_32(size, base);
+	std::vector<float> n_0 = generate_rands_xoshiro_32(size);
 
 	glGenTextures(1, &output.ID);
 

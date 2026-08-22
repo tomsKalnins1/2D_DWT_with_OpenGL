@@ -103,9 +103,9 @@ public:
 	//gen one rand number
 	static uint32_t xoshiro_32(std::vector<uint32_t>& seed);
 	//gen vector of rand numbers
-	static std::vector<float> generate_rands_xoshiro_32(int num_rands, int base);
+	static std::vector<float> generate_rands_xoshiro_32(int num_rands);
 
-	static void generate_uniform_noise(Texture& output, int base);
+	static void generate_uniform_noise(Texture& output);
 
 	static void apply_Gaussian_noise(Texture& u_0, Texture& u_1, Texture& input, Texture& output,  float deviation);
 

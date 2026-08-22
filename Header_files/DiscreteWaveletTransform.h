@@ -294,7 +294,7 @@ public:
 	
 		ApplyTransform at(path, decomp_lvl, image_width);
 		source_code = at.set_compute_shader_values(path, h0.size(), analysis_low, analysis_high);
-		std::cout << "DO_DWT_SAHDER CODE : \n" << source_code << '\n';
+	//	std::cout << "DO_DWT_SAHDER CODE : \n" << source_code << '\n';
 
 		const char* shader_source_char = source_code.c_str();
 
