@@ -125,6 +125,7 @@ The most basic approach, the way it is shown in the filter bank diagrams, where 
 <p align="center">
 <img src="Description_images/IDWT_SUBBANDS_ADDED.png"  align="center"/>
 </p>
+
 ## Examples of different partition sizes used for denoising
 
 Some levels are denoised better with a higher number of partitions (which have to be a power of 2 since bitonic sort is used), for example level 1 decomposition has better results with 16 partitions with their respective local thresholds, while giving a higher number of partitions for higher levels results in artefacts, because too much information is removed:
@@ -134,6 +135,7 @@ RIGHT : denoising applied to levels : 1, 2 with number of partitions 16, 1 has a
 <p align="center">
 <img src="Description_images/DENOISE_LVL_1_2_3_32_8_4_PARTITIONS.png" width="48%"/> <img src="Description_images/3_LVL_DWT_IDWT_LVL_1_2_16_1_PART_DENOISE.png" width="48%"/>
 </p>
+
 ## Noise generation
 
 The image had additive Gaussian noise applied to it:
@@ -157,6 +159,7 @@ float noised = sqrt((-2.0) * log(n_0.x)) * cos(2.0 * pi * n_1.x);
 <p align="center">
 <img src="IDWT_denoised/UNIFORM_NOISE_U_0.png" width="31%"/> <img src="IDWT_denoised/UNIFORM_NOISE_U_1.png" width="31%"/> <img src="IDWT_denoised/BOX_MULLER_NOISE_U_0_U_1.png" width="31%"/>
 </p>
+
 ## Some of the bugs
 
 ### Incorrect order of applying synthesis filters 
@@ -164,14 +167,18 @@ Incorrect order of low/high pass filter application for LH and HL subbands.
 <p align="center">
 <img src="Description_images/INCORRECT_ORDER_OF_FILTER_APPLICATION_0.png" width="480" align="center"/>
 </p>
+
 ### Not scaling the filter coefficients by sqrt(2)
+
 If the filter values are obtained with the shift orthogonality condition SUM h0[n] * h0[n + 2k] = 2delta(k) , k = 0 to size_of_filter - 1 then coefficient sum is 2, however sum of the coefficients has to be sqrt(2).
 If the approach in (https://www.dsprelated.com/showarticle/1006.php) is used to obtain the filter values, then the division is necessary otherwise it results in the example below.<br>
 This is the result of not dividing all coefficients by sqrt(2) :
-
-<img src="3_LVL_DWT_IDWT_NOT_DIVIDING_BY_SQRT_2_PHASE_SHIFT.png" width="480" align="center"/>
+<p align="center">
+<img src="Description_images/3_LVL_DWT_IDWT_NOT_DIVIDING_BY_SQRT_2_PHASE_SHIFT.png" width="480" align="center"/>
+</p>
 
 ## Dependencies
+
 * [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)
 * [stb_image_write](https://github.com/nothings/stb/blob/master/stb_image_write.h)
 * [GLAD](https://glad.dav1d.de/)
