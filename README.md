@@ -60,6 +60,7 @@ The sorted subband coefficients: <br> <br>
 <p align="center">
 <img src="Test_debug_images/!_SORTED_COEFFS_0.png" width="420"/>
 </p>
+
 The rest of the necessary computations like estimated variance of noise, standard deviation of the subband and threshold are computed in [Soft_threshold_DYNAMIC.glsl](Compute_shaders/Soft_threshold_DYNAMIC.glsl). All of these are obtained for each partition of each subband row separately, while the scaling parameter is the same for all partitions but differs depending on the level. The formula used for computing the thresholds can be found here:
 https://www.ee.iitb.ac.in/~icvgip/PAPERS/202.pdf
 
