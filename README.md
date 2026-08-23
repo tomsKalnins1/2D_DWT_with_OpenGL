@@ -167,10 +167,6 @@ float noised = sqrt((-2.0) * log(n_0.x)) * cos(2.0 * pi * n_1.x);
 ...
 ```
 
-| Uniform Noise `noise_u_0` | Uniform Noise `noise_u_1` | Additive White Gaussian Noise `AWGN` |
-|---------------------------|---------------------------|--------------------------------------|
-| <img src="Description_images/UNIFORM_NOISE_0.png" width="100%"> | <img src="Description_images/UNIFORM_NOISE_1.png" width="100%"> | <img src="IDWT_denoised/BOX_MULLER_NOISE_U_0_U_1.png" width="100%"> |
-
 <table>
 <thead>
 <tr>
