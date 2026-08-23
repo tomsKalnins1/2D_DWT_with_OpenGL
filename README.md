@@ -181,9 +181,9 @@ float noised = sqrt((-2.0) * log(n_0.x)) * cos(2.0 * pi * n_1.x);
 </thead>
 <tbody>
 <tr>
-<td><img src="Description_images/UNIFORM_NOISE_0.png" width="100%"></td>
-<td><img src="Description_images/UNIFORM_NOISE_1.png" width="100%"></td>
-<td><img src="IDWT_denoised/BOX_MULLER_NOISE_U_0_U_1.png" width="100%"></td>
+<td><img src="Description_images/UNIFORM_NOISE_0.png" width="300"></td>
+<td><img src="Description_images/UNIFORM_NOISE_1.png" width="300"></td>
+<td><img src="IDWT_denoised/BOX_MULLER_NOISE_U_0_U_1.png" width="300"></td>
 </tr>
 </tbody>
 </table>
