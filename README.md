@@ -169,15 +169,9 @@ float noised = sqrt((-2.0) * log(n_0.x)) * cos(2.0 * pi * n_1.x);
 
 <table>
      <tr>
-     <td align="center" width="33%">
-                Uniform Noise <code>noise_u_0</code><br>
-     </td>
-          <td align="center" width="33%">
-                Uniform Noise <code>noise_u_1</code><br>
-     </td>
-          <td align="center" width="33%">
-                Additive White Gaussian Noise <code>AWGN</code><br>
-     </td>
+     <th align="center" width="33%">Uniform Noise <code>noise_u_0</code><br></th>
+     <th align="center" width="33%"> Uniform Noise <code>noise_u_1</code><br> </th>
+     <th align="center" width="33%">Additive White Gaussian Noise <code>AWGN</code><br></th>
           
      </tr>
   <tr>
