@@ -146,6 +146,20 @@ RIGHT : denoising applied to levels : 1, 2 with number of partitions 16, 1, has 
 <p align="center">
 <img src="Description_images/DENOISE_LVL_1_2_3_32_8_4_PARTITIONS.png" width="48%"/> <img src="Description_images/3_LVL_DWT_IDWT_LVL_1_2_16_1_PART_DENOISE.png" width="48%"/>
 </p>
+<table>
+<thead>
+<tr>
+<th>denoising applied to levels : 1, 2, 3 with number of partitions 32, 8, 4, has very visible artefacts</th>
+<th>denoising applied to levels : 1, 2 with number of partitions 16, 1, has a less damaged output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="Description_images/DENOISE_LVL_1_2_3_32_8_4_PARTITIONS.png" width="300"></td>
+<td><img src="Description_images/3_LVL_DWT_IDWT_LVL_1_2_16_1_PART_DENOISE.png" width="300"></td>
+</tr>
+</tbody>
+</table>
 
 ## Noise generation
 
