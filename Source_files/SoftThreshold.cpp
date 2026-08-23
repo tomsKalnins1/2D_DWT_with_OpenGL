@@ -23,9 +23,8 @@ string SoftThreshold::set_compute_shader_values(string source_file_path) {
 	int denom = log(img_dimension_x);
 	int num = img_dimension_x * img_dimension_x;
 
-	float arg = (float)(num / denom);
-
-	float scale_parameter = std::sqrt(std::log2(arg));
+	float scale_parameter = (float)(num / denom);
+	scale_parameter = std::sqrt(std::log2(scale_parameter));
 
 	int index = 0;
 
