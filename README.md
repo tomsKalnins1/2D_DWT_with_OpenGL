@@ -168,7 +168,15 @@ float noised = sqrt((-2.0) * log(n_0.x)) * cos(2.0 * pi * n_1.x);
 ```
 
 <p align="center">
-<img src="Description_images/UNIFORM_NOISE_0.png" width="31%"/> <img src="Description_images/UNIFORM_NOISE_1.png" width="31%"/> <img src="IDWT_denoised/BOX_MULLER_NOISE_U_0_U_1.png" width="31%"/>
+<p align="center">
+     Uniform noise noise_u_0
+     <img src="Description_images/UNIFORM_NOISE_0.png" width="31%"/></p> 
+     <p align="center">
+          Uniform noise noise_u_0
+     <img src="Description_images/UNIFORM_NOISE_1.png" width="31%"/></p>
+     <p align="center">
+          Additve White Gaussian Noise
+     <img src="IDWT_denoised/BOX_MULLER_NOISE_U_0_U_1.png" width="31%"/></p>
 </p>
 
 ## Some of the bugs
