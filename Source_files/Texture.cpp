@@ -95,25 +95,7 @@ Texture& Texture::operator=(Texture&& to_move) {
 	return *this;
 }
 
-/*
-Texture::Texture(Texture&& to_move) {
-	std::cout << "move OVERRIDE \n reference is = " << &to_move << '\n';
-	ID = to_move.ID;
-	height = to_move.height;
-	width = to_move.width;
-	numColorChannels = to_move.numColorChannels;
-	color_format = to_move.color_format;
-	internal_color_format = to_move.internal_color_format;
-	image = to_move.image;
-	filename = to_move.filename;
-	filename = to_move.filename;
-	to_move.ID = 0;
-	to_move.image = nullptr;
-//	to_move.delete_texture();
 
-
-}
-*/
 void Texture::bind_image_2D(int layout) {
 
 	glBindImageTexture(layout, ID, 0, GL_FALSE, 0, GL_READ_WRITE, internal_color_format);
