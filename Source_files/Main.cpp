@@ -87,7 +87,7 @@ int main() {
 	vbo.unbind_VBO();
 
 
-	//------------------------------------ LOAD INPUT IMAGE
+	//-------------------------------------------------------------------------------------------------------- LOAD INPUT IMAGE
 	
 	string pathToImage = "C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\CAMERAMAN_ORIGINAL.png";
 	
@@ -95,9 +95,7 @@ int main() {
 	Texture image_0(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
 	ShaderProgram::undo_gamma_correction(image_0, 256);
 
-	//------------------------------------ LOAD INPUT IMAGE
-
-	//------------------------------------ GENERATE GAUSSIAN NOISE TO ADD TO IMAGE
+	//-------------------------------------------------------------------------------------------------------- GENERATE GAUSSIAN NOISE
 
 	Texture noise_u_0 = Texture{};	//uniform noise
 	Texture noise_u_1 = Texture{};	//uniform noise
@@ -108,29 +106,24 @@ int main() {
 	AddGaussianNoise::generate_uniform_noise(noise_u_1);
 	AddGaussianNoise::apply_Gaussian_noise(noise_u_0, noise_u_1, image_0, AWGN, 0.04);
 
-	//------------------------------------ GENERATE GAUSSIAN NOISE TO ADD TO IMAGE
+	//-------------------------------------------------------------------------------------------------------- COMPUTE FILTER COEFFS 
 
 	//constexpr Filter filter_vals{ 0.4829629131f, 0.8365163037f, 0.224143868f, -0.1294095226f };
-	//DB 2 COEFFS lowpass synthesis : 0.4829629131f, 0.8365163037f, 0.224143868f, -0.1294095226f
+	//DB2 COEFFS lowpass synthesis : 0.4829629131f, 0.8365163037f, 0.224143868f, -0.1294095226f
 	//DB3 COEFFS lowpass synthesis : 0.3326705530f, 0.8068915093f, 0.4598775021f, -0.1350110200f, -0.0854412739f, 0.0352262919f
-	// DB4 COEFFS lowpass synthesis : 0.2303778133f, 0.7148465706f, 0.6308807679f, -0.0279837694f, -0.1870348117f, 0.0308413818f, 0.0328830117f, -0.0105974018f
-	constexpr GetFilter filter_vals{ 0.4829629131f, 0.8365163037f, 0.224143868f, -0.1294095226f };
-	std::array<float, 4> h00 = filter_vals.h0;
-	std::array<float, 4> h11 = filter_vals.h1_w;
-	std::array<float, 4> g00 = filter_vals.g0_w;
-	std::array<float, 4> g11 = filter_vals.g1_w;
-
-	//std::array<float, 4> g00 = filter_vals.g0_w;
-	//std::array<float, 4> g11 = filter_vals.g1_w;
+	//DB4 COEFFS lowpass synthesis : 0.2303778133f, 0.7148465706f, 0.6308807679f, -0.0279837694f, -0.1870348117f, 0.0308413818f, 0.0328830117f, -0.0105974018f
+	//DB5 COEFFS lowpass synthesis : 0.160102397f, 0.603829265f, 0.72430855f, 0.138428152f, -0.242294878f, -0.0322448686f, 0.0775714889f, -0.00624149013f, -0.0125807514f, 0.00333572528f
+	constexpr GetFilter filter_vals{ 0.160102397f, 0.603829265f, 0.72430855f, 0.138428152f, -0.242294878f, -0.0322448686f, 0.0775714889f, -0.00624149013f, -0.0125807514f, 0.00333572528f };
+	std::array<float, 10> h00 = filter_vals.h0;
+	std::array<float, 10> h11 = filter_vals.h1_w;
+	std::array<float, 10> g00 = filter_vals.g0_w;
+	std::array<float, 10> g11 = filter_vals.g1_w;
 	
 	DiscreteWaveletTransform w0{ 256, h00, h11, g00, g11 };
 
 	Texture buff_tex = Texture{};
 	
-	Texture sft_1(GL_RGBA32F, GL_RGBA, "", 256, 256);
-	Texture sft_2(GL_RGBA32F, GL_RGBA, "", 256, 256);
-	Texture sft_3(GL_RGBA32F, GL_RGBA, "", 256, 256);
-	Texture sft_4(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	//-------------------------------------------------------------------------------------------------------- DO DWT
 
 	w0.do_DWT(image_0, buff_tex, 1);
 	w0.do_DWT(image_0, buff_tex, 2);
@@ -138,14 +131,30 @@ int main() {
 //	w0.do_DWT(image_0, buff_tex, 4);
 //	w0.do_DWT(image_0, buff_tex, 5);
 
+	//-------------------------------------------------------------------------------------------------------- NORMAL SHRINK WITH SOFT THRESHOLDING
+
+	Texture sft_1(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	Texture sft_2(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	Texture sft_3(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	Texture sft_4(GL_RGBA32F, GL_RGBA, "", 256, 256);
+	Texture sft_5(GL_RGBA32F, GL_RGBA, "", 256, 256);
+
+//	w0.sort_subbands(image_0, sft_5, 5, 1);
+//	w0.apply_soft_threshold(image_0, sft_5, 5, 1);
+
+//	w0.sort_subbands(image_0, sft_4, 4, 2);
+//	w0.apply_soft_threshold(image_0, sft_4, 4, 2);
+
 //	w0.sort_subbands(image_0, sft_3, 3, 4);
 //	w0.apply_soft_threshold(image_0, sft_3, 3, 4);
 
-//	w0.sort_subbands(image_0, sft_2, 2, 8);
-//	w0.apply_soft_threshold(image_0, sft_2, 2, 8);
+	w0.sort_subbands(image_0, sft_2, 2, 4);
+	w0.apply_soft_threshold(image_0, sft_2, 2, 4);
 
-//	w0.sort_subbands(image_0, sft_1, 1, 16);
-//	w0.apply_soft_threshold(image_0, sft_1, 1, 16);
+	w0.sort_subbands(image_0, sft_1, 1, 16);
+	w0.apply_soft_threshold(image_0, sft_1, 1, 16);
+// 
+//-------------------------------------------------------------------------------------------------------- DO IDWT
 
 //	w0.do_IDWT(image_0, buff_tex, 5);
 //	w0.do_IDWT(image_0, buff_tex, 4);	
@@ -182,7 +191,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 	
-			//saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\Description_images\\UNIFORM_NOISE_0.png");
+		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\Description_images\\DB5_3_LVL_DWT_DENOISE_LVL_1_2_16_4.png");
 
 		}
 
