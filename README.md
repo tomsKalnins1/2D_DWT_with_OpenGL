@@ -187,6 +187,35 @@ Some levels are denoised better with a higher number of partitions (which have t
 </tbody>
 </table>
 
+## Examples of denoising with wavelets with diffirent number of vanishing points (e.g. db2, db4, db5)
+
+Because the lower bound of the polynomial degrees represented by the detail part increases as the number of vanishing points increases, the denoising is more likely to target noise more selectively, as noise usually exists in the high frequency containing subbands. 
+<table>
+<thead>
+<tr>
+<th colspan="3">Original with additive white Gaussian noise</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td colspan="3"><img src="Description_images/3_LVL_DWT_IDWT_NOISY.png" width="300" align="center"></td>
+</tr>
+
+<tr>
+<td>db2</td>
+<td>db4</td>
+<td>db5</td>
+</tr>
+
+<tr>
+<td><img src="Description_images/3_LVL_DWT_IDWT_LVL_1_2_16_1_PART_DENOISE.png" width="300" align="center"></td>
+<td><img src="Description_images/DB4_3_LVL_DWT_DENOISE_LVL_1_2_16_2.png" width="300" align="center"></td>
+<td><img src="Description_images/DB5_3_LVL_DWT_DENOISE_LVL_1_2_16_4.png" width="300" align="center"></td>
+</tr>
+</tbody>
+</table>
+
 ## Noise generation
 
 The image had additive Gaussian noise applied to it:
