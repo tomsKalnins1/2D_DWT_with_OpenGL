@@ -84,7 +84,7 @@ int main() {
 
 	//-------------------------------------------------------------------------------------------------------- LOAD INPUT IMAGE
 	
-	string pathToImage = "C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\CAMERAMAN_ORIGINAL.png";
+	string pathToImage = "CAMERAMAN_ORIGINAL.png";
 	
 	
 	Texture image_0(GL_RGBA32F, GL_RGBA, pathToImage, 256, 256);
@@ -186,7 +186,7 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		if (save) {
 	
-		//	saveImg("C:\\Users\\Toms\\Desktop\\OpenGL\\WaveletTransform\\Description_images\\DB5_3_LVL_DWT_DENOISE_LVL_1_2_16_4.png");
+		//	saveImg("DB5_3_LVL_DWT_DENOISE_LVL_1_2_16_4.png");
 
 		}
 
