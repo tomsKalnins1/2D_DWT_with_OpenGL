@@ -1,12 +1,15 @@
-**\* Build note:** Third-party dependencies are not included in this repository. Before building, install and link the required libraries listed below, and configure the include/library paths for your environment.
-
 ## Dependencies
 
 * [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)
 * [stb_image_write](https://github.com/nothings/stb/blob/master/stb_image_write.h)
 * [GLAD](https://glad.dav1d.de/)
 * [GLFW](https://www.glfw.org/)
-* [glm](https://github.com/g-truc/glm)
+  
+All required dependency files are included in the repository.
+
+**\* Build note:**
+Open the .sln file and build in Visual Studio.
+Requirement: OpenGL 4.6-compatible GPU and driver.
 
 # 2D Discrete Wavelet Transform and Image Denoising Using Wavelet Thresholding 
 
@@ -279,6 +282,7 @@ This is the result of not dividing all coefficients by sqrt(2) :
 <p align="center">
 <img src="Description_images/3_LVL_DWT_IDWT_NOT_DIVIDING_BY_SQRT_2_PHASE_SHIFT.png" width="480" align="center"/>
 </p>
+
 
 
 
