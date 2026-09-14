@@ -202,59 +202,6 @@ void ShaderProgram::undo_gamma_correction(Texture& input, int img_width) {
 }
 
 
-void ShaderProgram:: set_uniform(unsigned int shader_id, string uniformName, glm::vec3 vector) {
-
-	int progID;
-
-	glGetIntegerv(GL_CURRENT_PROGRAM, &progID);
-
-	if(shader_id != progID) {
-	
-		glUseProgram(shader_id);
-
-	}
-
-
-	unsigned int loc = glGetUniformLocation(shader_id, uniformName.c_str());
-
-	glUniform3fv(loc, 1, &vector[0]);
-
-}
-
-void ShaderProgram::set_uniform(unsigned int shader_id, string uniformName, glm::mat4 matrix) {
-
-	int progID;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &progID);
-
-	if (shader_id != progID) {
-
-		glUseProgram(shader_id);
-
-	}
-
-	unsigned int loc = glGetUniformLocation(shader_id, uniformName.c_str());
-
-	glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrix));
-
-}
-
-void ShaderProgram::set_uniform(unsigned int shader_id, string uniformName, float value) {
-
-	int progID;
-
-	glGetIntegerv(GL_CURRENT_PROGRAM, &progID);
-
-	if (shader_id != progID) {
-
-		glUseProgram(shader_id);
-
-	}
-
-	unsigned int loc = glGetUniformLocation(shader_id, uniformName.c_str());
-
-	glUniform1f(loc, value);
-
-}
 
 
 void ShaderProgram::set_uniform(unsigned int shader_id, string uniformName,unsigned int value) {

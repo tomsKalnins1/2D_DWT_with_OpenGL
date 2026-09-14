@@ -1,15 +1,11 @@
 #ifndef DISCRETE_WAVELET_TRANSFORM
 #define DISCRETE_WAVELET_TRANSFORM
 
-#include <glad/glad.h>
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <cerrno>
-#include <glm/glm/glm.hpp>
-#include <glm/glm/gtc/matrix_transform.hpp>
-#include <glm/glm/gtc/type_ptr.hpp>
 #include "ShaderSource.h"
 #include "ShaderProgram.h"
 #include "Texture.h"

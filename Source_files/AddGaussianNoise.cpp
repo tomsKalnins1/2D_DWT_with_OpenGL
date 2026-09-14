@@ -5,7 +5,6 @@
 #include <sstream>
 #include <thread>
 #include <mutex>
-#include <random>
 #include <cstdlib>
 
 AddGaussianNoise::AddGaussianNoise(string source_file_path, float omega, int img_dimension_width) {
@@ -78,7 +77,7 @@ std::vector<float> AddGaussianNoise::generate_rands_xoshiro_32(int num_rands) {
 	std::vector<std::thread> thrds(num_proc);
 	int mod = num_rands % num_proc;
 	int num_rands_per_proc = (num_rands / 4 ) / num_proc;
-	std::cout << "NUM RANDS PER PROC = " << num_rands_per_proc << '\n';
+//	std::cout << "NUM RANDS PER PROC = " << num_rands_per_proc << '\n';
 //	int mod = num;
 	int add = 0;
 

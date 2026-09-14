@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <thread>
-#include <mutex>
-#include <random>
+
+
+
 
 
 GaussianNoise::GaussianNoise(string file_path, float omega) : ShaderSource(file_path),

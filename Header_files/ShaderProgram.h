@@ -8,9 +8,6 @@
 #include <fstream>
 #include <sstream>
 #include <cerrno>
-#include <glm/glm/glm.hpp>
-#include <glm/glm/gtc/matrix_transform.hpp>
-#include <glm/glm/gtc/type_ptr.hpp>
 #include "ShaderSource.h"
 #include "Texture.h"
 #include <vector>
@@ -35,8 +32,6 @@ public:
 
 	static ShaderProgram undo_gamma_correction_prog(int img_width);
 	static void undo_gamma_correction(Texture& input, int img_width);
-	static void set_uniform(unsigned int shader_id, string uniformName, glm::vec3 vector);
-	static void set_uniform(unsigned int shader_id, string uniformName, glm::mat4 matrix);
 	static void set_uniform(unsigned int shader_id, string uniformName, float value);
 	static void set_uniform(unsigned int shader_id, string uniformName,unsigned int value);
 
@@ -60,20 +55,7 @@ public :
 		SOFT_THRESHOLD = 7
 
 	};
-	/*
-	add filter coeff arrays values of which are computed at compile time,
-	for now the coeffs are in the filters, MUST REMEMBER TO CHANGE THAT !!!
-	* h0 filter coeffs (analysis)
-	* h1 filter coeffs (analysis)
-	* g0 filter coeffs (analysis)
-	* g1 filter coeffs (analysis)
-	
-	ALSO MUST ADD A CONSTRUCTOR THAT SPECIFIES THE SIZE AND VALUES OF LOW PASS ANALYSIS FILTER TO BE USED (do I provide set of h0 filter to be used or should it be specified by the constructor call ?)
-	MUST SOLVE THIS !!!
-	WaveletTransform(tring file_path, int max_level_of_decomp, int img_width, )
-	*/
 
-//	WaveletTransform(string file_path) : ShaderProgram(file_path) {}
 	WaveletTransform(string file_path, int decomposition_level, int img_dimension_width, int size_filter, type_of_shader type);
 	WaveletTransform(string file_path, int decomposition_level, int img_dimension_width, type_of_shader type);
 	WaveletTransform(string file_path, int decomposition_level, int img_dimension_width, int H_L_0, int H_L_1);

@@ -71,20 +71,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Libraries\MyLibraries\includeOpenGL\glm;C:\Libraries\MyLibraries\includeOpenGL;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Libraries\MyLibraries\libOpenGL;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Toms\Desktop\OpenGL\WaveletTransform\includeOpenGL;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Toms\Desktop\OpenGL\WaveletTransform\libOpenGL;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Libraries\MyLibraries\includeOpenGL\glm;C:\Libraries\MyLibraries\includeOpenGL;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Libraries\MyLibraries\libOpenGL;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Toms\Desktop\OpenGL\WaveletTransform\includeOpenGL;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Toms\Desktop\OpenGL\WaveletTransform\libOpenGL;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Libraries\MyLibraries\includeOpenGL\glm;C:\Libraries\MyLibraries\includeOpenGL;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Libraries\MyLibraries\libOpenGL;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Toms\Desktop\OpenGL\WaveletTransform\includeOpenGL;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Toms\Desktop\OpenGL\WaveletTransform\libOpenGL;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Libraries\MyLibraries\includeOpenGL\glm;C:\Libraries\MyLibraries\includeOpenGL;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Libraries\MyLibraries\libOpenGL;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Toms\Desktop\OpenGL\WaveletTransform\includeOpenGL;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Toms\Desktop\OpenGL\WaveletTransform\libOpenGL;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -190,7 +190,7 @@
     <ClInclude Include="Header_files\Texture.h" />
     <ClInclude Include="Header_files\VAO.h" />
     <ClInclude Include="Header_files\VBO.h" />
-    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="includeOpenGL\stb\stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

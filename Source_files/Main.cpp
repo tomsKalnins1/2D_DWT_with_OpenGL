@@ -9,10 +9,7 @@
 #include <GLFW/glfw3.h>
 #include "stb/stb_image.h"
 #include "stb/stb_image_write.h"
-#include <glm/glm/glm.hpp>
-#include <glm/glm/gtc/matrix_transform.hpp>
-#include <glm/glm/gtc/type_ptr.hpp>
-#include <algorithm>
+
 
 #include "../Header_files/ShaderProgram.h"
 #include "../Header_files/ShaderSource.h"
@@ -21,8 +18,6 @@
 #include "../Header_files/Texture.h"
 #include "../Header_files/DiscreteWaveletTransform.h"
 
-
-#define M_PI 3.14159265358979323846
 
 using std::vector, std::string, std::cout, std::endl;
 
@@ -113,11 +108,11 @@ int main() {
 	//DB3 COEFFS lowpass synthesis : 0.3326705530f, 0.8068915093f, 0.4598775021f, -0.1350110200f, -0.0854412739f, 0.0352262919f
 	//DB4 COEFFS lowpass synthesis : 0.2303778133f, 0.7148465706f, 0.6308807679f, -0.0279837694f, -0.1870348117f, 0.0308413818f, 0.0328830117f, -0.0105974018f
 	//DB5 COEFFS lowpass synthesis : 0.160102397f, 0.603829265f, 0.72430855f, 0.138428152f, -0.242294878f, -0.0322448686f, 0.0775714889f, -0.00624149013f, -0.0125807514f, 0.00333572528f
-	constexpr GetFilter filter_vals{ 0.160102397f, 0.603829265f, 0.72430855f, 0.138428152f, -0.242294878f, -0.0322448686f, 0.0775714889f, -0.00624149013f, -0.0125807514f, 0.00333572528f };
-	std::array<float, 10> h00 = filter_vals.h0;
-	std::array<float, 10> h11 = filter_vals.h1_w;
-	std::array<float, 10> g00 = filter_vals.g0_w;
-	std::array<float, 10> g11 = filter_vals.g1_w;
+	constexpr GetFilter filter_vals{ 0.2303778133f, 0.7148465706f, 0.6308807679f, -0.0279837694f, -0.1870348117f, 0.0308413818f, 0.0328830117f, -0.0105974018f };
+	std::array<float, 8> h00 = filter_vals.h0;
+	std::array<float, 8> h11 = filter_vals.h1_w;
+	std::array<float, 8> g00 = filter_vals.g0_w;
+	std::array<float, 8> g11 = filter_vals.g1_w;
 	
 	DiscreteWaveletTransform w0{ 256, h00, h11, g00, g11 };
 
@@ -126,8 +121,8 @@ int main() {
 	//-------------------------------------------------------------------------------------------------------- DO DWT
 
 	w0.do_DWT(image_0, buff_tex, 1);
-	w0.do_DWT(image_0, buff_tex, 2);
-	w0.do_DWT(image_0, buff_tex, 3);
+//	w0.do_DWT(image_0, buff_tex, 2);
+//	w0.do_DWT(image_0, buff_tex, 3);
 //	w0.do_DWT(image_0, buff_tex, 4);
 //	w0.do_DWT(image_0, buff_tex, 5);
 
@@ -148,8 +143,8 @@ int main() {
 //	w0.sort_subbands(image_0, sft_3, 3, 4);
 //	w0.apply_soft_threshold(image_0, sft_3, 3, 4);
 
-	w0.sort_subbands(image_0, sft_2, 2, 4);
-	w0.apply_soft_threshold(image_0, sft_2, 2, 4);
+//	w0.sort_subbands(image_0, sft_2, 2, 4);
+//	w0.apply_soft_threshold(image_0, sft_2, 2, 4);
 
 	w0.sort_subbands(image_0, sft_1, 1, 16);
 	w0.apply_soft_threshold(image_0, sft_1, 1, 16);
@@ -158,8 +153,8 @@ int main() {
 
 //	w0.do_IDWT(image_0, buff_tex, 5);
 //	w0.do_IDWT(image_0, buff_tex, 4);	
-	w0.do_IDWT(image_0, buff_tex, 3);
-	w0.do_IDWT(image_0, buff_tex, 2);
+//	w0.do_IDWT(image_0, buff_tex, 3);
+//	w0.do_IDWT(image_0, buff_tex, 2);
 	w0.do_IDWT(image_0, buff_tex, 1);
 	
 	
